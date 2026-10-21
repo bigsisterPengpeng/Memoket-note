@@ -8,9 +8,10 @@ vertically. The diagram is explanatory, not a screenshot or an assertion of
 universal live synchronization. Connection limitations are documented in
 [the connection guide](../../connections.md).
 
-The real demonstration uses a static application screenshot linking to the
-narrated MP4. The README loads no animated preview or video until the reader
-chooses the video link. A browser may play or download the MP4. The transcript
+The real demonstration uses a GitHub-hosted video attachment. Its bare URL is
+the only content in its paragraph so GitHub renders a video player in the README.
+The repository MP4 remains available as an explicit download. No GIF preview is
+used. Private-repository attachments require repository access. The transcript
 records the use of fictional data, real model output,
 sampled application captures, shortened waits and synthetic English narration.
 

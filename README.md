@@ -48,13 +48,13 @@ That is what *agent-native* means here: the document carries the work; the agent
 
 ## See the workflow
 
-[![Watch the workflow video: an actual draft with recalled sources and selected task materials](docs/media/screenshots/writing-with-memory.png)](docs/media/agent-native-writing-workspace.mp4?raw=1)
+https://github.com/user-attachments/assets/9c993dd5-4720-49e2-b4bb-dd526d9bca2e
 
-**[Watch the video (2 min)](docs/media/agent-native-writing-workspace.mp4?raw=1).** See saved knowledge survive a restart, inform a writing task and open as original evidence for review. The demo also shows inline edits, chart creation and export, using fictional Maple project notes and live model output.
+**[Watch the video (2 min)](https://github.com/user-attachments/assets/9c993dd5-4720-49e2-b4bb-dd526d9bca2e).** See saved knowledge survive a restart, inform a writing task and open as original evidence for review. The demo also shows inline edits, chart creation and export, using fictional Maple project notes and live model output.
 
 [Download the narrated MP4](docs/media/agent-native-writing-workspace.mp4?raw=1) · [English captions](docs/media/agent-native-writing-workspace.en.vtt) · [Transcript and recording notes](docs/media/agent-native-writing-workspace.md) · [Repeat the example](docs/workspace-tour.md)
 
-Click the static preview to open or download the MP4; the video loads when you choose to watch. Model waits are shortened and frames are sampled. All materials are fictional. English narration is synthetic. Human review is part of the workflow.
+Use the video controls to play the demo directly in this README. Model waits are shortened and frames are sampled. All materials are fictional. English narration is synthetic. Human review is part of the workflow.
 
 ### Small edit or complete writing task?
 

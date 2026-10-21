@@ -67,7 +67,7 @@ validated chart artifacts without asking the model to recopy their syntax.
 Bar-chart axes include zero, including when values are negative.
 
 The revised video is approximately 119 seconds with 33 English caption cues.
-The README links to the video through a static application screenshot. These are edited captures;
+The README embeds the video through a GitHub-hosted attachment. These are edited captures;
 UI interactions are automated to demonstrate the workflow and review steps.
 The image-generation feature appears as a menu option; the demonstrated figure
 operation is data visualization.
@@ -95,7 +95,7 @@ Layout and interaction checks cover:
 - Import at 1280 × 720, 900 × 600 and 375 × 600.
 - All nine Engineering template previews at 900 × 600, 720 × 612 and 375 × 600.
 - Memoket import at 900 × 600 and 720 × 615, including wrapped controls.
-- The original README layout was checked at 1040 × 900 and 390 × 844. Its animated preview has since been replaced by a static screenshot linking to the MP4; the demo button leads to that video section.
+- The original README layout was checked at 1040 × 900 and 390 × 844. Its animated preview has since been replaced by a GitHub-hosted video attachment; the demo button leads to that video section. GitHub's Markdown renderer was checked to produce a video element with playback controls.
 - The visible Export button, Markdown download and local vault export.
 - Clickable imported-source citations, dated original evidence and backlinks.
 
@@ -104,6 +104,12 @@ components. Compact windows now collapse both side panes so the writing area
 remains usable. Screenshots and DOM dimensions support these checks. Native
 dark-mode appearance, live Notion/Feishu round trips and Apple Notes automation
 permissions remain manual validation work.
+
+The video attachment was additionally checked with GitHub's authenticated
+Markdown renderer, which produced a video element with playback controls. Its
+hosted media returned HTTP 200 with a video content type. On Windows, playback
+of the same MP4 in the local README preview advanced to 35 seconds without a
+browser media error. Private-repository attachments require repository access.
 
 ## Packaged application
 
