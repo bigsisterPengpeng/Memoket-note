@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1040" viewBox="0 0 960 1040" role="img" aria-labelledby="title desc">
+  <title id="title">Bring your notes. Keep your workflow.</title>
+  <desc id="desc">Explicit imports connect existing notes to KITE memory and the writing agent. Export Markdown, a local vault, or configured Notion and Feishu destinations.</desc>
+  <rect width="960" height="1040" rx="16" fill="#f3f0e8"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif">
+    <text x="64" y="74" font-family="ui-monospace,monospace" font-size="25" fill="#695b44">03 / BRING YOUR NOTES</text>
+    <text x="60" y="155" font-size="62" font-weight="650" letter-spacing="-2" fill="#181b1c">Your tools.</text>
+    <text x="60" y="224" font-size="62" font-weight="650" letter-spacing="-2" fill="#181b1c">One thread of memory.</text>
+    <rect x="64" y="275" width="400" height="80" rx="12" fill="#fffdf8" stroke="#d7d1c5"/>
+    <text x="88" y="327" font-size="35" font-weight="550" fill="#242729">Markdown</text>
+    <rect x="496" y="275" width="400" height="80" rx="12" fill="#fffdf8" stroke="#d7d1c5"/>
+    <text x="520" y="327" font-size="35" font-weight="550" fill="#242729">Obsidian</text>
+    <rect x="64" y="369" width="400" height="80" rx="12" fill="#fffdf8" stroke="#d7d1c5"/>
+    <text x="88" y="421" font-size="35" font-weight="550" fill="#242729">Notion</text>
+    <rect x="496" y="369" width="400" height="80" rx="12" fill="#fffdf8" stroke="#d7d1c5"/>
+    <text x="520" y="421" font-size="35" font-weight="550" fill="#242729">Apple Notes</text>
+    <rect x="64" y="463" width="400" height="80" rx="12" fill="#fffdf8" stroke="#d7d1c5"/>
+    <text x="88" y="515" font-size="35" font-weight="550" fill="#242729">Evernote</text>
+    <rect x="496" y="463" width="400" height="80" rx="12" fill="#fffdf8" stroke="#d7d1c5"/>
+    <text x="520" y="515" font-size="35" font-weight="550" fill="#242729">Feishu</text>
+    <path d="M480 563V595M468 583L480 595L492 583" fill="none" stroke="#b78432" stroke-width="3"/>
+    <rect x="64" y="615" width="832" height="150" rx="20" fill="#151820"/>
+    <text x="480" y="672" text-anchor="middle" font-size="26" font-weight="650" fill="#ffb545">MEMOKET NOTE</text>
+    <text x="480" y="729" text-anchor="middle" font-size="38" font-weight="600" fill="#f7f3e9">KITE memory + writing agent</text>
+    <path d="M480 785V817M468 805L480 817L492 805" fill="none" stroke="#b78432" stroke-width="3"/>
+    <rect x="64" y="838" width="268" height="90" rx="12" fill="#fffdf8" stroke="#d7d1c5"/>
+    <text x="198" y="894" text-anchor="middle" font-size="29" font-weight="550" fill="#242729">Markdown</text>
+    <rect x="346" y="838" width="268" height="90" rx="12" fill="#fffdf8" stroke="#d7d1c5"/>
+    <text x="480" y="894" text-anchor="middle" font-size="29" font-weight="550" fill="#242729">Local vault</text>
+    <rect x="628" y="838" width="268" height="90" rx="12" fill="#fffdf8" stroke="#d7d1c5"/>
+    <text x="762" y="894" text-anchor="middle" font-size="29" font-weight="550" fill="#242729">Notion / Feishu</text>
+    <text x="64" y="992" font-size="25" fill="#6a6c70">Explicit import / export. Account setup may be required.</text>
+  </g>
+</svg>

@@ -61,3 +61,8 @@ grant trademark rights.
 The introduction video adapts concepts from the maintainer's supplied project
 presentation. Its English transcript and captions are included beside the video.
 It uses synthetic narration and contains no third-party music or private note data.
+
+The README artwork in `docs/media/readme/` combines original presentation layouts
+with the application's fictional Maple screenshots. Its hero adapts the mark
+from `memoket-website.svg`; the Memoket trademark attribution above also applies.
+The editable HTML, CSS and SVG sources are included. No font files are embedded.

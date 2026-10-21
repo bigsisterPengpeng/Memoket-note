@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="670" viewBox="0 0 1600 670" role="img" aria-labelledby="title desc">
+  <title id="title">Bring your notes. Keep your workflow.</title>
+  <desc id="desc">Explicit imports from Markdown, Obsidian, Notion, Apple Notes, Evernote and Feishu feed NOTE's memory and writing workspace. Export Markdown, write to a local Obsidian vault, or use configured Notion and Feishu destinations.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0L10 5L0 10" fill="none" stroke="#b78432" stroke-width="1.5"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="670" rx="16" fill="#f3f0e8"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif">
+    <text x="72" y="76" font-family="ui-monospace,monospace" font-size="21" letter-spacing="2" fill="#695b44">03 / CONNECT THE WORK YOU ALREADY HAVE</text>
+    <text x="72" y="163" font-size="67" font-weight="650" letter-spacing="-2.5" fill="#181b1c">Your tools. One thread of memory.</text>
+    <g fill="none" stroke="#b78432" stroke-width="2" marker-end="url(#arrow)">
+      <path d="M463 300H510Q538 300 538 340V398H584"/>
+      <path d="M463 400H584"/>
+      <path d="M463 500H510Q538 500 538 460V402H584"/>
+      <path d="M1004 398H1095"/>
+      <path d="M1004 398H1046Q1060 398 1060 380V320Q1060 300 1080 300H1095"/>
+      <path d="M1004 398H1046Q1060 398 1060 420V480Q1060 500 1080 500H1095"/>
+    </g>
+    <g fill="#fffdf8" stroke="#d7d1c5">
+      <rect x="72" y="255" width="390" height="90" rx="12"/>
+      <rect x="72" y="355" width="390" height="90" rx="12"/>
+      <rect x="72" y="455" width="390" height="90" rx="12"/>
+      <rect x="1100" y="255" width="428" height="90" rx="12"/>
+      <rect x="1100" y="355" width="428" height="90" rx="12"/>
+      <rect x="1100" y="455" width="428" height="90" rx="12"/>
+    </g>
+    <g fill="#242729" font-size="29" font-weight="550">
+      <text x="99" y="312">Markdown / Obsidian</text>
+      <text x="99" y="412">Notion / Apple Notes</text>
+      <text x="99" y="512">Evernote / Feishu</text>
+      <text x="1128" y="312">Markdown download</text>
+      <text x="1128" y="412">Local Obsidian vault</text>
+      <text x="1128" y="512">Notion / Feishu</text>
+    </g>
+    <rect x="586" y="240" width="418" height="320" rx="20" fill="#151820"/>
+    <rect x="612" y="267" width="366" height="49" rx="24" fill="#ffb545"/>
+    <text x="795" y="300" text-anchor="middle" font-size="22" font-weight="650" fill="#181b1c">MEMOKET NOTE</text>
+    <text x="795" y="383" text-anchor="middle" font-size="34" font-weight="650" fill="#f7f3e9">Your writing workspace</text>
+    <text x="795" y="438" text-anchor="middle" font-size="27" fill="#d6c6a8">KITE memory + writing agent</text>
+    <path d="M633 469H958" stroke="#464449"/>
+    <text x="795" y="514" text-anchor="middle" font-size="23" fill="#b5b6bc">Keep the task and evidence together.</text>
+    <text x="74" y="613" font-size="21" fill="#6a6c70">Explicit import and export · Account integrations require setup · Markdown download needs no account</text>
+  </g>
+</svg>

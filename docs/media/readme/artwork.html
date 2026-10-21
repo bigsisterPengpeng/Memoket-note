@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MEMOKET NOTE — README artwork</title>
+  <link rel="stylesheet" href="artwork.css">
+</head>
+<body data-scene="hero">
+  <section class="hero" aria-label="Product introduction">
+    <svg class="arc" viewBox="0 0 700 550" fill="none" aria-hidden="true"><path d="M670 0C500 60 700 240 510 295C370 335 360 175 225 285C120 370 180 475 55 510" stroke="#ffb545" stroke-width="2"/><circle cx="55" cy="510" r="5" fill="#ffb545"/></svg>
+    <div class="topline">
+      <div class="brand"><svg viewBox="25 38 110 90" fill="currentColor" aria-hidden="true"><path d="M114.495 69.97L108.545 85.75L119.765 116.12C120.635 118.47 122.935 120.04 125.505 120.04H132.985L114.485 69.97H114.495Z"/><path d="M104.245 62.47C101.625 62.47 99.2849 64.06 98.3949 66.45L85.1749 101.81L69.4049 40H55.3949L37.3749 110.6H29.9149L27.0049 120.04H41.8049C44.6949 120.04 47.2249 118.13 47.9149 115.4L62.3949 58.67L78.0549 120.04H90.1249L111.645 62.47H104.245Z"/></svg><span>Memoket <b>NOTE</b></span></div>
+      <div class="eyebrow">Agent-native writing workspace</div>
+    </div>
+    <h1>Stay in the document.<br><span>Let the agent work.</span></h1>
+    <p class="dek">Less context switching. Long-term memory. A writing agent you can steer.</p>
+    <div class="play"><span>▶</span> WATCH THE 80s DEMO</div>
+    <div class="route"><div><span>01</span>BRING YOUR NOTES</div><div><span>02</span>RECALL THE EVIDENCE</div><div><span>03</span>WRITE &amp; REVIEW</div><div><span>04</span>TAKE IT WITH YOU</div></div>
+    <div class="screen"><img src="../screenshots/writing-with-memory.png" alt="Actual application: Maple weekly update with memory materials and source links"></div>
+    <div class="foot"><span>A writing agent that remembers your work.</span><span>Built on Memoket KITE · Fictional demo data</span></div>
+  </section>
+  <section class="memory" aria-label="Long-term memory">
+    <div class="section-top"><div class="eyebrow">01 / Keep your train of thought</div><div class="note">Long-term memory · Original evidence</div></div>
+    <h2>Remember the work. Keep the thread.</h2>
+    <p class="dek">Recall past decisions beside your draft. Follow every saved fact back to its source.</p>
+    <div class="screen"><img src="../screenshots/source-evidence.png" alt="Actual application: dated Maple fact, original words and a backlink to the draft"></div>
+    <p class="caption">Actual application capture, cropped for readability. All source material is fictional.</p>
+  </section>
+  <section class="agent" aria-label="Writing agent harness">
+    <div class="section-top"><div class="eyebrow">02 / Put the agent to work</div><div class="note">Writing tools · Checks · Change review</div></div>
+    <h2>Give it a brief.<br><span>Keep the final say.</span></h2>
+    <div class="loop"><b>Retrieve → Draft → Check</b><br>Revise, pause or stop.<br>You review the changes.</div>
+    <p class="dek">The harness runs the writing loop. Your document keeps the task, evidence and edits together.</p>
+    <div class="screen"><img src="../screenshots/writing-with-memory.png" alt="Actual application: writing actions, citations and selected task materials in the document"></div>
+    <p class="caption">Actual reviewed draft from a live model run. Automated checks support human review.</p>
+  </section>
+  <script>
+    const scene = new URLSearchParams(location.search).get('scene');
+    if (['hero', 'memory', 'agent'].includes(scene)) document.body.dataset.scene = scene;
+  </script>
+</body>
+</html>
