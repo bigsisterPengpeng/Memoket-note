@@ -590,9 +590,15 @@ h2:first-child { margin-top: 0; }
 .note-tree { margin: 0; }
 
 /* The import-back dialog handles one note with a compact, focused layout. */
-.palette.export-one { width: min(420px, 92vw); padding: 14px 16px 12px; }
+.palette.export-one { width: min(480px, 92vw); padding: 14px 16px 12px; overflow-y: auto; max-height: calc(100dvh - 32px); }
 .export-note { display: flex; flex-direction: column; gap: var(--s-5); }
 .export-note h2 { margin: 0; font-size: var(--t-lg); }
+.export-note > .row { align-items: flex-start !important; min-width: 0; }
+.export-note-title { margin: 0; overflow-wrap: anywhere; font-size: var(--t-sm); }
+.export-note .section-label { margin: 0; }
+.export-markdown { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: var(--r); }
+.export-markdown > div { flex: 1 1 160px; min-width: 0; }
+.export-markdown p { margin: 4px 0 0; font-size: var(--t-sm); line-height: 1.5; }
 .export-note-state { font-size: var(--t-sm); margin: 0; line-height: 1.6; }
 .export-note-seg { align-self: flex-start; }
 .export-note-seg button { padding: 3px 12px; font-size: var(--t-sm); display: inline-flex; align-items: center; gap: var(--s-2); }
@@ -1304,8 +1310,23 @@ details[open] > .run-title::before { content: '▾'; }
 
 /* Welcome page when no note is open. */
 /* Preserve breathing room below the tab row, following the 0.5.10 content reference. */
-.welcome { max-width: 760px; display: flex; flex-direction: column; gap: var(--s-7); padding-top: var(--s-7); }
-.welcome-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--s-5); }
+.welcome { max-width: 860px; min-width: 0; display: flex; flex-direction: column; gap: var(--s-7); padding-top: var(--s-7); }
+.welcome-intro h1 { font-size: clamp(25px, 3.4vw, 38px); line-height: 1.18; letter-spacing: -.025em; max-width: 650px; margin: 0 0 12px; }
+.welcome-intro p, .workspace-intro p { line-height: 1.6; max-width: 700px; margin: 0; }
+.workspace-intro { margin-bottom: 18px; }
+.workspace-intro h2 { margin: 0 0 8px; }
+.import-target select { flex: 1; min-width: 0; }
+.import-connections > .row { flex-wrap: wrap; }
+.import-connections > .row > span:first-child { flex-shrink: 0; }
+.writing-flow { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; padding: 0; margin: 0 0 18px; }
+.writing-flow li { min-width: 0; display: grid; align-content: start; gap: 7px; padding-top: 12px; border-top: 2px solid var(--line); overflow-wrap: anywhere; }
+.writing-flow li[aria-current=step] { border-color: var(--brand); }
+.writing-flow .bx { color: var(--brand); font-size: var(--icon-lg); }
+.writing-flow strong { font-size: var(--t-md); }
+.writing-flow .muted { font-size: var(--t-sm); line-height: 1.5; }
+.welcome-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: var(--s-5); }
+@container (max-width: 600px) { .writing-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .writing-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .welcome-card { height: auto;
   /* Welcome cards contain paragraphs, so override the global button nowrap rule. */
   white-space: normal;
@@ -1323,7 +1344,6 @@ details[open] > .run-title::before { content: '▾'; }
 .welcome-card > .bx { font-size: var(--icon-xl); color: var(--brand); }
 /* Card descriptions use regular body weight rather than inheriting semibold button labels. */
 .welcome-card .muted { font-weight: var(--w-normal); }
-.welcome-card > b { font-size: var(--t-base); }
 .welcome-card > b { font-size: var(--t-base); }
 .welcome-card > kbd { position: absolute; top: 12px; inset-inline-end: 12px; }
 .welcome-recent { display: flex; flex-direction: column; gap: var(--s-1); }

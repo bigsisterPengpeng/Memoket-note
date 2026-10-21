@@ -9,6 +9,7 @@ import { takePendingKbQuery } from '../../util/pendingKbQuery'
 import ConflictInbox from './ConflictInbox'
 import Icon from '../Icon'
 import { t } from '../../i18n'
+import WritingFlow from '../WritingFlow'
 
 const toDetail = (f: Fact): FactDetail => ({ id: f.id, text: f.text, when: f.when, kind: f.kind, who: '', conf: '', topics: [], entities: [], unit: '' })
 
@@ -43,6 +44,11 @@ export default function KbDashboard({ actions }: { actions: KbActions }) {
 
   return (
     <div className="kb-page">
+      <div className="workspace-intro">
+        <h2>{t('Your work, remembered')}</h2>
+        <p className="muted">{t('Knowledge stays in your local library across notes and sessions. Inspect the original evidence, then bring it into your next draft.')}</p>
+      </div>
+      <WritingFlow current="memory" />
       {/* No search box on an empty library: with not a single fact, searching can only come up empty, and an autoFocused cursor sitting there looks like it's waiting for you to type */}
       {!(data && data.stats.facts === 0) && (
         <div className="kb-search">

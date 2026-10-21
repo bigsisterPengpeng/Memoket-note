@@ -4,6 +4,13 @@ import { layoutPanes } from '../../util/layoutPanes'
 const panes = { leftW: 260, rightW: 340, leftOn: true, rightOn: true }
 
 describe('layoutPanes', () => {
+  it('keeps compact windows usable even when both side panes were enabled on desktop', () => {
+    for (const width of [375, 480, 639]) {
+      expect(layoutPanes({ winW: width, panes, splitW: null, focusMode: false }))
+        .toMatchObject({ leftShown: false, rightShown: false })
+      expect(layoutPanes({ winW: width, panes: { ...panes, leftOn: false }, splitW: null, focusMode: false }).rightShown).toBe(false)
+    }
+  })
   it('wide window: both sides present, widths as the user set them', () => {
     expect(layoutPanes({ winW: 1440, panes, splitW: null, focusMode: false }))
       .toEqual({ leftW: 260, splitW: 0, leftShown: true, rightShown: true })

@@ -1,26 +1,9 @@
-"""LLM provider preset registry: default base URL, suggested model names, whether a key is
-required, and the **request-body shape** (family) for each provider.
+"""Provider presets and request families.
 
-The settings page used to offer two choices only: "local model" (`local`) and "OpenAI-compatible"
-(`gpt`). Nearly every mainstream vendor now exposes an OpenAI-compatible `/chat/completions`, but the
-addresses differ and so do the **accepted parameters**:
-
-* ``family == "openai"``: OpenAI itself. Reasoning-tier models **reject ``max_tokens``** and only
-  accept ``max_completion_tokens`` (observed 400, see `util/llm.py` module docstring, item 3);
-  ``reasoning_effort`` is accepted.
-* ``family == "compatible"``: third-party compatible endpoints. ``max_tokens`` is the common
-  denominator, so it is always sent (`_payload` also sends ``max_completion_tokens``; an endpoint
-  that rejects one of them gets it stripped by `llm._drop_rejected_param` and the call is retried).
-* ``family == "local"``: Ollama / LM Studio style local servers. Like compatible they only know
-  ``max_tokens``, and **unknown fields are silently ignored** (see `util/llm.py` item 4); a key is
-  optional.
-
-Base URLs and model names were **checked against each vendor's official docs on 2026-10-19** (the
-`docs` field is the page that was checked). Findings worth remembering sit next to the preset they
-concern. The two legacy ids are kept **unchanged**: `gpt` = any OpenAI-compatible endpoint (existing
-users' key / model / base URL stay in `provider_config.gpt_*`), `local` = local model (`local_*`
-columns). Every new preset keeps its own row in `provider_credentials`, so switching back and forth
-never loses a key (`store.get_provider_credentials`).
+OpenAI endpoints use max_completion_tokens. Compatible and local endpoints
+receive both output-limit fields and can explicitly reject an unsupported one.
+Optional reasoning parameters depend on the model. Legacy provider IDs preserve
+existing settings, and each preset stores its own credentials independently.
 """
 
 from __future__ import annotations

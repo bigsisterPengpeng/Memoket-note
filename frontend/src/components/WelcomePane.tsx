@@ -6,6 +6,7 @@ import { fmtShortcut } from '../util/keys'
 import { fmtDate } from '../util/time'
 import Icon from './Icon'
 import { t } from '../i18n'
+import WritingFlow from './WritingFlow'
 
 
 export default function WelcomePane({ notes, factCount, onNew, onImport, onOpen, onOpenNote, onShortcuts }: {
@@ -25,33 +26,35 @@ export default function WelcomePane({ notes, factCount, onNew, onImport, onOpen,
         <Logo size={40} />
         <div>
           <h2 style={{ margin: 0 }}>MEMOKET NOTE</h2>
-          <p className="muted" style={{ margin: '2px 0 0', fontSize: 'var(--t-md)' }}>{t('An agent-native writing workspace')}</p>
           <p className="muted" style={{ margin: '2px 0 0', fontSize: 'var(--t-md)' }}>
             {notes.length === 0 ? t('Start with a note or an import.') : t('{n} notes · {facts} knowledge base facts', { n: notes.length, facts: factCount.toLocaleString() })}
           </p>
         </div>
       </div>
 
+      <div className="welcome-intro">
+        <h1>{t('A writing agent that remembers your work.')}</h1>
+        <p className="muted">{t('An agent-native writing workspace. Bring your notes, put past knowledge to work, and take your next draft with you.')}</p>
+      </div>
+      <WritingFlow />
+
       <div className="welcome-cards">
-        <button className="welcome-card" onClick={onNew}>
-          <Icon n="bx-plus" />
-          <b>{t('New note')}</b>
-          <span className="muted">{t('Click “Continue” mid-draft; it checks your knowledge base before writing on.')}</span>
-          <kbd>{fmtShortcut('⌘N')}</kbd>
-        </button>
         <button className="welcome-card" onClick={onImport}>
           <Icon n="bx-import" />
-          <b>{t('Import')}</b>
-          <span className="muted">{t('Markdown, Obsidian, Evernote, Notion, Apple Notes, or a batch of recordings / PDFs into the knowledge base.')}</span>
+          <b>{t('Bring your notes')}</b>
+          <span className="muted">{t('Import from Notion, Apple Notes on macOS, Obsidian, Evernote or local files.')}</span>
+        </button>
+        <button className="welcome-card" onClick={onNew}>
+          <Icon n="bx-plus" />
+          <b>{t('Start a draft')}</b>
+          <span className="muted">{t('Choose a writing goal. Continue retrieves relevant knowledge before writing.')}</span>
+          <kbd>{fmtShortcut('⌘N')}</kbd>
         </button>
         <button className="welcome-card" onClick={() => onOpen(factCount > 0 ? 'kb' : 'app:import')}>
           <Icon n="bx-data" />
-          <b>{t('Knowledge base')}</b>
-          <span className="muted">{factCount > 0 ? t('Overview, topic map, timeline — every node is a page.') : t('Still empty — import one meeting recording to fill it.')}</span>
+          <b>{t('Explore your memory')}</b>
+          <span className="muted">{factCount > 0 ? t('Revisit saved facts, dates and source evidence, ready for your next draft.') : t('Import notes and extract knowledge to build a memory you can return to.')}</span>
         </button>
-        {/* Only the desktop app can capture; showing it on the web build would just lead to "use the desktop app".
-            It is here because **new users never click that monitor icon in the left bar for no reason** --
-            a feature that is off by default, if never introduced once, might as well not exist. */}
         {window.memoketDesktop?.journey && (
           <button className="welcome-card" onClick={() => onOpen('app:journey')}>
             <Icon n="bx-desktop" />

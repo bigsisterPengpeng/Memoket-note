@@ -11,14 +11,15 @@ export interface PaneLayoutIn {
 }
 
 export function layoutPanes({ winW, panes, splitW: wantSplit, focusMode }: PaneLayoutIn) {
+  const compact = winW < 640
   const leftW = Math.min(panes.leftW, Math.floor(winW * 0.3))
   const splitW = wantSplit != null ? Math.min(wantSplit, Math.floor(winW * 0.45)) : 0
   const tooNarrowForRight = panes.leftOn && winW - LAUNCHER_W - leftW - panes.rightW - splitW < MIN_EDITOR_W
   const tooNarrowForLeft = wantSplit != null && winW - LAUNCHER_W - leftW - splitW < MIN_EDITOR_W
   return {
     leftW, splitW,
-    leftShown: !focusMode && panes.leftOn && !tooNarrowForLeft,
-    rightShown: !focusMode && panes.rightOn && !tooNarrowForRight,
+    leftShown: !focusMode && !compact && panes.leftOn && !tooNarrowForLeft,
+    rightShown: !focusMode && !compact && panes.rightOn && !tooNarrowForRight,
   }
 }
 

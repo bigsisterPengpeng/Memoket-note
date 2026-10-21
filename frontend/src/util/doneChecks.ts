@@ -33,7 +33,7 @@ export const DONE_RULES = {
   numeric_only: String.raw`\u6570\u5b57|\u6570\u636e|numeric(?:al)?(?:claims?|items?)|numbers?|data`,
   date: String.raw`\d{1,2}\s*[\u6708/.-]\s*\d{1,2}|\d{4}\s*[-/\u5e74]\s*\d{1,2}|\d{1,2}\s*\u6708(?:\u5e95|\u521d|\u672b|\u4e2d)?|\u4eca\u5929|\u6628\u5929|\u524d\u5929|\u660e\u5929|\u672c\u5468|\u4e0a\u5468|\u4e0b\u5468|\u5468[\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u65e5\u5929]|\u661f\u671f[\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u65e5\u5929]|Q[1-4]\b|\d+\s*\u53f7|\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s*\d{4})?\b|\b(?:today|yesterday|tomorrow|this week|last week|next week|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b`,
   link: String.raw`\[[^\]\n]*\]\([^)\s]+\)|https?://\S+`,
-  cite: String.raw`\[((?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*))\]`,
+  cite: String.raw`\[((?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12,64})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*))\]`,
   note_link: String.raw`\]\(note://([0-9a-f]{12})\)`,
   item: String.raw`^\s*(?:[-*+]|\d+[.)])\s+\S`,
   item_strip: String.raw`^\s*(?:[-*+]|\d+[.)])\s+(?:\[[ xX]\]\s*)?`,

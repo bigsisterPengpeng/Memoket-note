@@ -1,0 +1,17 @@
+{
+  "description": "Fictional source identifiers covering imported notes, direct ingests and manual facts.",
+  "valid": [
+    "demo-12-abcd",
+    "note-0123456789ab-0F1",
+    "obsidian-0123456789abcdef-0F2",
+    "notion-0123456789abcdef0123456789abcdef-2F3",
+    "feishu-0123456789abcdef-0F4",
+    "note-0123456789ab-manualF1"
+  ],
+  "invalid": [
+    "ordinary label",
+    "note-0123456789ab-manualF0",
+    "obsidian-012345abcde-0F2",
+    "obsidian-0123456789abcdef-no-source"
+  ]
+}

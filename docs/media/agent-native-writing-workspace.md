@@ -1,49 +1,45 @@
-# Agent-native writing workspace
+# A writing agent that remembers your work
 
-An English conceptual introduction to MEMOKET NOTE, a personal project built on [memoket-kite](https://github.com/memoket/memoket-kite).
+[Watch the workflow](agent-native-writing-workspace.mp4) · [English captions](agent-native-writing-workspace.en.vtt)
 
-[Watch or download the video](agent-native-writing-workspace.mp4) · [English captions](agent-native-writing-workspace.en.vtt)
+Actual application interactions and a live GPT-4.1 run with entirely fictional Maple notes. The video uses sampled screen captures, edited timing and synthetic English narration. It includes human correction of model output. It does not access personal Notion or Apple Notes accounts.
 
-This video explains the architecture. It uses synthetic English narration and typographic scenes rather than a live application recording. Model output still needs human review.
+## 00:00:00 A writing agent that remembers your work
 
-## Transcript
+A writing agent that remembers your work. Memoket Note brings the notes you already have into an agent-native writing workspace.
 
-### 00:00:00 — Agent-native writing workspace
+## 00:00:07 1. Import the notes you already have
 
-Meet Memoket Note, an agent-native writing workspace. This personal open-source project is built on the memoket-kite memory engine. It brings AI writing actions, source-backed memory and reviewable edits into the same note. A writing agent harness coordinates the work behind the scenes.
+Start with three fictional Maple project notes. Import creates local notes and uses a real model to extract fourteen facts. Notion and Apple Notes are also available connections.
 
-### 00:00:16 — One evolving note
+## 00:00:18 2. Long-term memory, with original evidence
 
-A writing task starts with a note, its purpose and the material you want to use. The editor keeps this state together, so you can work on the draft while the agent retrieves context and proposes changes. You remain responsible for the final text.
+The knowledge survives a backend restart. Search for shelf labels, open a remembered fact, and inspect the dated original words. This memory stays in the library across notes and sessions.
 
-### 00:00:31 — The task has a scope
+## 00:00:30 3. A goal and the evidence to write from
 
-For a small task, use a direct writing action. Select a paragraph to rewrite, polish or verify. Continue at the cursor when you need the next passage. For a longer task, start a workflow with the note goal and completion criteria. Each entry point carries the relevant scope.
+Set a goal, audience, and completion criteria. Related memory appears beside the new draft. Add relevant facts to Materials so the agent can prioritize them.
 
-### 00:00:49 — Evidence within reach
+## 00:00:40 4. The writing agent at work
 
-Memoket-kite supplies long-term memory. Note uses its facts and source links to bring relevant evidence into the writing task. You can inspect recalled material, collect it in the tray and cite it in the draft. Retrieval is evidence to review, not a guarantee that a generated claim is correct.
+Smart Continue retrieves context and writes from the saved sources. The writing agent harness runs checks and keeps the changes available for review. This draft cites ten stored facts.
 
-### 00:01:06 — Write. Check. Decide.
+## 00:00:51 5. Review the draft against its sources
 
-The writing agent harness manages task state and tools, and turns a writing request into a loop. First it prepares material, then drafts or revises. Deterministic checks inspect constraints such as citations, output shape and repetition. A model judge assesses the configured writing dimensions. The policy uses that feedback to choose another round, repair, pause or stop.
+Review still matters. In this run, the reviewer removes a repeated title and corrects an unsupported timing claim. A source link opens the original evidence and the backlink to the draft.
 
-### 00:01:29 — You decide what stays
+## 00:01:02 6. Take your draft with you
 
-Changes stay reviewable. Inspect individual edits and decide what to keep or revert. Run snapshots and note history support recovery. The harness has explicit limits and stopping conditions, and can retain an earlier best round. Automated checks help you review the result, but they do not replace your judgment.
+Download the reviewed draft as Markdown without an account. Or write it into a separate Obsidian vault. Both exports preserve the draft and its ten source identifiers.
 
-### 00:01:47 — A weekly report
+## 00:01:12 Bring your notes. Keep your workflow.
 
-For example, start a weekly report by setting the audience and what the report must cover. Gather notes and other material, then let the harness prepare evidence, draft and check. Review the proposed changes and verify their citations before exporting or sharing the finished report.
+Bring your notes. Keep your workflow. Memoket Note is a personal open-source project built on the Memoket KITE memory engine.
 
-### 00:02:04 — Built on memoket-kite
+## Reproduce the workflow
 
-Memoket Note is a personal project, with application code licensed under AGPL version three. The separate memoket-kite engine uses the Apache two license. Configure your own model and transcription services. This is a conceptual walkthrough of the implemented architecture, rather than a live product demonstration or performance benchmark.
+See [the walkthrough](../workspace-tour.md), [fictional input notes](../../examples/maple-pilot.md) and [reviewed exported draft](../../examples/maple-weekly-update.md).
 
-## Sources and attribution
+The reviewer removes a repeated title and replaces an unsupported timing claim with source wording. The 168-word reviewed draft cites 10 existing facts. Both the Markdown download and local Obsidian export preserve its body and source identifiers.
 
-Concepts adapted from the project maintainer's supplied introduction deck. Implementation references: `backend/app/harness/`, `backend/app/database/kite/` and `frontend/src/components/`.
-
-Memoket artwork comes from the [official memoket-kite assets](https://github.com/memoket/memoket-kite/tree/main/assets) and links to [memoket.ai](https://memoket.ai). Memoket names and artwork belong to their respective owners. The application is a personal project.
-
-Application code: AGPL-3.0-only. Separate memory engine: Apache-2.0. See the repository license and third-party notices.
+MEMOKET NOTE is a personal open-source project built on [Memoket KITE](https://github.com/memoket/memoket-kite). Application code: AGPL-3.0-only. Separate memory engine: Apache-2.0. Memoket names and artwork belong to their owners. See [memoket.ai](https://memoket.ai) and the repository notices.

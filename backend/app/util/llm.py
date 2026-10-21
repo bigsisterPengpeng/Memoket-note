@@ -1,52 +1,8 @@
-"""OpenAI-compatible LLM client with streaming.
+"""OpenAI-compatible completions, tool calls and streamed output.
 
-Points at the in-house Muse-Glimmer-30B by default, but the provider can be switched in the settings page
-to any preset in `util/providers.py` (see store.get_active_llm_config()). Model quirks that must be handled:
-
-1. **Thinking cannot be turned off** (local model). The model always emits reasoning_content first.
-   Measured: reasoning_budget=0 / thinking_budget=0 / chat_template_kwargs cannot suppress it (the best
-   setting still produced 467 characters of thinking). So the token budget must reserve room for thinking,
-   otherwise the body is truncated or even empty — callers pass the **body length they want**, and
-   REASONING_RESERVE adds the thinking overhead.
-2. **Reasoning effort matters a lot** (local model). Interactive paths always use reasoning_effort=low,
-   measured 3x faster than high (~10s vs ~30s per call).
-3. **GPT reasoning-tier models (e.g. the gpt-5.x series) take different parameters** — measured
-   (real calls + reading OpenAI's raw error text, not guessed):
-   - they reject ``max_tokens`` and only accept ``max_completion_tokens``; local llama.cpp accepts both
-     (measured: max_completion_tokens truncates correctly too).
-     **But "local" does not mean llama.cpp — see point 4 below.**
-   - ``temperature`` only accepts the default 1; any other value is a 400 ("Only the default (1) value
-     is supported"). The local model's temperature tuning (e.g. EDIT_SYSTEM uses 0.1 for determinism,
-     continuation uses 0.7 for variety) was really tuned and makes a difference, so it cannot be dropped
-     wholesale for the sake of GPT reasoning tiers — temperature is not omitted up front; only when a send
-     hits that specific 400 is temperature stripped and retried once. Local models / non-reasoning GPT
-     models keep their temperature tuning untouched; only models that truly reject it take this fallback.
-4. **Ollama / LM Studio only accept ``max_tokens``, and silently ignore unknown fields**
-   (P30 #5, **checked against both vendors' official compatibility docs, not guessed**):
-
-   - Ollama's `/v1/chat/completions` supported list is
-     ``model / messages / frequency_penalty / presence_penalty / response_format /
-     seed / stop / stream / stream_options / temperature / top_p / max_tokens /
-     tools / reasoning_effort / reasoning`` — **no ``max_completion_tokens``**.
-     The issue asking for it (ollama#7125, opened 2024-10) and the PR (#14464) are both still open.
-   - LM Studio's list is ``model / top_p / top_k / messages / temperature /
-     max_tokens / stream / stop / presence_penalty / frequency_penalty /
-     logit_bias / repeat_penalty / seed`` — also missing it.
-   - Neither errors on a field it does not recognise (Go / JS json decoding ignores unknown fields by default).
-
-   The combined effect is not "an error" but **no cap at all**: on a fake endpoint (`p30/m5.py`) the caller
-   asked for 700 tokens and both ran to the fake endpoint's own 4096 limit — on a real endpoint that means
-   running the context full. **And the factory-default ``llm_base_url`` is exactly ``127.0.0.1:11434/v1``
-   — Ollama's port**, so this is the tier users hit on day one, not a hypothetical.
-
-   So ``_payload`` forks once on the ``family`` of ``get_active_llm_config()`` (`util/providers.py`:
-   ``openai`` / ``compatible`` / ``local``; old configs carrying only ``provider`` are looked up by id):
-   the ``openai`` family (OpenAI itself + the legacy id ``gpt``) still sends only ``max_completion_tokens``
-   (the production path is byte-for-byte unchanged, not one extra round trip); everything else **sends
-   both**. Endpoints that 400 on both (reasoning tiers dislike ``max_tokens``, strict gateways dislike
-   ``max_completion_tokens``) are handled by ``_drop_rejected_param``, which strips one per the server's
-   reply and retries — **only while the other one is still present**; otherwise the retry would be a
-   generation with no cap at all, worse than the 400.
+Reserve tokens for reasoning, preserve provider-specific output limits, and retry
+explicitly rejected optional parameters. Both token-limit fields are sent to
+compatible and local servers because some silently ignore unknown fields.
 """
 
 from __future__ import annotations
@@ -216,22 +172,14 @@ def _payload(messages: list[dict], *, stream: bool, max_tokens: int,
     body = {
         "model": cfg["model"],
         "messages": sanitize_messages(messages),
-        # max_tokens is the body length the caller wants; the thinking overhead is added here. Uses
-        # max_completion_tokens rather than max_tokens — see point 3 of the module docstring.
+        # Reserve additional budget for reasoning beyond the requested output.
         "max_completion_tokens": max_tokens + REASONING_RESERVE,
         "temperature": temperature,
         "stream": stream,
     }
 
-    # With only `max_completion_tokens`, Ollama / LM Studio have **no cap at all**
-    # — fake endpoint measured: asked 700, got 4096 (on a real endpoint it runs until the context is full).
-    # Not sent to the `openai` family: reasoning tiers 400 on `max_tokens` right away, and the production
-    # path (the one configured in the real DB) stays **byte-for-byte unchanged, not one extra round trip**.
-    # Endpoints that accept only one of the two are handled by `_drop_rejected_param`, which strips one
-    # per the server's reply and retries.
-    # The fork is on `family` (`util/providers.py`): the `openai` family sends only `max_completion_tokens`;
-    # old configs without a family are looked up by provider id (`gpt` -> openai), and if neither is
-    # known -> compatible (the safe side).
+    # Compatible servers may silently ignore an unknown limit field. Send both
+    # and remove one only when the server explicitly rejects it.
     if providers.family_for(cfg) != "openai":
         body["max_tokens"] = max_tokens + REASONING_RESERVE
 
@@ -316,7 +264,10 @@ def drop_unsupported_temperature(payload: dict, status_code: int, body: bytes) -
 
 
 def _drop_rejected_param(payload: dict, status_code: int, body: bytes) -> bool:
-    if _rejects_cache_key(status_code, body):
+    if "reasoning_effort" in payload and _rejects_reasoning_effort(status_code, body):
+        payload.pop("reasoning_effort")
+        return True
+    if "prompt_cache_key" in payload and _rejects_cache_key(status_code, body):
         payload.pop("prompt_cache_key", None)
         return True
     if drop_unsupported_temperature(payload, status_code, body):
@@ -330,6 +281,23 @@ def _drop_rejected_param(payload: dict, status_code: int, body: bytes) -> bool:
         payload.pop("max_completion_tokens", None)
         return True
     return False
+
+
+def _rejects_reasoning_effort(status_code: int, body: bytes) -> bool:
+    if status_code != 400:
+        return False
+    try:
+        error = json.loads(body).get("error") or {}
+    except (json.JSONDecodeError, AttributeError):
+        return False
+    if not isinstance(error, dict):
+        return False
+    if error.get("param") == "reasoning_effort":
+        return True
+    message = str(error.get("message") or "").lower()
+    return bool(re.search(
+        r"(?:unrecognized request argument supplied|unsupported parameter)"
+        r"\s*:\s*['\"]?reasoning_effort\b", message))
 
 
 _PARAM_RETRY_LIMIT = 5
@@ -407,7 +375,7 @@ async def complete_raw(messages: list[dict], *, max_tokens: int = 1500,
         for _ in range(_PARAM_RETRY_LIMIT):
             r = await client.post(f"{cfg['base_url']}/chat/completions",
                                   headers=_headers(), json=payload)
-            if _rejects_effort_with_tools(r.status_code, r.content):
+            if payload.get("reasoning_effort") not in (None, "none") and _rejects_effort_with_tools(r.status_code, r.content):
 
 
                 payload["reasoning_effort"] = "none"

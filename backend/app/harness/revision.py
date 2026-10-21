@@ -143,7 +143,7 @@ def meta_in_text(text: str, before: str = "") -> str:
 
 from .checks.citations import CITE as _CITE_RE
 
-_TRAILING_CITES = re.compile(r"(?:[ \t]*\[(?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*)\])+")
+_TRAILING_CITES = re.compile(r"(?:[ \t]*\[(?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12,64})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*)\])+")
 
 
 def absorb_trailing_citations(content: str, op: str, anchor: str, anchor_end: str = "") -> str:

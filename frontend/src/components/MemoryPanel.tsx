@@ -11,6 +11,7 @@ import { landNotesInTray, TRAY_MAX_ITEMS } from '../util/tray'
 import { trayByDefault } from '../util/trayDefaults'
 import ExportBack from './ExportBack'
 import FilePicker from './FilePicker'
+import WritingFlow from './WritingFlow'
 import { getLang, t } from '../i18n'
 
 /** Notes produced by a finished import -> tray items (pure function): only those that became notes (`note_id` set, status done), one per note, capped at the tray limit */
@@ -238,6 +239,11 @@ export default function MemoryPanel({ pendingJob, trayNoteId = '' }: { pendingJo
 
   return (
     <div>
+      <div className="workspace-intro">
+        <h2>{t('Bring your notes. Keep your workflow.')}</h2>
+        <p className="muted">{t('Import existing notes, extract lasting knowledge with your configured model, then use it while writing. Your drafts can leave as Markdown or go to a connected tool.')}</p>
+      </div>
+      <WritingFlow current="import" />
       <p className="muted" style={{ fontSize: 'var(--t-sm)' }}>
         {t('Knowledge base now has')} {stats ? t('{facts} facts · {entities} entities', { facts: stats.facts, entities: stats.entities }) : '…'}
         {working && <> · <span className="spinner" /> {t('Extracting')}</>}
@@ -255,14 +261,14 @@ export default function MemoryPanel({ pendingJob, trayNoteId = '' }: { pendingJo
         </div>
       )}
 
-      <p className="section-label">{t('Import from other apps')}</p>
-      <div className="stack">
+      <p className="section-label">{t('Import from files and apps')}</p>
+      <div className="stack import-connections">
         <p className="muted" style={{ fontSize: 'var(--t-sm)', marginTop: 0 }}>
           {}
           {t('Cleaned per source on import: original dates and folder structure are kept, each app\'s private syntax is removed (')}<code>{t('[[wiki links]]')}</code>{t(', ')}<code>{t('![[attachments]]')}</code>{t(', dataview blocks, Evernote attachment placeholders). ')}<strong>{t('Re-importing is incremental')}</strong>{t(' -- content already imported is skipped, never doubled, and does not spend extraction time again.')}
         </p>
 
-        <label className="row" style={{ gap: 8, alignItems: 'center' }}>
+        <label className="row import-target" style={{ gap: 8, alignItems: 'center' }}>
           <span style={{ width: 88 }}>{t('Import to')}</span>
           <select aria-label={t('Import to')} value={importTo} onChange={(e) => setImportTo(e.target.value as 'both' | 'kb' | 'notes')} disabled={importing}>
             <option value="both">{t('Notes + knowledge base (facts extracted per note; many notes take a long time)')}</option>
@@ -270,6 +276,15 @@ export default function MemoryPanel({ pendingJob, trayNoteId = '' }: { pendingJo
             <option value="kb">{t('Knowledge base only (no notes created)')}</option>
           </select>
         </label>
+        <div className="row" style={{ gap: 8, alignItems: 'center' }}>
+          <span style={{ width: 88 }}>Markdown</span>
+          <FilePicker label={t('Choose Markdown files')} accept=".md,.markdown,.txt" multiple disabled={importing}
+            disabledReason={t('Wait for the current import to finish')}
+            onPick={(files) => void doImport(Array.from(files), 'obsidian')} />
+        </div>
+        <p className="muted" style={{ fontSize: 'var(--t-xs)', margin: '0 0 6px 96px' }}>
+          {t('Original dates in front matter are preserved. Choose notes, knowledge extraction, or both above.')}
+        </p>
         <div className="row" style={{ gap: 8, alignItems: 'center' }}>
           <span style={{ width: 88 }}>Obsidian</span>
           <FilePicker label={t('Choose Obsidian vault')} directory multiple disabled={importing}

@@ -39,17 +39,29 @@ export function withItems(items: TrayItem[], add: TrayItemIn[]): TrayItemIn[] {
 export const TRAY_MAX_ITEMS = 24
 
 
+const pendingAdds = new Map<string, Promise<{ items: TrayItem[]; added: number }>>()
+
+export async function appendTrayItems(noteId: string, add: TrayItemIn[]): Promise<{ items: TrayItem[]; added: number }> {
+  const previous = pendingAdds.get(noteId) ?? Promise.resolve()
+  const operation = previous.catch(() => {}).then(async () => {
+    const { listTray, putTray } = await import('../api')
+    const current = await listTray(noteId)
+    const next = withItems(current, add)
+    const added = next.length - current.length
+    const items = added ? await putTray(noteId, next) : current
+    setTrayCache(noteId, items)
+    return { items, added }
+  })
+  pendingAdds.set(noteId, operation)
+  try { return await operation }
+  finally { if (pendingAdds.get(noteId) === operation) pendingAdds.delete(noteId) }
+}
+
 export async function landNotesInTray(trayNoteId: string, notes: { id: string; title: string; content: string }[]): Promise<number> {
-  const { listTray, putTray } = await import('../api')
   const add: TrayItemIn[] = notes.filter((n) => n.id !== trayNoteId)
     .map((n) => ({ kind: 'note', ref_id: n.id, title: n.title, excerpt: noteExcerpt(n.content) }))
   if (!add.length) return 0
-  const cur = await listTray(trayNoteId)
-  const next = withItems(cur, add)
-  if (next.length === cur.length) return 0
-  const saved = await putTray(trayNoteId, next)
-  setTrayCache(trayNoteId, saved)
-  return next.length - cur.length
+  return (await appendTrayItems(trayNoteId, add)).added
 }
 
 /** The first few hundred characters of a note -> tray excerpt: drop heading hashes, fold in-note links back into titles, fold blank lines into single newlines */

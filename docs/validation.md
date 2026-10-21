@@ -1,101 +1,99 @@
 # Validation notes
 
-Validated on October 20, 2026 with Python 3.11.15, Node.js 22.22.3 and macOS arm64. The source distribution was installed in a separate virtual environment with `constraints.txt` and fresh `npm ci` installations.
+Validated on October 21, 2026 with Python 3.11.15, Node.js 22.22.3 and macOS arm64.
+The final checks reuse the isolated dependency installations from the earlier
+publication preparation. This update changes no dependency versions.
 
 | Check | Result |
 |---|---|
-| Backend pytest | 399 passed |
-| Frontend Vitest | 55 files, 303 passed |
-| Independent frontend shared contracts | 61 passed |
-| Python static analysis | No pyflakes findings in `backend/app` |
+| Backend pytest | 415 passed |
+| Frontend Vitest | 57 files, 308 passed |
+| Independent frontend/backend shared contracts | 61 passed |
 | Frontend types, lint and production build | Passed |
-| Desktop typecheck and packaging downloader test | Passed; cache reuse and checksum rejection verified |
-| Frontend and desktop npm audits, including development dependencies | No known vulnerabilities reported |
-| Installed Python dependency audit | No known vulnerabilities reported |
-| Publication audit | No credential, private-data-path or personal-absolute-path findings |
-| Source-language audit | Literal Han characters are confined to optional translation dictionaries |
+| Desktop typecheck and packaging downloader test | Passed |
+| Python static analysis | No pyflakes findings in `backend/app` |
+| Publication audit | No recognizable credential, private-data-path or personal-absolute-path findings |
+| Source-language audit | Literal Han characters remain confined to optional translation dictionaries |
 
-KITE is pinned to a specific upstream commit. Dependency audits are snapshots of the advisory data available at validation time.
+Backend tests report six deprecation warnings in third-party dependencies. The
+frontend production build retains its large-chunk warning. Dependency advisory
+audits passed on October 20, 2026; those results are a dated snapshot, not a claim
+that no dependency can develop a vulnerability. KITE remains pinned to an upstream
+commit.
 
-## Packaged backend
+## Real workflow with fictional data
 
-An ad-hoc-signed macOS arm64 application was built from this source. Deep signature verification passed. Its bundled backend was started against a disposable data directory and verified to serve the frontend, return uncached index HTML, report that no model was configured, persist a note and its Engineering workflow, and return JSON errors for unknown API routes. The package contains the dictionary and exact MIT license, application license and third-party notices; development data directories are excluded.
+The [Maple example](../examples/maple-pilot.md) uses three independently authored
+fictional Markdown notes. The actual application imports them and uses GPT-4.1
+to extract 14 facts. The same identifiers remain retrievable after backend
+restarts. The writing workflow then produces a draft citing 10 stored facts.
 
-This local build is not notarized. Windows and Linux desktop packages were not built during this validation.
+Human review removes a repeated title and corrects an unsupported timing claim.
+The reviewed draft has 168 whitespace-delimited words including headings. All
+10 fact identifiers resolve to stored facts and readable original evidence.
+Clicking a source link and returning through the note backlink works in the UI.
+
+The actual Markdown download matches the saved body. The separate local Obsidian
+export contains that same body and all 10 source identifiers. The demonstration
+does not connect to real Notion, Feishu or Apple Notes accounts.
+
+The English video uses sampled captures of those actual interactions and live
+model output, with edited timing and synthetic narration. Its captions match its
+transcript. Every chapter is visually inspected and the complete video/audio
+stream decodes without errors. Model output and extraction results can vary.
+
+## Regression fixes from the live run
+
+A non-reasoning model rejected the optional `reasoning_effort` argument. The
+client now retries after an explicit rejection, including replies that omit the
+parameter field. Regression tests exercise normal completions, tool calls and
+both streaming paths, retain output limits, and confirm that authentication,
+quota and unrelated errors are not hidden.
+
+Imported source identifiers use longer hashes than direct note ingests. Citation
+recognition now covers these identifiers in frontend rendering, backend checks,
+source backlinks and export handling. Shared fictional cases keep those formats
+consistent. Rapidly selecting materials also exposed overlapping tray writes;
+additions now queue per note and merge with the saved materials.
 
 ## UI checks
 
-The local browser used only invented notes, imports and knowledge-base facts. Checks covered:
+The updated screens use fictional data and retain the existing visual tokens.
+Layout and interaction checks cover:
 
-- All nine Engineering previews at 900 × 600, with the full preview region visible and no horizontal text overflow; larger desktop layouts were also checked.
-- Keyboard preview selection after cards scroll into view, task persistence after reload and English generated navigation.
-- English file selection controls and tree refresh after two synthetic Evernote imports.
-- A long topic name in the graph summary at 900 × 600, with its card inside the viewport and scroll available for long content.
-- A rendered Mermaid flowchart after the dependency upgrade.
+- Welcome and Export at 1280 × 720, 900 × 600, 720 × 612, 375 × 600 and 667 × 375.
+- Import at 1280 × 720, 900 × 600 and 375 × 600.
+- All nine Engineering template previews at 900 × 600, 720 × 612 and 375 × 600.
+- The visible Export button, Markdown download and local vault export.
+- Clickable imported-source citations, dated original evidence and backlinks.
 
-Browser screenshot captures were blurred by the capture path. Layout evidence therefore combines DOM dimensions, accessibility state and functional interaction; it does not certify fine typography. Native dark-mode appearance and real-account Notion/Feishu round trips remain manual validation work.
+No horizontal overflow was found in the checked flow, import, export or template
+components. Compact windows now collapse both side panes so the writing area
+remains usable. Screenshots and DOM dimensions support these checks. Native
+dark-mode appearance, live Notion/Feishu round trips and Apple Notes automation
+permissions remain manual validation work.
 
-## Automatic CI
+## Packaged application
 
-Automatic GitHub Actions runs are intentionally disabled. An unused workflow template is available as `docs/ci-workflow.yml.example`; validation results here come from local checks.
+The macOS Apple Silicon installer is version 0.1.2. Deep signature verification,
+disk-image verification, read-only mounting and the Applications shortcut pass.
+The bundled backend starts with a disposable copy of the fictional library and
+serves the current frontend. It reads all 14 facts, indexes imported and manual
+citations, returns source evidence and backlinks, and exports a note to a separate
+local vault. No development database is bundled.
 
-## Scope
+The build uses local ad-hoc signing and is not notarized. Windows and Linux
+installers were not built. The installed user's application profile is not used
+for this validation.
 
-Tests use stubs instead of live model calls and do not establish writing-quality or performance benchmarks. Historical research scripts, private corpora and archived screenshot evidence are not distributed. The introduction video is a narrated concept explanation, not a live product recording.
+## Publication and CI
 
-## Product terminology update — October 21, 2026
+Publication checks include tracked files and non-ignored additions. Local demo
+libraries, credentials, recordings used during editing, audit inputs and build
+outputs stay outside the source distribution. The only published example inputs
+are fictional notes and the reviewed example draft.
 
-Product descriptions now use **agent-native writing workspace**. The **writing
-agent harness** remains the runtime that manages task state, tools, writing
-rounds, checks, stopping conditions and recovery. Internal module and API names
-are unchanged.
-
-The updated frontend passed typechecking, lint, all 303 tests across 55 files,
-and all 61 independent shared contracts. Its production build passed with the
-existing large-chunk warning. Desktop typechecking and the downloader
-compatibility test passed. The updated macOS arm64 application passed deep
-signature verification; its bundled backend served the current frontend against
-a disposable data directory, including the new product and workflow text.
-The welcome screen and Settings description were checked in the browser at
-1163 × 608 with no horizontal overflow in their content.
-
-The regenerated English introduction is approximately 145 seconds long, with
-33 sentence-aligned captions. Caption text and transcript match the narrated
-scene script, local media links resolve, and a full video/audio decode reported
-no errors. Changed scenes were visually inspected; the remaining four scene
-images are identical to the previous version. The underlying eight-slide
-presentation passed package, layout and import validation. The publication
-audit reported no findings, and literal Han characters remain confined to
-optional translation dictionaries. Backend behavior was not changed or
-retested for this terminology update; its earlier results are recorded above.
-
-## Layout, source citations and showcase update — October 21, 2026
-
-The writing-mode picker now renders in a document-level portal. Fixed viewport
-placement prevents the editor scroller and stacking contexts from clipping its
-header or controls. Card tracks and text have explicit intrinsic-size bounds;
-the custom form and details adapt to narrow widths. All 104 cards across all 12
-categories were checked at 900 × 600, 720 × 612 and 375 × 600. No card or panel
-had horizontal overflow, and the header passed hit-testing at every size.
-The sticky writing controls also reserve space above the first document line.
-
-The real UI walkthrough exposed a citation-format gap for manually entered KITE
-facts. Their identifiers now participate in source highlighting, citation checks,
-backlinks, export stripping and completion checks alongside extracted facts.
-Regression tests cover deduplication, user-scoped backlinks and rebuilding the
-index for existing notes. A source quotation and its persisted backlink were
-verified in the actual interface. English sentence endings and long English
-paragraph restatement checks were also corrected during fixture replacement.
-
-The showcase contains only invented Harbor notes and manually entered facts.
-Its 25-second silent UI tour is an edited sequence of actual screenshots, with
-an animated preview and English captions. It does not show a live model run.
-The separate narrated concept introduction remains available. Notion and Feishu
-real-account validation remains outside this local verification.
-
-After the final fixes, backend validation passed 402 tests (six third-party
-deprecation warnings). Frontend validation passed 305 tests across 56 files,
-all 61 shared contracts, typechecking and lint. The production build passed
-with the existing large-chunk warning. Python static analysis and the
-publication audit reported no findings. Literal Han remains confined to optional
-translation dictionaries. No automatic CI or live model calls were used.
+Automatic GitHub Actions runs remain disabled. The unused workflow template in
+`docs/ci-workflow.yml.example` is available for maintainers who choose to enable
+CI later. Automated tests use stubs; the separately recorded Maple workflow uses
+a real configured model. These checks are not general writing-quality benchmarks.

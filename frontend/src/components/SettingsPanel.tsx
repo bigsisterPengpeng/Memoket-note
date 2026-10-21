@@ -143,6 +143,7 @@ export function AboutLine() {
   return (
     <div className="muted" style={{ fontSize: 'var(--t-xs)', marginTop: 28, overflowWrap: 'anywhere' }}>
       <p><strong>MEMOKET NOTE</strong> · {t('An agent-native writing workspace')}</p>
+      <p>{t('A writing agent that remembers your work.')}</p>
       <p>{t('A personal project built on the Memoket KITE memory engine, powered by a writing agent harness.')}</p>
       <p>
         {t('AGPL-3.0 · Source')} <a href="https://github.com/huilongan/Memoket-note" target="_blank" rel="noreferrer">github.com/huilongan/Memoket-note</a> {t('· Reuses Trilium\'s design and theme (AGPL-3.0); dependency list in docs/third-party-notices.md')}

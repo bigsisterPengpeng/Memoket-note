@@ -65,7 +65,7 @@ def heading_format_reminder() -> str:
     )
 
 
-_FACT_ID = re.compile(r"^\[(?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*)\]")
+_FACT_ID = re.compile(r"^\[(?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12,64})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*)\]")
 
 
 def facts_index_block(index: list[str]) -> str:
@@ -104,7 +104,7 @@ def facts_block(facts: list[str]) -> str:
         block += ("\n\nCitation rules: each initial [fact-id] identifies that fact. When using a fact, "
                   "copy one most direct source's [fact-id] unchanged to the end of its sentence "
                   "(for example: 'scheduled for June 30 [example-1872-5F8]'). "
-                  "Use only identifiers listed above; never invent one or stack several on one sentence.")
+                  "Use only identifiers listed above; never invent one or stack several on one sentence. Do not combine identifiers inside one pair of brackets.")
     return block
 
 

@@ -9,8 +9,8 @@ import Icon from './Icon'
 import { t } from '../i18n'
 
 
-export default function ExportNotePanel({ noteId, title, onClose }:
-  { noteId: string; title: string; onClose: () => void }) {
+export default function ExportNotePanel({ noteId, title, onClose, onMarkdown }:
+  { noteId: string; title: string; onClose: () => void; onMarkdown: () => void }) {
   const [remotes, setRemotes] = useState<NoteRemote[] | null>(null)
   const [where, setWhere] = useState<ExportWhere | null>(null)
   const [vault, setVault] = useState(loadVault)
@@ -76,9 +76,19 @@ export default function ExportNotePanel({ noteId, title, onClose }:
   return (
     <div className="export-note">
       <div className="row" style={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <h2>{t('Export back “')}<span className="plain-case">{title}</span>{t('”')}</h2>
+        <h2>{t('Take your draft with you')}</h2>
         <button className="icon-btn" title={t('Close (Esc)')} aria-label={t('Close')} onClick={onClose}><Icon n="bx-x" /></button>
       </div>
+
+      <p className="muted export-note-title">{title}</p>
+      <div className="export-markdown">
+        <div>
+          <strong>Markdown</strong>
+          <p className="muted">{t('Download this draft with its source identifiers. No account needed.')}</p>
+        </div>
+        <button onClick={onMarkdown}><Icon n="bx-download" /> {t('Download .md')}</button>
+      </div>
+      <p className="section-label">{t('Or send to a connected tool')}</p>
 
       {/* ① State first. In a repeated action this line beats any explanation; copies link to the other side */}
       <p className="muted export-note-state">

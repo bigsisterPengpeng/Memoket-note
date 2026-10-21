@@ -4,7 +4,7 @@ import { clipToTray, deleteTrayItem, listTray, putTray, type TrayItem, type Tray
 import { clickable } from '../util/clickable'
 import { displayTitle } from '../util/displayTitle'
 import { friendlyError } from '../util/friendlyError'
-import { moveItem, setTrayCache, TRAY_KIND_ICON, TRAY_KIND_LABEL, TRAY_PREVIEW_CHARS, trayAddNotice, withItems, alreadyInTray, type TrayAddDetail } from '../util/tray'
+import { moveItem, setTrayCache, TRAY_KIND_ICON, TRAY_KIND_LABEL, TRAY_PREVIEW_CHARS, trayAddNotice, appendTrayItems, type TrayAddDetail } from '../util/tray'
 import { setTrayByDefault, trayByDefault } from '../util/trayDefaults'
 import { toast } from '../toast'
 import Icon from './Icon'
@@ -31,8 +31,8 @@ export default function TrayPanel({ noteId, onWrite }: {
   const [open, setOpen] = useState<Set<string>>(() => new Set())
   const dragFrom = useRef<number | null>(null)
   const [dragOver, setDragOver] = useState<number | null>(null)
-  const itemsRef = useRef(items)
-  itemsRef.current = items
+  const noteIdRef = useRef(noteId)
+  noteIdRef.current = noteId
 
   const commit = useCallback((next: TrayItem[]) => { setItems(next); setTrayCache(noteId, next) }, [noteId])
 
@@ -54,10 +54,13 @@ export default function TrayPanel({ noteId, onWrite }: {
       const batch: TrayItemIn[] = (d.items ?? (d.kind ? [d as TrayItemIn] : []))
         .filter((it) => !(it.kind === 'note' && it.ref_id === noteId))         // this note is not laid out on its own desk
       if (!batch.length) { if (d.kind === 'note' && d.ref_id === noteId) toast(t('The current note does not need to be in its own materials')); return }
-      const fresh = batch.filter((it) => !alreadyInTray(itemsRef.current, it))
-      if (!fresh.length) { toast(batch.length > 1 ? t('These are already materials') : t('Already in the materials')); return }
-      putTray(noteId, withItems(itemsRef.current, fresh))
-        .then((r) => { commit(r); toast((fresh.length > 1 ? t('Added {n} materials ({total} in total)', { n: fresh.length, total: r.length }) : t('Added to materials ({total} in total)', { total: r.length })) + trayAddNotice(fresh)) })
+      void appendTrayItems(noteId, batch)
+        .then(({ items: saved, added }) => {
+          if (noteIdRef.current !== noteId) return
+          commit(saved)
+          if (!added) { toast(batch.length > 1 ? t('These are already materials') : t('Already in the materials')); return }
+          toast((added > 1 ? t('Added {n} materials ({total} in total)', { n: added, total: saved.length }) : t('Added to materials ({total} in total)', { total: saved.length })) + trayAddNotice(batch))
+        })
         .catch((err) => toast(t('Could not add to materials: {err}', { err: friendlyError(err) }), 'error'))
     }
     window.addEventListener('tray-add', on)

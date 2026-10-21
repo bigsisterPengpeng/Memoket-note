@@ -151,7 +151,7 @@ def _is_block(para: str) -> bool:
     return p.startswith(("```", "|", ">", "    ")) or "```" in p
 
 
-_CITE = re.compile(r"\[(?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*)\]")
+_CITE = re.compile(r"\[(?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12,64})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*)\]")
 
 
 def cites_conflict(a: str, b: str) -> bool:

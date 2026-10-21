@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
 import { clickable } from './util/clickable'
 import { DESTINATIONS } from './util/destinations'
 import { journalDateOf } from './util/journalDate'
@@ -88,6 +88,7 @@ import NoteLinksPanel from './components/NoteLinksPanel'
 import RevisionHistoryPanel from './components/RevisionHistoryPanel'
 import QuickView from './components/QuickView'
 import WelcomePane from './components/WelcomePane'
+import { downloadMarkdown } from './util/markdownExport'
 import ShortcutsPanel from './components/ShortcutsPanel'
 import type { DropWhere } from './components/NoteTree'
 import NoteKbPanel from './components/NoteKbPanel'
@@ -97,7 +98,6 @@ import Ribbon, { type RibbonTab } from './components/Ribbon'
 import RightPane, { type PaneTab } from './components/RightPane'
 import SkeletonPanel from './components/SkeletonPanel'
 import WritingWorkflowPicker from './components/WritingWorkflowPicker'
-import FilePicker from './components/FilePicker'
 import PlanChecks from './components/PlanChecks'
 import MarginCard from './components/MarginCard'
 import TraceCard, { type TraceCardState } from './components/TraceCard'
@@ -177,6 +177,9 @@ export default function App() {
   // The virtual node the middle pane is showing (a fact / a category). Mutually exclusive with current: current set
   // means writing a note, virtualId set means browsing the knowledge base.
   const [virtualId, setVirtualId] = useState<string | null>(null)
+  useLayoutEffect(() => {
+    if (virtualId) document.querySelector('.note-scroll')?.scrollTo({ top: 0 })
+  }, [virtualId])
   // In-app dialogs (replacing window.prompt — in Electron that is a system-level modal the theme can't reach)
   const [picker, setPicker] = useState<PickerRequest | null>(null)
   /** The "export this note back" popover. Whole-library export lives on the import page; this only changes the scope —
@@ -439,7 +442,6 @@ export default function App() {
   const [tapNotes, setTapNotes] = useState<string[]>([])
   const [writingPlanParent, setWritingPlanParent] = useState<TreeRow | null>(null)
   const [harness, setHarness] = useState<HarnessState | null>(null)
-  const [mdToKb, setMdToKb] = useState(false)
   const [job, setJob] = useState('')
 
   // When the harness starts, switch the right pane to "Plan": the plan + what each round judged, right in front of you (criterion 3)
@@ -496,7 +498,8 @@ export default function App() {
     window.addEventListener('resize', on)
     return () => window.removeEventListener('resize', on)
   }, [])
-  const { leftW, splitW, leftShown, rightShown } = layoutPanes({ winW, panes, splitW: split?.w ?? null, focusMode })
+  const { leftW, splitW, leftShown, rightShown: rightFits } = layoutPanes({ winW, panes, splitW: split?.w ?? null, focusMode })
+  const rightShown = rightFits && !!current
   const [selectionMenu, setSelectionMenu] = useState<{ x: number; y: number; text: string } | null>(null)
   // Paragraph at the cursor: the right pane's "Memory" queries its relation to the knowledge base by it (conflict / continuation / corroboration / unsupported)
   const [cursorPara, setCursorPara] = useState('')
@@ -1917,13 +1920,7 @@ export default function App() {
    * shouldn't depend on the server being reachable. */
   function exportMarkdown() {
     if (!current) return
-    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${title || t('Untitled')}.md`
-    a.click()
-    URL.revokeObjectURL(url)
+    downloadMarkdown(title || t('Untitled'), content)
   }
 
   async function copyMarkdown() {
@@ -2973,28 +2970,17 @@ export default function App() {
    * shouldn't require re-typing it. */
   /** Import .md: one file is one note; **multiple files produce a subtree** — an "Import <date>"
    *  parent node with each file as a child. Dozens of notes scattered at the tree root can't be tidied up. */
-  async function importMarkdown(files: FileList | null, under: string = api.ROOT_ID, toKb = false) {
+  async function importMarkdown(files: FileList | null, under: string = api.ROOT_ID) {
     const list = Array.from(files ?? []).filter((f) => /\.(md|markdown|txt)$/i.test(f.name))
     if (list.length === 0) { if (files?.length) toast(t('Only .md / .markdown / .txt are accepted — none of the selected files match')); return }
     await save()
 
-    try { await importMarkdownFiles(list, under, toKb) }
+    try { await importMarkdownFiles(list, under) }
     catch (e) { toast(t('Import failed: {err}', { err: friendlyError(e) }), 'error'); void reload(); void reloadTree() }
   }
 
-  async function importMarkdownFiles(list: File[], under: string, toKb: boolean) {
+  async function importMarkdownFiles(list: File[], under: string) {
     const strip = (name: string) => name.replace(/\.(md|markdown|txt)$/i, '')
-
-    // knowledge base's empty-state page sends people to this page, and the topmost, most prominent thing on it is this
-    // Markdown card — it was **the only path on the page that didn't reach the knowledge base**, while the user came in precisely
-    // to fill the knowledge base. It uses the same `ingest/text` as "Save to knowledge base".
-    const ingest = async (notes: { id: string; title: string; content: string }[]) => {
-      if (!toKb) return
-      for (const n of notes) {
-        try { await api.ingestText(n.content, n.title || t('Untitled'), 'note', n.id) } catch { /* one note failing doesn't block the rest */ }
-      }
-      toast(t('{n} notes queued for knowledge-base extraction; they will show under Recent imports when done', { n: notes.length }))
-    }
 
     const toTray = async (notes: { id: string; title: string; content: string }[]) => {
       const target = trayTargetRef.current
@@ -3008,7 +2994,6 @@ export default function App() {
       const text = await list[0].text()
       const n = await api.createNote(strip(list[0].name), text, under)
       await reload(); await reloadTree()
-      await ingest([{ id: n.id, title: n.title, content: text }])
       await toTray([{ id: n.id, title: n.title, content: text }])
       open(n); return
     }
@@ -3024,7 +3009,6 @@ export default function App() {
     }
     await reload(); await reloadTree()
     toast(t('Imported {n} notes under “{title}”', { n: list.length, title: parent.title }))
-    await ingest(made)
     await toTray(made)
     open(first ?? parent)
   }
@@ -3724,6 +3708,11 @@ export default function App() {
           <div className="palette export-one" role="dialog" aria-label={t('Export this note back')}
                onMouseDown={(e) => e.stopPropagation()}>
             <ExportNotePanel noteId={exportOne.id} title={displayTitle(exportOne)}
+                             onMarkdown={() => {
+                               if (exportOne.id === current?.id) exportMarkdown()
+                               else void api.getNote(exportOne.id).then((n) => downloadMarkdown(displayTitle(n), n.content))
+                                 .catch((e) => toast(t('Export failed: ') + friendlyError(e), 'error'))
+                             }}
                              onClose={() => setExportOne(null)} />
           </div>
         </div>
@@ -3945,7 +3934,7 @@ export default function App() {
 
       <div className="rest-pane">
         {/* This branch is inside `!split`, so the split width counts as 0 when making room */}
-        {!rightShown && !focusMode && !split && (
+        {!rightShown && !focusMode && !split && !!current && (
           <button className="right-pane-reopen" title={t('Show right pane ({key})', { key: fmtShortcut('⇧⌘\\') })}
                   onClick={() => setPanes((p) => makeRoomForRight(p, winW, 0))}><Icon n="bx-chevrons-left" /></button>
         )}
@@ -4050,19 +4039,6 @@ export default function App() {
         {!current ? (
           virtualId === 'app:import' ? (
             <div className="kb-note" style={{ maxWidth: 760 }}>
-              <h2 className="kb-note-title"><Icon n="bx-import" /> {t('Import')}</h2>
-              <div className="card">
-                <b>{t('Markdown files')}</b>
-                <p className="muted" style={{ margin: '2px 0 8px', fontSize: 'var(--t-sm)' }}>{t('One file per note; multiple files become a subtree. To put them under a node, right-click it in the tree and choose “Import .md here…”.')}</p>
-                {}
-                {}
-                <label className="checkbox-row" style={{ fontSize: 'var(--t-sm)', margin: '0 0 8px' }}>
-                  <input type="checkbox" checked={mdToKb} onChange={(e) => setMdToKb(e.target.checked)} />
-                  <span>{t('Also save to knowledge base (extracts facts per note using the model; unchecked only creates notes — you can “Save to knowledge base” per note later)')}</span>
-                </label>
-                <FilePicker label={t('Choose Markdown files')} accept=".md,.markdown,.txt" multiple disabledReason=""
-                  onPick={(files) => { void importMarkdown(files, api.ROOT_ID, mdToKb) }} />
-              </div>
               <MemoryPanel pendingJob={job} trayNoteId={trayTarget} />
             </div>
           ) : virtualId === 'app:settings' ? (
@@ -4137,6 +4113,10 @@ export default function App() {
                 </button>
               </span>
               <AudioRecorder onTranscript={insertAtCursor} onIngested={setJob} offline={asrOffline} noteId={current?.id} />
+              <button className="fb-btn" title={t('Download Markdown or send this note to a connected tool')}
+                      onClick={() => { void save().then(() => setExportOne(current)).catch((e) => toast(t('Export failed: ') + friendlyError(e), 'error')) }}>
+                <Icon n="bx-export" /><span className="fb-label">{t('Export')}</span>
+              </button>
               <button className="fb-btn" title={t('More')}
                       onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setFbMenu({ kind: 'more', at: { x: r.right - 220, y: r.bottom + 4 } }) }}>
                 <Icon n="bx-dots-horizontal-rounded" />

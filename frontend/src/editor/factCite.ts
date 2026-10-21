@@ -8,10 +8,7 @@ import {
 } from '@codemirror/view'
 import { t } from '../i18n'
 
-/** The shape of a fact id: `<user>-<digits>-<hex>` (KITE's fact id), or the note-ingest form
- *  `note-<12-hex note id>-<chunk>F<n>` -- the latter was not recognized before, so ingested facts could not be cited.
- *  This shape is hard-coded rather than "any [xxx]" so ordinary bracketed references are not mistaken for sources.
- *  One source with backend store._CITE / checks/citations / prompts/fragments and util/wordCount, kept in sync in four places. */
+/** Recognize structured KITE, imported-note and manual-fact IDs while leaving ordinary brackets alone. */
 export { CITE_RE_SOURCE }
 const CITE = new RegExp(CITE_RE_SOURCE, 'g')
 

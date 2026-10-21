@@ -6,10 +6,10 @@ then review and export the finished work.
 
 ## Local files and Obsidian
 
-Open Import and choose Markdown files or an Obsidian vault. Vault metadata and
+Open Import, select Notes + knowledge base, Notes only, or Knowledge base only,
+then choose Markdown files or an Obsidian vault. Vault metadata and
 trash folders are skipped. The importer cleans supported wiki-link and attachment
-syntax while keeping the document hierarchy. Markdown export is available from
-the note controls; the desktop app can write into a local Obsidian vault.
+syntax while keeping the document hierarchy. Click Export in the editor toolbar to download Markdown without an account; the desktop app can write into a local Obsidian vault.
 
 On export, note identifiers support repeat exports. Review the overwrite option
 before replacing edits made in the destination. This is not live two-way sync.
@@ -56,3 +56,17 @@ The repository has local HTTP APIs for application operations. It does not ship
 an MCP server, an Obsidian plugin, a Notion browser extension, a Word add-in or a
 Google Docs integration. Import/export support should not be read as those claims.
 The API assumes a trusted local environment; see [SECURITY.md](../SECURITY.md).
+
+## Voice services
+
+Select the provider in Settings under Voice service:
+
+| Provider | Requirements | Processing |
+|---|---|---|
+| Whisper | A running whisper.cpp server | Self-hosted transcription |
+| AssemblyAI | An API key and a US or EU region | Audio upload and a polled batch job |
+| Speechmatics | An API key and a US or EU region | A polled batch job using the enhanced model |
+
+`ASR_POLL_TIMEOUT_S` limits hosted job polling; its default is 1,800 seconds.
+The connection test contacts the selected provider without uploading audio.
+Hosted transcription sends the selected recording to that provider.

@@ -4,50 +4,56 @@
 
 # MEMOKET NOTE
 
-**Turn weeks of notes into a draft you can trace back to its sources.**
+**A writing agent that remembers your work.**
 
-An **agent-native writing workspace** with long-term memory and reviewable edits.
+An **agent-native writing workspace** that brings past notes, decisions and sources
+into your next draft. Start with the notes you already have, then take your work
+back to the tools you use.
+
 A personal open-source project built on the
 [Memoket KITE memory engine](https://github.com/memoket/memoket-kite).
 
-Meeting notes, research and project decisions accumulate across documents.
-Your next report should be able to use that material without making you paste
-all the background into another chat. MEMOKET NOTE keeps the draft, its task,
-source material and writing agent in one workspace.
+[![Import notes, recall lasting memory, review an agent-written draft and export it](docs/media/writing-workflow.gif)](docs/media/agent-native-writing-workspace.mp4)
 
-![A weekly draft beside persistent source materials and related memory](docs/media/screenshots/writing-with-memory.png)
-
-[Actual UI tour](docs/media/workspace-ui-tour.mp4) ·
+[Watch the real workflow](docs/media/agent-native-writing-workspace.mp4) ·
 [Try it locally](#development-setup) ·
-[Connect your existing tools](#connect-your-existing-writing-tools) ·
-[How the agent works](#why-agent-native) ·
+[Bring your notes](#bring-your-notes-keep-your-workflow) ·
+[Why agent-native?](#why-agent-native) ·
 [Architecture](docs/architecture.md)
 
-## A report that remembers the work behind it
+## Bring yesterday's work into today's draft
 
-Imagine a pilot described in three notes written weeks apart: the original goal,
-a later decision and the latest field observations. You need a weekly update,
-with the current plan, a blocker and what happens next.
+You have a kickoff note, an accessibility decision and last week's rehearsal
+results. Now you need a weekly update. Import the notes once, keep their evidence
+in memory, and let the writing agent work from that history.
 
-1. **Bring in the material.** Import notes, documents or recordings, or add facts
-   manually. Keep source evidence attached to what you remember.
-2. **Set the writing task.** Choose a template or define the goal, audience and
-   completion criteria. The task stays with the note.
-3. **Use earlier knowledge.** Retrieve related facts as you write, inspect their
-   original words and collect the evidence in the Materials tray.
-4. **Write and review.** Continue a passage or start a multi-round workflow.
-   Review the changes and their sources before keeping or exporting the draft.
+| Step | What you do | What carries forward |
+|---|---|---|
+| **Import** | Bring Markdown, an Obsidian vault, Notion pages or Apple Notes on macOS | Existing notes and supported source dates |
+| **Long-term memory** | Extract knowledge, then reopen the workspace later | Local KITE facts with dated original evidence |
+| **Write and review** | Give the agent a goal, inspect its sources and edit the draft | A writing task, source links and reviewable changes |
+| **Export** | Download Markdown or write to a connected destination | Your draft, ready for the next part of your workflow |
 
-The example below shows **actual application screens**, using invented Harbor
-notes and manually entered facts. The tour is an edited sequence of actual screenshots showing navigation, a
-source quotation and writing templates. It does not show a live model run.
+![A reviewed Maple draft with source links and its selected memory materials](docs/media/screenshots/writing-with-memory.png)
 
-[![Actual UI walkthrough: draft, quotation, evidence, templates and export](docs/media/workspace-ui-tour.gif)](docs/media/workspace-ui-tour.mp4)
+### A real run with fictional notes
 
-[Watch the UI tour](docs/media/workspace-ui-tour.mp4) ·
-[English captions](docs/media/workspace-ui-tour.en.vtt) ·
-[Follow the walkthrough](docs/workspace-tour.md) ·
-[Read the narrated architecture introduction](docs/media/agent-native-writing-workspace.md)
+The narrated video follows the [Maple pilot example](examples/maple-pilot.md):
+three invented notes become 14 extracted facts. The facts survive a backend
+restart. GPT-4.1 writes a draft that cites 10 saved facts, and a reviewer removes
+a repeated title and corrects an unsupported timing claim before exporting.
+The Markdown download and a separate Obsidian vault receive the reviewed body.
+
+This is an edited capture of actual application interactions and live model
+output, with sampled screen frames, shortened waits and synthetic English
+narration. Source material is entirely fictional. The recording demonstrates
+Markdown import and local export; Notion and Apple Notes appear as available
+connections without accessing personal accounts. Model output still needs review.
+
+[Watch the demo](docs/media/agent-native-writing-workspace.mp4) ·
+[English captions](docs/media/agent-native-writing-workspace.en.vtt) ·
+[Transcript](docs/media/agent-native-writing-workspace.md) ·
+[Repeat the workflow](docs/workspace-tour.md)
 
 ## Where long-term memory appears
 
@@ -109,7 +115,7 @@ and different completion criteria. You can also define a custom task for one not
 
 ![Writing templates with explicit sourcing, writing, checks and finish rules](docs/media/screenshots/templates-900x600.png)
 
-## Connect your existing writing tools
+## Bring your notes. Keep your workflow.
 
 Start with the notes you already have and export a reviewed draft back into your
 workflow. Connections use files and supported account integrations; the options
@@ -131,16 +137,7 @@ services use your own credentials. The code does not provide an MCP connector,
 an editor extension or automatic live synchronization with every writing tool.
 See [connection setup and limits](docs/connections.md).
 
-![Export controls for Obsidian, Notion and Feishu](docs/media/screenshots/import-connections.png)
-
-## Watch the architecture introduction
-
-[![English narrated introduction](docs/media/agent-native-writing-workspace-poster.png)](docs/media/agent-native-writing-workspace.mp4)
-
-[Watch or download](docs/media/agent-native-writing-workspace.mp4) ·
-[Transcript](docs/media/agent-native-writing-workspace.md) ·
-[English captions](docs/media/agent-native-writing-workspace.en.vtt).
-This separate video uses narrated concept scenes to explain the architecture.
+![Download Markdown without an account or export to a connected writing tool](docs/media/screenshots/import-connections.png)
 
 ## Relationship to memoket-kite and Memoket
 
@@ -166,18 +163,6 @@ The default interface language is English. Notes and settings are stored locally
 AI features send relevant content to the model or transcription service you
 configure. Choose local services when content must stay on your machine or
 network. Hosted services require your own accounts and may incur usage charges.
-
-## Features
-
-- A note tree with linked clones, tabs, split panes, history, backlinks and Markdown export.
-- An editor with an outline, tracked revisions, inline citations and generated blocks.
-- 104 writing templates across 12 categories, searchable by name and description.
-- Writing workflows that retrieve sources, draft, check requirements and revise.
-- Batch import for PDF, DOCX, text, Markdown and audio, with progress and cancellation.
-- Knowledge search, source tracing, a topic map, entities, facts and a timeline.
-- Local Whisper transcription and hosted AssemblyAI or Speechmatics transcription.
-- Model presets for local services and hosted providers, with credentials per provider.
-- Reusable writing skills, automatic database backups and a desktop log viewer.
 
 ## Development setup
 
@@ -214,20 +199,6 @@ credentials. Local providers need a running OpenAI-compatible server. Environmen
 variables provide deployment defaults; settings saved in the application take
 precedence. An optional judge model can be configured separately.
 
-## Voice service
-
-Select the provider in Settings under Voice service:
-
-| Provider | Requirements | Processing |
-|---|---|---|
-| Whisper | A running whisper.cpp server | Self-hosted transcription |
-| AssemblyAI | An API key and a US or EU region | Audio upload and a polled batch job |
-| Speechmatics | An API key and a US or EU region | A polled batch job using the enhanced model |
-
-`ASR_POLL_TIMEOUT_S` limits hosted job polling; its default is 1,800 seconds.
-The connection test contacts the selected provider without uploading audio.
-Hosted transcription sends the selected recording to that provider.
-
 ## Desktop development and packaging
 
 Keep the Vite development server running, then start Electron:
@@ -253,19 +224,10 @@ User data is stored outside the application bundle.
 
 ## Architecture
 
-| Directory | Responsibility |
-|---|---|
-| `frontend/src/components/` | React interface components |
-| `frontend/src/editor/` | Editor behavior, templates and text transformations |
-| `frontend/src/util/` | Frontend utilities and shared UI contracts |
-| `backend/app/routers/` | FastAPI routes and streamed events |
-| `backend/app/harness/` | Writing loops, tools, quality checks and skills |
-| `backend/app/database/` | SQLite persistence, knowledge search and KITE integration |
-| `backend/app/editor/` | Backend editor operations |
-| `backend/app/util/` | Configuration and provider clients |
-| `desktop/src/` | Electron windows, menus, permissions and backend lifecycle |
-| `shared/` | Cases that verify frontend/backend behavior matches |
-| `docs/` | Architecture, interface conventions and contributor documentation |
+A React and CodeMirror editor runs over a FastAPI backend, with KITE for local
+memory and an Electron desktop shell. The [architecture guide](docs/architecture.md)
+explains the modules, writing tools and harness loop. The running backend exposes
+request schemas at `/docs`.
 
 Interactive writing paths use deterministic retrieval. Model-based planning is
 available on the explicit knowledge question path. Writing workflows share a loop
@@ -273,36 +235,6 @@ and express their differences through mode configuration and checks.
 
 Design references: [architecture](docs/architecture.md),
 [UI conventions](docs/UI_SPEC.md), and [shared cases](shared/README.md).
-
-## Selected API endpoints
-
-Use the backend's `/docs` page for request schemas and the complete API.
-
-| Endpoint | Purpose |
-|---|---|
-| `GET /api/memory/topics` | Knowledge topics |
-| `GET /api/memory/entities` | Entities |
-| `GET /api/memory/facts` | Filtered, paginated facts |
-| `GET /api/memory/facts/{id}/sources` | Source evidence for a fact |
-| `GET /api/memory/timeline` | Knowledge timeline |
-| `POST /api/ingest/text` | Import text |
-| `POST /api/ingest/audio` | Import and transcribe audio |
-| `POST /api/ingest/transcribe` | Transcribe without importing |
-| `POST /api/ingest/batch` | Import multiple files |
-| `GET /api/ingest/jobs` | List import jobs |
-| `GET /api/ingest/jobs/{id}` | Import job status |
-| `GET /api/ingest/jobs/{id}/events` | Stream import progress |
-| `POST /api/ingest/jobs/{id}/cancel` | Cancel pending work |
-| `POST /api/note-harness/run` | Stream a note-writing workflow |
-| `POST /api/writing-plan/start` | Create a multi-note writing plan |
-| `POST /api/writing-plan/run` | Run a writing plan |
-| `GET /api/harness/paused` | List paused workflows |
-| `POST /api/harness/{id}/resume` | Resume a workflow |
-| `POST /api/compose/block` | Generate an editor block |
-
-The `X-User-Id` header selects a user's codebook; it is not authentication.
-See [SECURITY.md](SECURITY.md) before exposing
-the API beyond a trusted local environment.
 
 ## Current scope
 
@@ -331,7 +263,8 @@ cd ../desktop
 npm run build
 ```
 
-Normal tests use stubs instead of live model calls. Frontend test commands give
+Automated tests use stubs instead of live model calls. The separately recorded
+Maple workflow uses a real configured model. Frontend test commands give
 backend subprocesses disposable data directories. Backend fixtures isolate database
 writes. The source distribution excludes private corpora, archived research evidence and
 screenshot-driving scripts. Test results are not live-model quality benchmarks.
