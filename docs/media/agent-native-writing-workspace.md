@@ -1,6 +1,6 @@
-# Turn scattered notes into your next draft.
+# Writing with long-term memory: workflow video
 
-[Download the narrated MP4](agent-native-writing-workspace.mp4?raw=1) · [Captions](agent-native-writing-workspace.en.vtt) · [Inline preview](writing-workflow.gif)
+[Watch or download the narrated MP4](agent-native-writing-workspace.mp4?raw=1) · [Captions](agent-native-writing-workspace.en.vtt)
 
 Real application interactions and live GPT-4.1 output with fictional Maple sources. Captures are sampled, waits are shortened, and some views are cropped for readability. English narration is synthetic. UI interactions are automated to demonstrate the workflow and review controls. This is an edited demonstration, not an uninterrupted screen recording. No private recordings or personal Notion/Apple Notes accounts are accessed. Image generation is shown as a menu option; the demonstrated figure action is data visualization.
 

@@ -67,7 +67,7 @@ validated chart artifacts without asking the model to recopy their syntax.
 Bar-chart axes include zero, including when values are negative.
 
 The revised video is approximately 119 seconds with 33 English caption cues.
-The README embeds a 39-second silent preview directly. These are edited captures;
+The README links to the video through a static application screenshot. These are edited captures;
 UI interactions are automated to demonstrate the workflow and review steps.
 The image-generation feature appears as a menu option; the demonstrated figure
 operation is data visualization.
@@ -95,7 +95,7 @@ Layout and interaction checks cover:
 - Import at 1280 × 720, 900 × 600 and 375 × 600.
 - All nine Engineering template previews at 900 × 600, 720 × 612 and 375 × 600.
 - Memoket import at 900 × 600 and 720 × 615, including wrapped controls.
-- README at 1040 × 900 and 390 × 844: all images load, the mobile diagram is selected and the demo button scrolls to the inline animation.
+- The original README layout was checked at 1040 × 900 and 390 × 844. Its animated preview has since been replaced by a static screenshot linking to the MP4; the demo button leads to that video section.
 - The visible Export button, Markdown download and local vault export.
 - Clickable imported-source citations, dated original evidence and backlinks.
 

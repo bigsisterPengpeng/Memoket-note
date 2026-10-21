@@ -2,14 +2,16 @@
 
 `workflow.svg` is a static overview with three readable stages: existing sources,
 writing in NOTE, and reviewed output. It identifies inline AI actions, KITE memory
-and the agent harness inside the workspace. `workflow-mobile.svg` stacks the same
-story vertically. The diagram is explanatory, not a screenshot or an assertion of
+and edit review inside the workspace. Both versions lead with "Open-source Cursor
+for writing, with long-term memory." `workflow-mobile.svg` stacks the same story
+vertically. The diagram is explanatory, not a screenshot or an assertion of
 universal live synchronization. Connection limitations are documented in
 [the connection guide](../../connections.md).
 
-The real demonstration is embedded directly as `../writing-workflow.gif`. The
-narrated MP4 is an explicit download, because GitHub's repository file viewer may
-not play it. The transcript records the use of fictional data, real model output,
+The real demonstration uses a static application screenshot linking to the
+narrated MP4. The README loads no animated preview or video until the reader
+chooses the video link. A browser may play or download the MP4. The transcript
+records the use of fictional data, real model output,
 sampled application captures, shortened waits and synthetic English narration.
 
 `artwork.html` and `artwork.css` frame fictional Maple screenshots for the memory
@@ -24,3 +26,7 @@ and agent panels. Serve the repository over HTTP and open
 Connection diagrams and local link labels retain editable SVG sources. Memoket
 names and marks belong to their owners; see [third-party notices](../../third-party-notices.md).
 Fonts use the rendering system's installed typefaces; font files are not distributed.
+
+`button-star.svg` is the GitHub Star invitation below the README introduction.
+It reads "Like the idea? Help it grow." and links to this repository, where
+readers can choose to star the project.

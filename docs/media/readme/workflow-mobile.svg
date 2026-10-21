@@ -1,32 +1,35 @@
 <?xml version="1.0" ?>
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1570" viewBox="0 0 960 1570" role="img" aria-labelledby="title desc">
-  <title id="title">MEMOKET NOTE — Turn scattered notes into your next draft.</title>
-  <desc id="desc">Bring existing notes in. Use inline AI, long-term memory and an agent harness. Review and export the draft.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1650" viewBox="0 0 960 1650" role="img" aria-labelledby="title desc">
+  <title id="title">MEMOKET NOTE: Open-source Cursor for writing, with long-term memory.</title>
+  <desc id="desc">An AI writing workspace with local knowledge and your choice of model. Agents work inside your document, recall notes and source evidence, and propose changes you can review, accept or undo.</desc>
   <style>text{font-family:Arial,Helvetica,sans-serif;fill:#f6f3ed}.muted{fill:#b7b3aa}.gold{fill:#e2c38a}.ink{fill:#1c1c21}.violet{fill:#bdb2ff}.line{stroke:#57534d;stroke-width:2;fill:none}.card{fill:#202026;stroke:#47434a;stroke-width:2}</style>
-  <rect width="960" height="1570" rx="28" fill="#141417"/>
+  <rect width="960" height="1650" rx="28" fill="#141417"/>
   <text x="44" y="66" font-size="30" class="gold" font-weight="700">MEMOKET NOTE</text>
-  <text x="44" y="154" font-size="66" class="" font-weight="700">Turn scattered notes</text>
-  <text x="44" y="230" font-size="66" font-weight="700">into your next draft.</text>
-  <text x="44" y="284" font-size="32" class="muted" font-weight="400">An agent-native writing workspace.</text>
+  <text x="44" y="154" font-size="66" font-weight="700">Open-source Cursor</text>
+  <text x="44" y="230" font-size="66" font-weight="700">for writing, with</text>
+  <text x="44" y="306" font-size="66" font-weight="700">long-term memory.</text>
+  <text x="44" y="362" font-size="32" class="muted">Your notes. Your model. Your workspace.</text>
+  <g transform="translate(0 80)">
   <rect x="44" y="345" width="872" height="196" rx="22" class="card"/>
   <text x="76" y="396" font-size="30" class="gold" font-weight="700">1. BRING YOUR NOTES</text>
   <text x="76" y="452" font-size="38" class="" font-weight="700">Markdown · Obsidian · Notion</text>
   <text x="76" y="502" font-size="34" class="muted" font-weight="400">Apple Notes · Feishu · Memoket</text>
   <path d="M480 560v46m-13-13 13 13 13-13" stroke="#e2c38a" stroke-width="3" fill="none"/>
   <rect x="44" y="628" width="872" height="550" rx="22" class="card"/>
-  <text x="76" y="685" font-size="30" class="gold" font-weight="700">2. WRITE IN ONE PLACE</text>
+  <text x="76" y="685" font-size="30" class="gold" font-weight="700">2. WRITE WITH AN AGENT</text>
   <rect x="68" y="716" width="824" height="127" rx="15" fill="#302b43"/>
-  <text x="92" y="763" font-size="37" class="" font-weight="700">One-click AI, in your document</text>
-  <text x="92" y="814" font-size="33" class="muted" font-weight="400">Polish · Rewrite · Figures · Tables</text>
+  <text x="92" y="763" font-size="37" font-weight="700">Agents work inside your document</text>
+  <text x="92" y="814" font-size="33" class="muted">Plan · Write · Check · Revise</text>
   <rect x="68" y="864" width="824" height="127" rx="15" fill="#252b2c"/>
-  <text x="92" y="911" font-size="37" class="" font-weight="700">Past notes, beside your draft</text>
-  <text x="92" y="962" font-size="33" class="muted" font-weight="400">KITE recalls dates &amp; source evidence</text>
+  <text x="92" y="911" font-size="37" font-weight="700">Memory across notes and sessions</text>
+  <text x="92" y="962" font-size="33" class="muted">Dated facts, original words and sources</text>
   <rect x="68" y="1012" width="824" height="127" rx="15" fill="#322e26"/>
-  <text x="92" y="1059" font-size="37" class="" font-weight="700">Agent harness, working for you</text>
-  <text x="92" y="1110" font-size="33" class="muted" font-weight="400">Plan → Write → Check → Review</text>
+  <text x="92" y="1059" font-size="37" font-weight="700">Review each change</text>
+  <text x="92" y="1110" font-size="33" class="muted">Accept · Revert · Pause · Recover</text>
   <path d="M480 1197v46m-13-13 13 13 13-13" stroke="#e2c38a" stroke-width="3" fill="none"/>
   <rect x="44" y="1264" width="872" height="250" rx="22" class="card"/>
   <text x="76" y="1319" font-size="30" class="gold" font-weight="700">3. REVIEW &amp; TAKE IT BACK</text>
   <text x="76" y="1382" font-size="36" class="" font-weight="700">Markdown · Obsidian · Notion · Feishu</text>
   <text x="76" y="1456" font-size="40" class="muted" font-weight="400">You review. You decide.</text>
+  </g>
 </svg>

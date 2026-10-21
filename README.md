@@ -1,12 +1,12 @@
 <p align="center">
   <picture>
     <source media="(max-width: 600px)" srcset="docs/media/readme/workflow-mobile.svg">
-    <img src="docs/media/readme/workflow.svg" width="100%" alt="Turn scattered notes into your next draft. Bring Markdown, Obsidian, Notion, Apple Notes, Feishu and Memoket sources in. Use one-click inline AI, KITE memory beside your draft, and an agent harness that plans, writes and checks. Review and export to your workspace.">
+    <img src="docs/media/readme/workflow.svg" width="100%" alt="MEMOKET NOTE: Open-source Cursor for writing, with long-term memory. Agents work inside your document, recall notes and source evidence, and propose changes you can review, accept or undo.">
   </picture>
 </p>
 
 <p align="center">
-  <a href="#see-the-workflow"><img src="docs/media/readme/button-watch.svg" height="36" alt="See the inline workflow demo"></a>
+  <a href="#see-the-workflow"><img src="docs/media/readme/button-watch.svg" height="36" alt="Watch the workflow video"></a>
 &nbsp;
   <a href="#development-setup"><img src="docs/media/readme/button-start.svg" height="36" alt="Run locally"></a>
 &nbsp;
@@ -14,8 +14,13 @@
 </p>
 
 <p align="center">
-  <strong>One-click AI actions. Memory beside your draft. An agent that plans, writes and checks.</strong><br>
-An agent-native writing workspace. A personal open-source project built on <a href="https://github.com/memoket/memoket-kite">Memoket KITE</a>.
+  <strong>Write and revise with an agent that recalls your notes and source evidence.</strong><br>
+Keep your knowledge locally, choose your model, and review changes inside the document.<br>
+Built on <a href="https://github.com/memoket/memoket-kite">Memoket KITE</a>.
+</p>
+
+<p align="center">
+  <a href="https://github.com/bigsisterPengpeng/Memoket-note"><img src="docs/media/readme/button-star.svg" width="390" alt="Like the idea? Help it grow. Star Memoket NOTE on GitHub."></a>
 </p>
 
 <p align="center">
@@ -23,6 +28,7 @@ An agent-native writing workspace. A personal open-source project built on <a hr
   <a href="#memory-without-the-detour">Memory</a> &nbsp; / &nbsp;
   <a href="#a-task-a-harness-a-result-you-can-review">The harness</a> &nbsp; / &nbsp;
   <a href="#bring-your-notes-keep-your-workflow">Connections</a> &nbsp; / &nbsp;
+  <a href="#future-work">Future work</a> &nbsp; / &nbsp;
   <a href="CONTRIBUTING.md">Contribute</a>
 </p>
 
@@ -42,13 +48,13 @@ That is what *agent-native* means here: the document carries the work; the agent
 
 ## See the workflow
 
-![Real application workflow: import, saved memory, inline AI actions, agent writing, review and export](docs/media/writing-workflow.gif)
+[![Watch the workflow video: an actual draft with recalled sources and selected task materials](docs/media/screenshots/writing-with-memory.png)](docs/media/agent-native-writing-workspace.mp4?raw=1)
 
-**Bring it in → recall what matters → act inside the document → review → take it back.** The demo uses fictional Maple project notes, real application interactions and live model output. It shows memory surviving a restart, right-click Polish, inline chart creation, a checked writing run and export.
+**[Watch the video (2 min)](docs/media/agent-native-writing-workspace.mp4?raw=1).** See saved knowledge survive a restart, inform a writing task and open as original evidence for review. The demo also shows inline edits, chart creation and export, using fictional Maple project notes and live model output.
 
 [Download the narrated MP4](docs/media/agent-native-writing-workspace.mp4?raw=1) · [English captions](docs/media/agent-native-writing-workspace.en.vtt) · [Transcript and recording notes](docs/media/agent-native-writing-workspace.md) · [Repeat the example](docs/workspace-tour.md)
 
-The animation plays directly in this README. The MP4 link downloads the video for a local player; GitHub's repository file viewer may not play it. Model waits are shortened and frames are sampled. All materials are fictional. English narration is synthetic. Human review is part of the workflow.
+Click the static preview to open or download the MP4; the video loads when you choose to watch. Model waits are shortened and frames are sampled. All materials are fictional. English narration is synthetic. Human review is part of the workflow.
 
 ### Small edit or complete writing task?
 
@@ -227,6 +233,20 @@ Frontend checks cover types, lint, component/editor behavior and shared frontend
 See [CONTRIBUTING.md](CONTRIBUTING.md) for change conventions and [SECURITY.md](SECURITY.md) for deployment and reporting guidance.
 
 </details>
+
+## Future work
+
+Areas for further development:
+
+- [ ] **Easier local setup.** Guided model configuration, simpler launch commands and packaged releases for Windows and Linux.
+- [ ] **Validated account connections.** Test Notion, Feishu, Apple Notes and Memoket workflows against real accounts, with clear platform support and setup guides.
+- [ ] **Writing and memory evaluations.** Expand repeatable tasks that measure retrieval relevance, citation correctness and the quality of multi-round revisions.
+- [ ] **Richer document workflows.** Develop research, data analysis and presentation workflows beyond the current Markdown slides and PDF export.
+- [ ] **Release automation and platform checks.** Enable CI and expand validation of native dark mode, accessibility and platform-specific behavior.
+
+Have a writing workflow you want supported? [Open an issue](https://github.com/bigsisterPengpeng/Memoket-note/issues) or [contribute](CONTRIBUTING.md).
+
+**Want to see what comes next? [Give us a star.](https://github.com/bigsisterPengpeng/Memoket-note)**
 
 ## Built on KITE. Made as a personal project.
 
