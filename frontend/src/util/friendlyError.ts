@@ -17,9 +17,9 @@ export function friendlyError(e: unknown): string {
   if (/^Failed to fetch$|NetworkError when attempting|Load failed|net::ERR_/i.test(msg)) {
     return t('Cannot reach the app backend (the backend process is not running, or just restarted) — wait a few seconds and retry; if that fails, restart the app')
   }
-  // After the status code there is already a Chinese sentence (made human by the backend); the status code means nothing to users, keep only the sentence
+  // Remove HTTP status prefixes before showing a human sentence. CJK provider text must
+  // still pass through the same authentication, rate-limit and network classification.
   const body = msg.replace(/^\d{3}\s+(?=\S)/, '')
-  if (/[\u4e00-\u9fff]/.test(body)) return body
   // Voice-service sentences from `asr.describe_error` are already written for the user; keep them
   // as-is so their "401" / "timed out" are not re-read as LLM errors below.
   if (/\bvoice service\b|AssemblyAI|Speechmatics/i.test(body)) return body

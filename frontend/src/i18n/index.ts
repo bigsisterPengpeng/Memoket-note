@@ -18,7 +18,7 @@ export type Lang = 'en' | 'zh'
 export const LANG_KEY = 'memoket-note-lang'
 export const LANGS: { id: Lang; label: string }[] = [
   { id: 'en', label: 'English' },
-  { id: 'zh', label: ZH['Chinese'] ?? 'Chinese' },
+  { id: 'zh', label: 'Chinese' },
 ]
 
 function detect(): Lang {

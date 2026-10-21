@@ -73,7 +73,7 @@ import { sectionEnd } from './util/sectionEnd'
 import { minimalChange } from './editor/minimalChange'
 import { undoRound } from './editor/undoRound'
 import { groupRuns, type RunRound } from './util/runRounds'
-import { changesTabHasContent, reopenedLayersNotice, restoreLayers, sameLayers, serializeLayers, type SavedLayer } from './util/changeLayers'
+import { changesTabHasContent, layerLabel, reopenedLayersNotice, restoreLayers, sameLayers, serializeLayers, type SavedLayer } from './util/changeLayers'
 import { PLAN_EMPTY_HINT, planTabContent } from './util/planTab'
 
 import { roundsFor, writeRoundsIn, type RoundsByNote } from './util/roundsByNote'
@@ -1587,7 +1587,7 @@ export default function App() {
         // next open becomes "the layer I kept is gone" — the same bug this batch is fixing.
         const gone = [...r.evicted, ...r.rejected]
         if (gone.length) {
-          toast(t('{n} change layers could not be kept for next time: {label} — {why}{tail}', { n: gone.length, label: gone[0].label || t('this layer'), why: gone[0].why,
+          toast(t('{n} change layers could not be kept for next time: {label} — {why}{tail}', { n: gone.length, label: layerLabel(gone[0].label) || t('this layer'), why: gone[0].why,
             tail: gone.length > 1 ? t(' ({n} more layers were lost too)', { n: gone.length - 1 }) : '' }), 'error')
         }
       void api.getWritingFeedback(id).then((x) => {
@@ -1743,12 +1743,12 @@ export default function App() {
       const next = layerStuckRef.current.map((s) => (s.id === key ? { ...s, why: left.why } : s))
       layerStuckRef.current = next
       setLayerStuck(next)
-      toast(t('“{label}” still has {n} places that don’t match the current text: {why}', { label: entry.label, n: left.why.length, why: left.why.slice(0, 2).join('; ') }), 'error')
+      toast(t('“{label}” still has {n} places that don’t match the current text: {why}', { label: layerLabel(entry.label), n: left.why.length, why: left.why.slice(0, 2).join('; ') }), 'error')
     } else {
       const next = layerStuckRef.current.filter((s) => s.id !== key)
       layerStuckRef.current = next
       setLayerStuck(next)
-      toast(t('“{label}” was recomputed against the current text and is back in Changes', { label: entry.label }))
+      toast(t('“{label}” was recomputed against the current text and is back in Changes', { label: layerLabel(entry.label) }))
     }
     void flushChangeLayers()
   }, [flushChangeLayers])
@@ -1761,7 +1761,7 @@ export default function App() {
     setLayerStuck(next)
     setLayersTick((n) => n + 1)
     void flushChangeLayers()
-    if (entry) toast(t('Dropped the layer “{label}” — the text was not touched', { label: entry.label }))
+    if (entry) toast(t('Dropped the layer “{label}” — the text was not touched', { label: layerLabel(entry.label) }))
   }, [flushChangeLayers])
 
   // Cmd/Ctrl+S saves explicitly instead of falling through to the browser's

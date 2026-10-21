@@ -7,7 +7,7 @@ export default function LanguageRow() {
     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
       <label htmlFor="ui-lang" style={{ minWidth: 96 }}>{t('Interface language')}</label>
       <select id="ui-lang" aria-label={t('Interface language')} value={lang} onChange={(e) => setLang(e.target.value as typeof lang)}>
-        {LANGS.map((l) => <option key={l.id} value={l.id}>{l.label}</option>)}
+        {LANGS.map((l) => <option key={l.id} value={l.id}>{t(l.label)}</option>)}
       </select>
     </div>
   )

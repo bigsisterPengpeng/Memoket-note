@@ -542,7 +542,7 @@ export function makeRecorder(userData: string, log: (s: string) => void,
     pause(until?: number) {
       pauseUntil = until ?? 0
       state = 'paused'
-      log(until ? `[journey] paused until ${new Date(until).toLocaleTimeString()}\n` : '[journey] paused\n')
+      log(until ? `[journey] paused until ${new Date(until).toISOString()}\n` : '[journey] paused\n')
     },
     resume() {
       if (!timer) return

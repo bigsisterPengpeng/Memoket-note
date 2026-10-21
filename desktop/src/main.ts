@@ -579,9 +579,8 @@ function setupJourneyIpc() {
 }
 
 
-// File contract: the walkthrough steps (frontend/scripts/walkthrough/steps) write this exact
-// Chinese sentence into _fake.json: "I know this is not real screen activity". Escaped so the
-// source has no Han characters; the runtime value is unchanged.
+// Legacy _fake.json acknowledgement: "I know this is not real screen activity" in Chinese.
+// Keep accepting the saved marker without printing localized contract data into diagnostics.
 const FAKE_OK = '\u6211\u77e5\u9053\u8fd9\u4e0d\u662f\u771f\u7684\u5c4f\u5e55\u6d3b\u52a8'
 let fakeCapture = false
 
@@ -592,7 +591,7 @@ function readFakeSource(userData: string): { src: CaptureSource; idleSec: number
   } catch { return null }                      // no such file = the normal case, no noise
   const spec = j as Partial<FakeSpec> & { fake?: unknown; idleSec?: unknown }
   if (spec?.fake !== FAKE_OK) {
-    remember(`[journey] journey/_fake.json exists but does not contain the acknowledgement sentence (fake: "${FAKE_OK}") - treating it as absent\n`)
+    remember('[journey] journey/_fake.json has no valid fake-capture acknowledgement - treating it as absent\n')
     return null
   }
   if (!Array.isArray(spec.windows) || !spec.windows.length) {

@@ -4,10 +4,11 @@ import type { EditorView } from '@codemirror/view'
 import { acceptLayer, dropLayer, layersOf, settledOf, turnLayerOff, turnLayerOn } from '../editor/roundDiff'
 import { runTitle, type RunHistory, type RunRound } from '../util/runRounds'
 import { toast } from '../toast'
-import { t } from '../i18n'
+import { getLang, t } from '../i18n'
+import { layerLabel } from '../util/changeLayers'
 import type { WritingFeedback } from '../api'
 
-const when = (t: number | string) => new Date(t).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+const when = (at: number | string) => new Date(at).toLocaleTimeString(getLang() === 'zh' ? 'zh-CN' : 'en-US', { hour: '2-digit', minute: '2-digit' })
 
 export default function ChangeLayersPanel({ viewRef, tick, runs = [], stuck = [], onRecomputeStuck, onDropStuck,
                                             onRestoreBefore, onUndoRound, busy = false, feedback }: {
@@ -34,7 +35,7 @@ export default function ChangeLayersPanel({ viewRef, tick, runs = [], stuck = []
   const settledOnly = settled.filter((x) => !layers.some((l) => l.id === x.id))
   const settledLines = settledOnly.map((x) => (
     <p key={x.id} className="muted layer-settled" style={{ fontSize: 'var(--t-xs)', margin: 0 }}>
-      {t(x.label)} · {when(x.at)} · {t('Settled: {accepted} accepted, {reverted} reverted', { accepted: x.accepted, reverted: x.reverted })}
+      {layerLabel(x.label)} · {when(x.at)} · {t('Settled: {accepted} accepted, {reverted} reverted', { accepted: x.accepted, reverted: x.reverted })}
     </p>
   ))
   const toggle = (id: number, off: boolean) => {
@@ -57,7 +58,7 @@ export default function ChangeLayersPanel({ viewRef, tick, runs = [], stuck = []
       {stuck.map((s) => (
         <div key={s.id} className="card layer-card stuck" style={{ padding: '6px 10px' }}>
           <div className="row" style={{ gap: 8, alignItems: 'center' }}>
-            <strong style={{ fontSize: 'var(--t-md)' }}>{t(s.label)}</strong>
+            <strong style={{ fontSize: 'var(--t-md)' }}>{layerLabel(s.label)}</strong>
             <span className="muted" style={{ fontSize: 'var(--t-xs)' }}>{t('{n} mismatches: {why}', { n: s.why.length, why: s.why.slice(0, 2).join(t('; ')) })}</span>
             <span style={{ marginInlineStart: 'auto', display: 'flex', gap: 4 }}>
               <button style={{ fontSize: 'var(--t-sm)', padding: '2px 8px' }}
@@ -108,7 +109,7 @@ export default function ChangeLayersPanel({ viewRef, tick, runs = [], stuck = []
             <div key={l.id} className={'card layer-card' + (l.off ? ' off' : '')} style={{ padding: '6px 10px' }}>
               <div className="row" style={{ gap: 8, alignItems: 'center' }}>
                 <button className={'switch' + (l.off ? '' : ' on')} role="switch" aria-checked={!l.off} title={l.off ? t('Turn this layer on: write its edits back') : t('Turn this layer off: restore each place to before the edit; can be turned on again anytime')} onClick={() => toggle(l.id, l.off)}><span /></button>
-                <strong style={{ fontSize: 'var(--t-md)' }}>{t(l.label)} {layers.filter((x) => x.label === l.label).length > 1 ? '①②③④⑤⑥⑦⑧⑨'[layers.filter((x, j) => x.label === l.label && j <= i).length - 1] ?? '' : ''}</strong>
+                <strong style={{ fontSize: 'var(--t-md)' }}>{layerLabel(l.label)} {layers.filter((x) => x.label === l.label).length > 1 ? '①②③④⑤⑥⑦⑧⑨'[layers.filter((x, j) => x.label === l.label && j <= i).length - 1] ?? '' : ''}</strong>
                 <span className="muted" style={{ fontSize: 'var(--t-xs)' }}>{when(l.at)} · {t('{n} places', { n: l.count })}{(() => { const x = settledOn(l.id); return x ? ` · ${t('settled: {accepted} accepted / {reverted} reverted', { accepted: x.accepted, reverted: x.reverted })}` : '' })()}</span>
                 <span style={{ marginInlineStart: 'auto', display: 'flex', gap: 4 }}>
                   {!l.off && <button style={{ fontSize: 'var(--t-sm)', padding: '2px 8px' }} title={t('Keep everything this layer changed (finalize)')} onClick={() => view.dispatch({ effects: acceptLayer.of(l.id) })}>{t('Accept')}</button>}

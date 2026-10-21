@@ -66,17 +66,14 @@ export function appendedTo(savedTag: string, doc: string): boolean {
  *
  *  **Unrecognized ones become `other`, not dropped** -- dropping would be another silent "Accept". */
 export function layerSource(label: string): string {
-  const raw = (label ?? '').trim()
-  // Layers stored before the English source text (and labels made in the Chinese UI) carry the Chinese label: map it back to its English key
-  // Persisted labels remain valid even if the current UI dictionary changes wording.
-  const s = raw === '\u683c\u5f0f\u5316' ? 'Format' : (LEGACY_LABELS.get(raw) ?? raw)
+  const s = sourceLayerLabel(label).trim()
   if (s.startsWith('Undo round') || s.startsWith('\u64a4\u6389\u7b2c')) return 'undo_round'
   if (s === 'Smart Continue' || s === 'Polish pass') return 'round'
   if (s === 'Continue') return 'continue'
   if (s === 'Rewrite') return 'rewrite'
   if (s === 'Polish') return 'polish'
   if (s === 'Expand context' || s === 'Expand') return 'expand'
-  if (s === 'Format') return 'format'
+  if (s === 'Format' || s === 'Formatting') return 'format'
   if (s === 'Smart layout') return 'restructure'
   if (s === 'Voice input' || s === 'Insert audio') return 'voice'
   if (s === 'Image to table') return 'table'
@@ -90,11 +87,27 @@ export function layerSource(label: string): string {
 export const BLOCK_LABELS = new Set(
   SLASH_ITEMS.filter((i) => i.group === 'AI').map((i) => i.label))
 
-/** Chinese label -> English key for every label `layerSource` recognizes (from the zh dictionary, so the two cannot drift). */
+/** Chinese action label -> English key (from the zh dictionary, so the two cannot drift). */
 const LEGACY_LABELS = new Map(
-  ['Smart Continue', 'Polish pass', 'Continue', 'Rewrite', 'Polish', 'Expand context', 'Expand', 'Format', 'Smart layout',
-    'Voice input', 'Insert audio', 'Image to table', ...BLOCK_LABELS]
+  ['Smart Continue', 'Polish pass', 'Continue', 'Rewrite', 'Polish', 'Expand context', 'Expand', 'Format', 'Formatting', 'Smart layout',
+    'Voice input', 'Insert audio', 'Image to table', 'Custom prompt', 'Revision', ...BLOCK_LABELS]
     .filter((k) => ZH[k]).map((k) => [ZH[k], k] as const))
+
+/** Normalize only app-owned action labels, never note text or custom labels. */
+function sourceLayerLabel(label: string): string {
+  const raw = (label ?? '').trim()
+  if (raw === '\u683c\u5f0f\u5316') return 'Format'
+  const undo = /^\u64a4\u6389\u7b2c\s*(\d+)\s*\u8f6e$/.exec(raw)
+  if (undo) return `Undo round ${undo[1]}`
+  return LEGACY_LABELS.get(raw) ?? (label ?? '')
+}
+
+/** Stored labels follow the current interface language, including old Chinese layers. */
+export function layerLabel(label: string): string {
+  const source = sourceLayerLabel(label)
+  const undo = /^Undo round (\d+)$/.exec(source)
+  return undo ? t('Undo round {n}', { n: undo[1] }) : t(source)
+}
 
 function ctxBefore(doc: string, pos: number): string {
   return doc.slice(Math.max(0, pos - CONTEXT), pos)
@@ -136,7 +149,7 @@ export function serializeLayers(state: EditorState): SavedLayer[] {
       // `key` is fixed when the layer is born and stable across restarts; falling back to `l${id}` is only a safety net (a module-level counter
       // as primary key adds a row on every save); today all three layer-creating paths fill in `key`.
       id: l.key ?? `l${l.id}`,
-      label: l.label,
+      label: sourceLayerLabel(l.label),
       source: layerSource(l.label),
       seq: i,
       // Whole layer on / off: the whole layer is off only when every change is off, word for word the same rule as `layersOf`
@@ -205,7 +218,8 @@ export function restoreLayers(saved: SavedLayer[], doc: string): Restored {
   const out: Restored = { layers: [], hunks: [], settled: [], conflicts: [], stuck: [] }
   for (const l of saved ?? []) {
     const at = Date.parse(l.at)
-    out.layers.push({ key: l.id, label: l.label, at: Number.isFinite(at) ? at : Date.now() })
+    const label = sourceLayerLabel(l.label)
+    out.layers.push({ key: l.id, label, at: Number.isFinite(at) ? at : Date.now() })
     // The body is untouched, or **only appended to at the end** (`appendedTo`): existing coordinates are all still accurate.
 
     const coordsValid = l.content_tag === tag || appendedTo(l.content_tag, doc)
@@ -221,7 +235,7 @@ export function restoreLayers(saved: SavedLayer[], doc: string): Restored {
         ? { ok: true, from: h.from, to: h.from + want.length }
         : relocate(doc, h)
       if (!at2.ok) {
-        out.conflicts.push(`${l.label}: ${at2.why}`)
+        out.conflicts.push(`${layerLabel(label)}: ${at2.why}`)
         why.push(at2.why)
         continue
       }
@@ -232,7 +246,7 @@ export function restoreLayers(saved: SavedLayer[], doc: string): Restored {
         soft: h.soft,
       })
     }
-    if (why.length) out.stuck.push({ id: l.id, label: l.label, why })
+    if (why.length) out.stuck.push({ id: l.id, label, why })
   }
   return out
 }

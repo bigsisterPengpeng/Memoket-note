@@ -12,7 +12,7 @@ import JourneyDenyPanel from './JourneyDenyPanel'
 import JourneyRetentionPanel, { sayKeep } from './JourneyRetentionPanel'
 import { toast } from '../toast'
 import Icon from './Icon'
-import { t } from '../i18n'
+import { getLang, t } from '../i18n'
 
 
 
@@ -128,7 +128,7 @@ export function bandCells(segs: JourneySegment[]): Cell[] {
 /** The shell writes with `toISOString()` — **UTC with a Z**. Printing `iso.slice(11,16)` directly
  *  would be off by a whole timezone (8 hours in UTC+8), and times on a timeline can't be off at all. */
 export const hhmm = (iso: string) =>
-  new Date(iso).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false })
+  new Date(iso).toLocaleTimeString(getLang() === 'zh' ? 'zh-CN' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
 
 /** "Not now" just closes this page — **don't lead to the settings page**:
  *  people who don't want it don't owe us a trip through settings. */
