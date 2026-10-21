@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1120" viewBox="0 0 1600 1120" role="img" aria-labelledby="title desc">
+  <title id="title">MEMOKET NOTE: existing notes, one-click AI, memory and an agent harness, then export</title>
+  <desc id="desc">Import Markdown, Obsidian, Notion, Apple Notes, Evernote or Feishu. In one writing workspace, Polish, Rewrite and Continue actions use the document context. KITE recalls current and past notes beside the draft. A writing agent harness plans the task, retrieves evidence, writes, checks and revises within limits. Review the changes and export Markdown or write to Obsidian, Notion or Feishu. This is a workflow illustration with fictional Maple content.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 2L10 6L2 10" fill="none" stroke="#b78129" stroke-width="2" stroke-linejoin="round"/></marker>
+    <marker id="white-arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="6" markerHeight="6" orient="auto"><path d="M2 2L10 6L2 10" fill="none" stroke="#aeb5c0" stroke-width="2" stroke-linejoin="round"/></marker>
+    <style>
+      text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+      .ink{fill:#1c2025}.muted{fill:#59616c}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+      .small{font-size:22px}.body{font-size:27px}.label{font-size:20px;font-weight:600;letter-spacing:1.6px}
+      .focus-ring{fill:none;stroke:#ffb545;stroke-width:5;opacity:0}
+      .phase-actions #actions-focus,.phase-memory #memory-focus,.phase-harness #harness-focus,.phase-export #export-focus{opacity:1}
+    </style>
+  </defs>
+  <rect width="1600" height="1120" rx="20" fill="#f4f1e9"/>
+  <g transform="translate(48 31)" fill="#1c2025">
+    <svg width="35" height="30" viewBox="25 38 110 90"><path d="M114.495 69.97L108.545 85.75L119.765 116.12C120.635 118.47 122.935 120.04 125.505 120.04H132.985L114.485 69.97H114.495Z"/><path d="M104.245 62.47C101.625 62.47 99.2849 64.06 98.3949 66.45L85.1749 101.81L69.4049 40H55.3949L37.3749 110.6H29.9149L27.0049 120.04H41.8049C44.6949 120.04 47.2249 118.13 47.9149 115.4L62.3949 58.67L78.0549 120.04H90.1249L111.645 62.47H104.245Z"/></svg>
+    <text x="47" y="25" font-size="29" font-weight="650">Memoket NOTE</text>
+  </g>
+  <text x="1552" y="55" text-anchor="end" class="label muted">AGENT-NATIVE WRITING WORKSPACE</text>
+  <text x="48" y="130" class="ink" font-size="62" font-weight="650" letter-spacing="-2.2">Your notes. One click. Your next draft.</text>
+  <text x="51" y="177" class="body muted">AI actions, lasting memory and an agent that runs the writing loop, together in your editor.</text>
+
+  <text x="48" y="287" class="label muted">YOUR EXISTING NOTES</text>
+  <g class="body ink">
+    <text x="50" y="362">Markdown</text><text x="50" y="426">Obsidian</text><text x="50" y="490">Notion</text><text x="50" y="554">Apple Notes</text><text x="50" y="618">Evernote</text><text x="50" y="682">Feishu</text>
+  </g>
+  <path d="M224 337H238V681H224M238 509H325" fill="none" stroke="#b78129" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="283" y="481" text-anchor="middle" class="small muted">Import</text>
+
+  <rect x="334" y="228" width="934" height="660" rx="20" fill="#141922"/>
+  <text x="368" y="278" font-size="31" font-weight="650" fill="#f5f2e9">One writing workspace</text>
+  <text x="1234" y="278" text-anchor="end" class="small" fill="#afb7c3">Stay in the document</text>
+  <text x="370" y="323" class="small" fill="#afb7c3">Choose an action. The workspace brings the context.</text>
+  <g id="actions">
+    <rect x="368" y="341" width="168" height="58" rx="10" fill="#ffb545"/>
+    <rect x="549" y="341" width="168" height="58" rx="10" fill="#ffb545"/>
+    <rect x="730" y="341" width="174" height="58" rx="10" fill="#ffb545"/>
+    <rect x="917" y="341" width="317" height="58" rx="10" fill="#ffb545"/>
+    <g font-size="28" font-weight="650" fill="#181d23" text-anchor="middle"><text x="452" y="380">Polish</text><text x="633" y="380">Rewrite</text><text x="817" y="380">Continue</text><text x="1075" y="380">Smart Continue</text></g>
+  </g>
+  <rect id="actions-focus" class="focus-ring" x="357" y="330" width="888" height="80" rx="16"/>
+
+  <rect x="368" y="433" width="292" height="252" rx="14" fill="#fff0cc"/>
+  <text x="389" y="468" class="label" fill="#796029">KITE MEMORY</text>
+  <text x="389" y="514" font-size="26" font-weight="650" class="ink">Current + past notes</text>
+  <text x="389" y="557" class="small muted">Dated facts and evidence</text>
+  <path d="M389 579H638" stroke="#dccca6"/>
+  <text x="389" y="607" class="small ink">Oct 16 · Maple rehearsal</text>
+  <text x="389" y="637" class="small ink">26 of 30 readers</text><text x="389" y="664" class="small ink">completed checkout.</text>
+  <rect id="memory-focus" class="focus-ring" x="358" y="423" width="312" height="272" rx="20"/>
+  <path d="M668 556H731" stroke="#ffb545" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <text x="702" y="500" text-anchor="middle" font-size="20" fill="#e7d1a4">Recall</text>
+  <text x="702" y="526" text-anchor="middle" font-size="20" fill="#e7d1a4">in place</text>
+
+  <rect x="742" y="433" width="492" height="252" rx="14" fill="#fffdfa"/>
+  <text x="765" y="470" class="label muted">YOUR CURRENT DOCUMENT</text>
+  <text x="765" y="518" font-size="32" font-weight="650" class="ink">Maple weekly update</text>
+  <text x="765" y="568" class="body ink">The pilot opens on October 29.</text>
+  <text x="765" y="612" class="body ink">26 of 30 readers completed checkout.</text>
+  <text x="765" y="653" class="small" fill="#866126">Source links stay with the draft.</text>
+
+  <path d="M510 685V718M990 718V689" fill="none" stroke="#aeb5c0" stroke-width="2" marker-end="url(#white-arrow)"/>
+  <text x="528" y="708" font-size="18" fill="#afb7c3">Evidence</text>
+  <text x="1007" y="708" font-size="18" fill="#afb7c3">Edits for review</text>
+  <rect x="368" y="721" width="866" height="134" rx="14" fill="#222a36"/>
+  <text x="389" y="752" class="label" fill="#ffcb78">WRITING AGENT HARNESS</text>
+  <text x="1212" y="752" text-anchor="end" font-size="20" fill="#c2c8d1">Goal, criteria and limits</text>
+  <g font-size="27" font-weight="550" fill="#f5f2e9"><text x="390" y="797">Plan</text><text x="553" y="797">Retrieve</text><text x="785" y="797">Write</text><text x="976" y="797">Check</text></g>
+  <g stroke="#aeb5c0" stroke-width="2" marker-end="url(#white-arrow)"><path d="M468 788H532"/><path d="M678 788H765"/><path d="M869 788H956"/></g>
+  <path d="M1065 786H1175V831H821V810" fill="none" stroke="#ffb545" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="939" y="818" width="159" height="25" fill="#222a36"/>
+  <text x="1018" y="839" text-anchor="middle" font-size="20" fill="#ffcb78">Revise or stop</text>
+  <rect id="harness-focus" class="focus-ring" x="358" y="711" width="886" height="154" rx="20"/>
+
+  <path d="M1276 557H1340" fill="none" stroke="#b78129" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="1309" y="529" text-anchor="middle" class="small muted">Export</text>
+  <text x="1363" y="287" class="label muted">EXPORT BACK</text>
+  <g class="body ink"><text x="1365" y="399">Markdown</text><text x="1365" y="471">Obsidian</text><text x="1365" y="543">Notion</text><text x="1365" y="615">Feishu</text></g>
+  <text x="1365" y="686" class="small muted">Review your draft.</text><text x="1365" y="719" class="small muted">Choose a destination.</text>
+  <rect id="export-focus" class="focus-ring" x="1347" y="346" width="213" height="401" rx="18"/>
+
+  <path d="M48 933H1552" stroke="#d4cfc4"/>
+  <g font-size="29" font-weight="650" class="ink"><text x="48" y="987">01  One action, one button</text><text x="570" y="987">02  Memory beside your draft</text><text x="1097" y="987">03  An autonomous writing loop</text></g>
+  <g font-size="24" class="muted"><text x="48" y="1026">Polish or rewrite in place.</text><text x="48" y="1058">Skip repeated context and chat turns.</text><text x="570" y="1026">Recall current and past notes</text><text x="570" y="1058">without leaving the editor.</text><text x="1097" y="1026">Plan, execute, check and revise.</text><text x="1097" y="1058">Review changes, pause or revert.</text></g>
+  <text x="48" y="1100" font-size="18" class="muted">Workflow illustration · Fictional Maple example · Explicit import/export · Account integrations require setup</text>
+</svg>

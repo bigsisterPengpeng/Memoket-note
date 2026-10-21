@@ -1,8 +1,10 @@
 <p align="center">
-  <a href="docs/media/agent-native-writing-workspace.mp4">
+  <a href="docs/media/readme/workflow.svg">
     <picture>
-      <source media="(max-width: 600px)" srcset="docs/media/readme/hero-mobile.jpg">
-      <img src="docs/media/readme/hero.jpg" width="100%" alt="MEMOKET NOTE — Stay in the document. Let the agent work. An agent-native writing workspace with long-term memory, shown with a real draft and fictional demo data.">
+      <source media="(max-width: 600px)" srcset="docs/media/readme/workflow-mobile.svg">
+      <source media="(max-width: 900px)" srcset="docs/media/readme/workflow.svg">
+      <source media="(prefers-reduced-motion: reduce)" srcset="docs/media/readme/workflow.svg">
+      <img src="docs/media/readme/workflow.gif" width="100%" alt="Import Markdown, Obsidian, Notion, Apple Notes, Evernote or Feishu. Use Polish, Rewrite and Continue in place. KITE recalls current and past notes beside the draft. A writing agent harness plans, retrieves, writes, checks and revises. Review the draft and export to supported tools.">
     </picture>
   </a>
 </p>
@@ -16,7 +18,7 @@
 </p>
 
 <p align="center">
-  <strong>An agent-native writing workspace that keeps your task, memory and edits together.</strong><br>
+  <strong>One-click AI actions. Memory beside your draft. An agent that plans, writes and checks.</strong><br>
 A personal open-source project built on <a href="https://github.com/memoket/memoket-kite">Memoket KITE</a>.
 </p>
 
@@ -36,9 +38,9 @@ Copy a paragraph into a chatbot. Explain the context. Paste the answer back. Fin
 
 NOTE is designed around three goals:
 
-- **Less interaction friction.** Use writing actions on the passage or document you're already in. The workspace supplies its context.
-- **Keep your train of thought.** Recall related notes and source evidence beside the draft, without rebuilding the background in a new conversation.
-- **Delegate work, keep control.** Give the agent a task. Let its harness retrieve, write, check and revise. Inspect the changes and keep or revert them.
+- **One action, one button.** Polish, Rewrite and Continue work on the passage or document you're in. The workspace supplies context, so common actions do not require a chat round-trip.
+- **Memory without leaving the editor.** Recall current and past notes beside the draft. Open dated evidence where you are writing, without reconstructing the background in a separate conversation.
+- **A harness that plans and executes.** Set a goal and done criteria. The writing harness uses task or outline planning, retrieves evidence, writes, checks and revises within limits. Review the changes, pause a run or recover earlier work.
 
 That is what *agent-native* means here: the document carries the work; the agent has tools to act on it. Read the [design principles](docs/why-agent-native.md).
 
@@ -82,7 +84,7 @@ The **workspace** is the application, **KITE** is its memory engine, and the **w
 
 **Prepare evidence → draft or revise → check → decide → review.**
 
-The run uses a bounded scope: a passage, block, note or multi-note plan. Retrieved memory and selected Materials feed both generation and scoring. Supported modes also cover chart, table and analysis blocks. Model-based planning is available on the explicit knowledge question path; interactive writing uses deterministic retrieval. See [architecture and implementation](docs/architecture.md).
+The run uses a bounded scope: a passage, block, note or multi-note plan. Retrieved memory and selected Materials feed both generation and scoring. Supported modes also cover chart, table and analysis blocks. Task and outline planning are separate from retrieval planning. Interactive writing retrieves deterministically; the explicit knowledge question path can also plan retrieval with a model. Available planning and checks depend on the selected mode. See [architecture and implementation](docs/architecture.md).
 
 </details>
 
