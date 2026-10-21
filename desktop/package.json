@@ -1,0 +1,96 @@
+{
+  "name": "memoket-note-desktop",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "version": "0.1.1",
+  "description": "MEMOKET NOTE desktop: an Electron shell with a bundled FastAPI backend",
+  "main": "dist/main.js",
+  "scripts": {
+    "test": "node --test scripts/*.test.mjs",
+    "build": "tsc -p tsconfig.json",
+    "dev": "npm run build && electron . --dev",
+    "start": "npm run build && electron .",
+    "dist": "npm run dist:web && npm run dist:backend && npm run build && electron-builder",
+    "dist:web": "cd ../frontend && npm run build",
+    "dist:backend": "cd ../backend && .venv/bin/pyinstaller backend.spec --noconfirm --clean"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.4",
+    "electron": "^44.3.0",
+    "electron-builder": "^26.15.3",
+    "typescript": "^5.9.3"
+  },
+  "build": {
+    "appId": "com.memoket.note",
+    "productName": "MEMOKET NOTE",
+    "directories": {
+      "output": "out",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../docs/licenses",
+        "to": "licenses"
+      },
+      {
+        "from": "../LICENSE",
+        "to": "LICENSE"
+      },
+      {
+        "from": "../docs/third-party-notices.md",
+        "to": "third-party-notices.md"
+      },
+      {
+        "from": "../frontend/dist",
+        "to": "web"
+      },
+      {
+        "from": "../backend/dist/memoket-note-backend",
+        "to": "backend"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ],
+      "identity": "-",
+      "icon": "build/icon.icns",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "MEMOKET NOTE uses your microphone for voice input and to transcribe recordings into your knowledge base.",
+        "NSScreenCaptureUsageDescription": "MEMOKET NOTE periodically reads the screen to describe your activity and summarize your day. Screenshots are not saved by default; activity records stay on this computer.",
+        "LSUIElement": false
+      },
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Office"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    }
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "overrides": {
+    "@electron/get": "^5.1.0"
+  }
+}

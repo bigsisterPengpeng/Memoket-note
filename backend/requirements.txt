@@ -1,0 +1,9 @@
+fastapi>=0.115
+uvicorn[standard]>=0.32
+pydantic>=2.9
+pydantic-settings>=2.6
+python-multipart>=0.0.12
+httpx>=0.27
+pymupdf>=1.24
+python-docx>=1.1
+memoket-kite @ git+https://github.com/memoket/memoket-kite@8745fedab8d10ea698066583dfc3ba4e0a32e294

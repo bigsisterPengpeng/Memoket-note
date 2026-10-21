@@ -1,0 +1,100 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:03.378
+Meet Memoket Note, an agent-native writing workspace.
+
+00:00:03.458 --> 00:00:07.666
+This personal open-source project is built on the memoket-kite memory engine.
+
+00:00:07.746 --> 00:00:12.847
+It brings AI writing actions, source-backed memory and reviewable edits into the same note.
+
+00:00:12.927 --> 00:00:16.298
+A writing agent harness coordinates the work behind the scenes.
+
+00:00:16.958 --> 00:00:21.513
+A writing task starts with a note, its purpose and the material you want to use.
+
+00:00:21.593 --> 00:00:28.484
+The editor keeps this state together, so you can work on the draft while the agent retrieves context and proposes changes.
+
+00:00:28.564 --> 00:00:31.199
+You remain responsible for the final text.
+
+00:00:31.875 --> 00:00:34.937
+For a small task, use a direct writing action.
+
+00:00:35.017 --> 00:00:38.289
+Select a paragraph to rewrite, polish or verify.
+
+00:00:38.369 --> 00:00:41.221
+Continue at the cursor when you need the next passage.
+
+00:00:41.301 --> 00:00:45.942
+For a longer task, start a workflow with the note goal and completion criteria.
+
+00:00:46.022 --> 00:00:48.511
+Each entry point carries the relevant scope.
+
+00:00:49.208 --> 00:00:51.600
+Memoket-kite supplies long-term memory.
+
+00:00:51.680 --> 00:00:56.338
+Note uses its facts and source links to bring relevant evidence into the writing task.
+
+00:00:56.418 --> 00:01:00.829
+You can inspect recalled material, collect it in the tray and cite it in the draft.
+
+00:01:00.909 --> 00:01:05.672
+Retrieval is evidence to review, not a guarantee that a generated claim is correct.
+
+00:01:06.333 --> 00:01:11.798
+The writing agent harness manages task state and tools, and turns a writing request into a loop.
+
+00:01:11.878 --> 00:01:15.323
+First it prepares material, then drafts or revises.
+
+00:01:15.403 --> 00:01:20.675
+Deterministic checks inspect constraints such as citations, output shape and repetition.
+
+00:01:20.755 --> 00:01:23.998
+A model judge assesses the configured writing dimensions.
+
+00:01:24.078 --> 00:01:28.869
+The policy uses that feedback to choose another round, repair, pause or stop.
+
+00:01:29.542 --> 00:01:31.021
+Changes stay reviewable.
+
+00:01:31.101 --> 00:01:34.379
+Inspect individual edits and decide what to keep or revert.
+
+00:01:34.459 --> 00:01:37.272
+Run snapshots and note history support recovery.
+
+00:01:37.352 --> 00:01:42.653
+The harness has explicit limits and stopping conditions, and can retain an earlier best round.
+
+00:01:42.733 --> 00:01:47.248
+Automated checks help you review the result, but they do not replace your judgment.
+
+00:01:47.917 --> 00:01:52.987
+For example, start a weekly report by setting the audience and what the report must cover.
+
+00:01:53.067 --> 00:01:58.155
+Gather notes and other material, then let the harness prepare evidence, draft and check.
+
+00:01:58.235 --> 00:02:03.985
+Review the proposed changes and verify their citations before exporting or sharing the finished report.
+
+00:02:04.667 --> 00:02:10.622
+Memoket Note is a personal project, with application code licensed under AGPL version three.
+
+00:02:10.702 --> 00:02:14.355
+The separate memoket-kite engine uses the Apache two license.
+
+00:02:14.435 --> 00:02:17.472
+Configure your own model and transcription services.
+
+00:02:17.552 --> 00:02:24.709
+This is a conceptual walkthrough of the implemented architecture, rather than a live product demonstration or performance benchmark.

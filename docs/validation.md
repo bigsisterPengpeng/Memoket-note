@@ -1,0 +1,70 @@
+# Validation notes
+
+Validated on October 20, 2026 with Python 3.11.15, Node.js 22.22.3 and macOS arm64. The source distribution was installed in a separate virtual environment with `constraints.txt` and fresh `npm ci` installations.
+
+| Check | Result |
+|---|---|
+| Backend pytest | 399 passed |
+| Frontend Vitest | 55 files, 303 passed |
+| Independent frontend shared contracts | 61 passed |
+| Python static analysis | No pyflakes findings in `backend/app` |
+| Frontend types, lint and production build | Passed |
+| Desktop typecheck and packaging downloader test | Passed; cache reuse and checksum rejection verified |
+| Frontend and desktop npm audits, including development dependencies | No known vulnerabilities reported |
+| Installed Python dependency audit | No known vulnerabilities reported |
+| Publication audit | No credential, private-data-path or personal-absolute-path findings |
+| Source-language audit | Literal Han characters are confined to optional translation dictionaries |
+
+KITE is pinned to a specific upstream commit. Dependency audits are snapshots of the advisory data available at validation time.
+
+## Packaged backend
+
+An ad-hoc-signed macOS arm64 application was built from this source. Deep signature verification passed. Its bundled backend was started against a disposable data directory and verified to serve the frontend, return uncached index HTML, report that no model was configured, persist a note and its Engineering workflow, and return JSON errors for unknown API routes. The package contains the dictionary and exact MIT license, application license and third-party notices; development data directories are excluded.
+
+This local build is not notarized. Windows and Linux desktop packages were not built during this validation.
+
+## UI checks
+
+The local browser used only invented notes, imports and knowledge-base facts. Checks covered:
+
+- All nine Engineering previews at 900 × 600, with the full preview region visible and no horizontal text overflow; larger desktop layouts were also checked.
+- Keyboard preview selection after cards scroll into view, task persistence after reload and English generated navigation.
+- English file selection controls and tree refresh after two synthetic Evernote imports.
+- A long topic name in the graph summary at 900 × 600, with its card inside the viewport and scroll available for long content.
+- A rendered Mermaid flowchart after the dependency upgrade.
+
+Browser screenshot captures were blurred by the capture path. Layout evidence therefore combines DOM dimensions, accessibility state and functional interaction; it does not certify fine typography. Native dark-mode appearance and real-account Notion/Feishu round trips remain manual validation work.
+
+## Automatic CI
+
+Automatic GitHub Actions runs are intentionally disabled. An unused workflow template is available as `docs/ci-workflow.yml.example`; validation results here come from local checks.
+
+## Scope
+
+Tests use stubs instead of live model calls and do not establish writing-quality or performance benchmarks. Historical research scripts, private corpora and archived screenshot evidence are not distributed. The introduction video is a narrated concept explanation, not a live product recording.
+
+## Product terminology update — October 21, 2026
+
+Product descriptions now use **agent-native writing workspace**. The **writing
+agent harness** remains the runtime that manages task state, tools, writing
+rounds, checks, stopping conditions and recovery. Internal module and API names
+are unchanged.
+
+The updated frontend passed typechecking, lint, all 303 tests across 55 files,
+and all 61 independent shared contracts. Its production build passed with the
+existing large-chunk warning. Desktop typechecking and the downloader
+compatibility test passed. The updated macOS arm64 application passed deep
+signature verification; its bundled backend served the current frontend against
+a disposable data directory, including the new product and workflow text.
+The welcome screen and Settings description were checked in the browser at
+1163 × 608 with no horizontal overflow in their content.
+
+The regenerated English introduction is approximately 145 seconds long, with
+33 sentence-aligned captions. Caption text and transcript match the narrated
+scene script, local media links resolve, and a full video/audio decode reported
+no errors. Changed scenes were visually inspected; the remaining four scene
+images are identical to the previous version. The underlying eight-slide
+presentation passed package, layout and import validation. The publication
+audit reported no findings, and literal Han characters remain confined to
+optional translation dictionaries. Backend behavior was not changed or
+retested for this terminology update; its earlier results are recorded above.

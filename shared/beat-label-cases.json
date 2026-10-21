@@ -1,0 +1,89 @@
+{
+  "why": "Current English and saved legacy beat labels must have the same status and body in the backend and UI; line references must remain navigable.",
+  "cases": [
+    {
+      "input": "Written: Launch on April 12",
+      "status": "written",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "written (from body line 12): Launch on April 12",
+      "status": "written",
+      "text": "Launch on April 12",
+      "line": 12
+    },
+    {
+      "input": "[Written] Launch on April 12",
+      "status": "written",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "Completed: Launch on April 12",
+      "status": "written",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "Missing: Launch on April 12",
+      "status": "missing",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "[To fill] Launch on April 12",
+      "status": "missing",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "\u5df2\u5199\uff1a Launch on April 12",
+      "status": "written",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "\u5df2\u5199\uff08\u6b63\u6587\u7b2c 12 \u884c\u8d77\uff09\uff1a Launch on April 12",
+      "status": "written",
+      "text": "Launch on April 12",
+      "line": 12
+    },
+    {
+      "input": "\u3010\u5f85\u8865\u3011 Launch on April 12",
+      "status": "missing",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "Written material belongs in the draft.",
+      "status": null,
+      "text": "Written material belongs in the draft.",
+      "line": null
+    },
+    {
+      "input": "Missing evidence must not become invented facts.",
+      "status": null,
+      "text": "Missing evidence must not become invented facts.",
+      "line": null
+    },
+    {
+      "input": "Writtenness is not a status.",
+      "status": null,
+      "text": "Writtenness is not a status.",
+      "line": null
+    },
+    {
+      "input": "A plain beat.",
+      "status": null,
+      "text": "A plain beat.",
+      "line": null
+    },
+    {
+      "input": "",
+      "status": null,
+      "text": "",
+      "line": null
+    }
+  ]
+}

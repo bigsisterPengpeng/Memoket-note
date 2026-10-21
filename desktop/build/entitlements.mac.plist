@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Developer ID signing with hardened runtime keeps the designated requirement
+  stable across rebuilds, unlike ad-hoc signing with a changing code hash.
+  The same entitlements are inherited by Electron helpers and the bundled backend.
+  App sandbox and keychain groups are not enabled by this configuration.
+-->
+<plist version="1.0">
+<dict>
+  <!-- Required by Electron/V8 and the PyInstaller backend under hardened runtime. -->
+  <key>com.apple.security.cs.allow-jit</key><true/>
+  <key>com.apple.security.cs.allow-unsigned-executable-memory</key><true/>
+  <key>com.apple.security.cs.disable-library-validation</key><true/>
+  <!-- Voice input and recording transcription. -->
+  <key>com.apple.security.device.audio-input</key><true/>
+</dict>
+</plist>

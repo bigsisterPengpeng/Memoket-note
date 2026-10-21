@@ -1,0 +1,477 @@
+{
+  "description": "Synthetic cross-language contracts. All names and events are invented. Multilingual examples only exercise saved input compatibility.",
+  "contents": {
+    "short": "Hello world.",
+    "empty": "",
+    "sections": "## Context and constraints\n\nA test.\n\n## Decision\n\nChoose A.",
+    "conclusion": "## Conclusion\n\nShip the patch.",
+    "recommendation": "Recommendation: proceed with the patch.",
+    "cited": "- Review completed [fixture-1-A]\n- Plan revised [fixture-2-B]",
+    "uncited": "- Review completed [fixture-1-A]\n- Plan revised",
+    "dated": "- 2026-04-12: review completed\n- May 14, 2026: plan revised",
+    "pending": "- 2026-04-12: review completed\n- Plan revised (date pending)",
+    "mixed_numbers": "- Review completed\n- Pilot included 25 users",
+    "no_numbers": "- Review completed\n- Plan revised"
+  },
+  "done": [
+    {
+      "name": "character maximum passes",
+      "item": "At most 20 characters",
+      "content": "short",
+      "expect": {
+        "status": "pass",
+        "why": "Now 11 chars"
+      }
+    },
+    {
+      "name": "character maximum fails",
+      "item": "No more than 5 characters",
+      "content": "short",
+      "expect": {
+        "status": "fail",
+        "why": "Now 11 chars, 6 over"
+      }
+    },
+    {
+      "name": "character minimum passes",
+      "item": "At least 11 chars",
+      "content": "short",
+      "expect": {
+        "status": "pass",
+        "why": "Now 11 chars"
+      }
+    },
+    {
+      "name": "character minimum fails",
+      "item": "Minimum of 12 characters",
+      "content": "short",
+      "expect": {
+        "status": "fail",
+        "why": "Now 11 chars, 1 short"
+      }
+    },
+    {
+      "name": "postfix maximum",
+      "item": "11 characters or less",
+      "content": "short",
+      "expect": {
+        "status": "pass",
+        "why": "Now 11 chars"
+      }
+    },
+    {
+      "name": "postfix minimum",
+      "item": "11 chars or more",
+      "content": "short",
+      "expect": {
+        "status": "pass",
+        "why": "Now 11 chars"
+      }
+    },
+    {
+      "name": "fullwidth numeric input",
+      "item": "At most \uff12\uff10 chars",
+      "content": "short",
+      "expect": {
+        "status": "pass",
+        "why": "Now 11 chars"
+      }
+    },
+    {
+      "name": "unsupported word count is manual",
+      "item": "At most 5 words",
+      "content": "short",
+      "expect": null
+    },
+    {
+      "name": "empty body",
+      "item": "Non-empty note",
+      "content": "empty",
+      "expect": {
+        "status": "fail",
+        "why": "The note is still empty"
+      }
+    },
+    {
+      "name": "nonempty body",
+      "item": "Write anything",
+      "content": "short",
+      "expect": {
+        "status": "pass",
+        "why": "11 chars written"
+      }
+    },
+    {
+      "name": "explicit section names",
+      "item": "Sections: Context and constraints, Decision",
+      "content": "sections",
+      "expect": {
+        "status": "pass",
+        "why": "All 2 sections present"
+      }
+    },
+    {
+      "name": "missing section",
+      "item": "Context and constraints, Decision and Risks each have a section",
+      "content": "sections",
+      "expect": {
+        "status": "fail",
+        "why": "Missing headings: Risks"
+      }
+    },
+    {
+      "name": "conclusion heading",
+      "item": "Conclusion first",
+      "content": "conclusion",
+      "expect": {
+        "status": "pass",
+        "why": "Opens with the conclusion"
+      }
+    },
+    {
+      "name": "conclusion opening",
+      "item": "Start with the conclusion",
+      "content": "recommendation",
+      "expect": {
+        "status": "pass",
+        "why": "Opens with the conclusion"
+      }
+    },
+    {
+      "name": "missing conclusion",
+      "item": "Lead with the conclusion",
+      "content": "short",
+      "expect": {
+        "status": "fail",
+        "why": "No conclusion at the start"
+      }
+    },
+    {
+      "name": "all sources present",
+      "item": "Each item has a source",
+      "content": "cited",
+      "expect": {
+        "status": "pass",
+        "why": "All 2 items have a source"
+      }
+    },
+    {
+      "name": "missing source",
+      "item": "Each item has a source",
+      "content": "uncited",
+      "expect": {
+        "status": "fail",
+        "why": "1 of 2 items have no source"
+      }
+    },
+    {
+      "name": "empty source scope",
+      "item": "Each item has a source",
+      "content": "empty",
+      "expect": {
+        "status": "fail",
+        "why": "No items in the note yet"
+      }
+    },
+    {
+      "name": "absolute and month dates",
+      "item": "Each item has a date",
+      "content": "dated",
+      "expect": {
+        "status": "pass",
+        "why": "All 2 items have a date"
+      }
+    },
+    {
+      "name": "pending date remains incomplete in UI",
+      "item": "Each item has a date",
+      "content": "pending",
+      "expect": {
+        "status": "fail",
+        "why": "1 of 2 items have no date"
+      }
+    },
+    {
+      "name": "numeric claims only",
+      "item": "Numeric claims have a source",
+      "content": "mixed_numbers",
+      "expect": {
+        "status": "fail",
+        "why": "1 of 1 items have no source"
+      }
+    },
+    {
+      "name": "no numeric claims",
+      "item": "Numeric claims have a source",
+      "content": "no_numbers",
+      "expect": {
+        "status": "pass",
+        "why": "No numbers in the note"
+      }
+    },
+    {
+      "name": "combined dates and sources",
+      "item": "Each item has a date and a source",
+      "content": "uncited",
+      "expect": {
+        "status": "fail",
+        "why": "2 of 2 items have no date; 1 of 2 items have no source"
+      }
+    },
+    {
+      "name": "unsupported subjective criterion",
+      "item": "Explain the tradeoffs fairly",
+      "content": "short",
+      "expect": null
+    }
+  ],
+  "note": [
+    {
+      "name": "skeleton empty",
+      "action": "skeleton",
+      "content": "",
+      "title": "",
+      "expect": "Write some content (or a title) before generating an outline"
+    },
+    {
+      "name": "skeleton body",
+      "action": "skeleton",
+      "content": "A body paragraph.",
+      "title": "",
+      "expect": ""
+    },
+    {
+      "name": "skeleton title",
+      "action": "skeleton",
+      "content": "",
+      "title": "A title",
+      "expect": ""
+    },
+    {
+      "name": "tap empty",
+      "action": "tap",
+      "content": "",
+      "title": "",
+      "expect": "Write some content (or a title) before continuing"
+    },
+    {
+      "name": "tap body",
+      "action": "tap",
+      "content": "A body paragraph.",
+      "title": "",
+      "expect": ""
+    },
+    {
+      "name": "tap title",
+      "action": "tap",
+      "content": "",
+      "title": "A title",
+      "expect": ""
+    },
+    {
+      "name": "harness empty",
+      "action": "harness",
+      "content": "",
+      "title": "",
+      "expect": "Write a title or a few sentences so Smart Continue has something to build on"
+    },
+    {
+      "name": "harness body",
+      "action": "harness",
+      "content": "A body paragraph.",
+      "title": "",
+      "expect": ""
+    },
+    {
+      "name": "harness title",
+      "action": "harness",
+      "content": "",
+      "title": "A title",
+      "expect": ""
+    },
+    {
+      "name": "polish empty",
+      "action": "polish",
+      "content": "",
+      "title": "",
+      "expect": "The note is empty \u2014 nothing to polish"
+    },
+    {
+      "name": "polish body",
+      "action": "polish",
+      "content": "A body paragraph.",
+      "title": "",
+      "expect": ""
+    },
+    {
+      "name": "polish title",
+      "action": "polish",
+      "content": "",
+      "title": "A title",
+      "expect": "The note is empty \u2014 nothing to polish"
+    },
+    {
+      "name": "restructure empty",
+      "action": "restructure",
+      "content": "",
+      "title": "",
+      "expect": "The note is empty \u2014 nothing to restructure"
+    },
+    {
+      "name": "restructure body",
+      "action": "restructure",
+      "content": "A body paragraph.",
+      "title": "",
+      "expect": ""
+    },
+    {
+      "name": "restructure title",
+      "action": "restructure",
+      "content": "",
+      "title": "A title",
+      "expect": "The note is empty \u2014 nothing to restructure"
+    },
+    {
+      "name": "slides empty",
+      "action": "slides",
+      "content": "",
+      "title": "",
+      "expect": "This note has no body yet \u2014 nothing to turn into slides"
+    },
+    {
+      "name": "slides body",
+      "action": "slides",
+      "content": "A body paragraph.",
+      "title": "",
+      "expect": ""
+    },
+    {
+      "name": "slides title",
+      "action": "slides",
+      "content": "",
+      "title": "A title",
+      "expect": "This note has no body yet \u2014 nothing to turn into slides"
+    },
+    {
+      "name": "ingest empty",
+      "action": "ingest",
+      "content": "",
+      "title": "",
+      "expect": "The note is empty \u2014 write something before saving it to the knowledge base"
+    },
+    {
+      "name": "ingest body",
+      "action": "ingest",
+      "content": "A body paragraph.",
+      "title": "",
+      "expect": ""
+    },
+    {
+      "name": "ingest title",
+      "action": "ingest",
+      "content": "",
+      "title": "A title",
+      "expect": "The note is empty \u2014 write something before saving it to the knowledge base"
+    }
+  ],
+  "split": [
+    {
+      "done": "Conclusion first. At most 500 characters; Each item has a source",
+      "items": [
+        "Conclusion first",
+        "At most 500 characters",
+        "Each item has a source"
+      ]
+    },
+    {
+      "done": "",
+      "items": []
+    }
+  ],
+  "beat_labels": [
+    {
+      "input": "Written: Launch on April 12",
+      "status": "written",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "written (from body line 12): Launch on April 12",
+      "status": "written",
+      "text": "Launch on April 12",
+      "line": 12
+    },
+    {
+      "input": "[Written] Launch on April 12",
+      "status": "written",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "Completed: Launch on April 12",
+      "status": "written",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "Missing: Launch on April 12",
+      "status": "missing",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "[To fill] Launch on April 12",
+      "status": "missing",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "\u5df2\u5199\uff1a Launch on April 12",
+      "status": "written",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "\u5df2\u5199\uff08\u6b63\u6587\u7b2c 12 \u884c\u8d77\uff09\uff1a Launch on April 12",
+      "status": "written",
+      "text": "Launch on April 12",
+      "line": 12
+    },
+    {
+      "input": "\u3010\u5f85\u8865\u3011 Launch on April 12",
+      "status": "missing",
+      "text": "Launch on April 12",
+      "line": null
+    },
+    {
+      "input": "Written material belongs in the draft.",
+      "status": null,
+      "text": "Written material belongs in the draft.",
+      "line": null
+    },
+    {
+      "input": "Missing evidence must not become invented facts.",
+      "status": null,
+      "text": "Missing evidence must not become invented facts.",
+      "line": null
+    },
+    {
+      "input": "Writtenness is not a status.",
+      "status": null,
+      "text": "Writtenness is not a status.",
+      "line": null
+    },
+    {
+      "input": "A plain beat.",
+      "status": null,
+      "text": "A plain beat.",
+      "line": null
+    },
+    {
+      "input": "",
+      "status": null,
+      "text": "",
+      "line": null
+    }
+  ]
+}

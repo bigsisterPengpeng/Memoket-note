@@ -1,0 +1,9 @@
+<svg width="112" height="28" viewBox="0 0 112 28" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title id="title">Memoket website</title>
+  <rect width="112" height="28" rx="3" fill="#232B3A"/>
+  <g transform="translate(3 2) scale(.16)" fill="white">
+    <path d="M114.495 69.97L108.545 85.75L119.765 116.12C120.635 118.47 122.935 120.04 125.505 120.04H132.985L114.485 69.97H114.495Z"/>
+    <path d="M104.245 62.47C101.625 62.47 99.2849 64.06 98.3949 66.45L85.1749 101.81L69.4049 40H55.3949L37.3749 110.6H29.9149L27.0049 120.04H41.8049C44.6949 120.04 47.2249 118.13 47.9149 115.4L62.3949 58.67L78.0549 120.04H90.1249L111.645 62.47H104.245Z"/>
+  </g>
+  <text x="31" y="18" fill="white" font-family="Verdana, DejaVu Sans, sans-serif" font-size="10" font-weight="700" letter-spacing=".3">WEBSITE</text>
+</svg>

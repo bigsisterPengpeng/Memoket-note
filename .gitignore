@@ -1,0 +1,53 @@
+# Python caches and environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node dependencies and build output
+node_modules/
+dist/
+.vite/
+
+# Credentials and user data
+.env
+.env.*
+!.env.example
+data/
+*.sqlite3
+
+# Generated knowledge artifacts may contain user content
+artifacts/*
+!artifacts/_seed_empty.xml
+
+frontend/tsconfig.tsbuildinfo
+.DS_Store
+*.lock
+
+# Local experiments, prompt snapshots and manual backups
+.local/
+
+# Generated benchmark and ingestion outputs may include private notes
+backend/scripts/*.jsonl
+backend/scripts/*.log
+backend/scripts/harness_stress_cycle.txt
+backend/scripts/editing_bench_results/
+backend/scripts/writing_bench_results/
+backend/scripts/harness_quality_samples/
+backend/scripts/sensitivity_results/
+
+# Desktop and backend packaging output
+desktop/node_modules/
+desktop/dist/
+desktop/out/
+frontend/dist/
+backend/build/
+backend/dist/
+backend/*.spec.bak
+
+# Generated presentations, videos and screenshots
+outputs/
+
+# Temporary agent worktrees
+.claude/
+backend/scripts/workflow_bench_results/

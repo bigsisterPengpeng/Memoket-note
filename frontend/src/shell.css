@@ -1,0 +1,412 @@
+/* Shell structure with token aliases originally based on Trilium theme-next. Only values were adapted, not DOM-specific selectors. Attribution is in docs/third-party-notices.md; layout reference: Trilium desktop_layout.tsx. */
+
+:root {
+  /* Keep the legacy token names as aliases to memoket design tokens; replacing all callers would add mechanical risk. */
+  --root-bg: var(--mk-bg);
+  --main-bg: var(--mk-surface);
+  --main-fg: var(--ink);
+  --main-border: var(--mk-line);
+  --subtle-border: var(--mk-line-2);
+  --hover-item-bg: var(--mk-hover);
+  --hover-item-fg: var(--ink);
+
+  --launcher-bg: var(--mk-bg);
+  --launcher-fg: var(--ink-2);
+  --launcher-hover-fg: var(--brand);
+  --launcher-hover-bg: var(--mk-surface);
+  --launcher-hover-shadow: var(--shadow-card);
+
+  --left-pane-bg: var(--mk-sidebar);
+  /* Tree labels use primary text; only icons use muted text. */
+  --left-pane-fg: var(--ink);
+  --left-pane-item-hover-bg: var(--mk-hover);
+  /* Selection uses a raised surface and a brand-colored icon. */
+  --left-pane-item-selected-bg: var(--mk-surface);
+  --left-pane-item-selected-fg: var(--ink);
+  --left-pane-item-selected-shadow: var(--shadow-card);
+  --left-pane-item-action-bg: var(--mk-line);
+  --left-pane-item-action-hover-bg: var(--ink-3);
+  --left-pane-icon: var(--ink-3);
+
+  --active-tab-bg: var(--mk-surface);
+  --tab-close-hover-bg: var(--live);
+  --tab-close-hover-fg: #ffffff;
+
+
+  --gutter-hover: var(--brand);
+  --inactive-tab-fg: var(--ink-2);
+  --active-tab-shadow: var(--shadow-card);
+
+  /* Layout dimensions follow Trilium theme-next overrides: launcher 58px, tab row 50px, tabs 36px and new-tab control 24px. */
+  --launcher-width: 58px;
+  --tab-bar-height: 50px;
+  --tab-height: 36px;
+  --new-tab-button-size: 24px;
+  --center-pane-border-radius: var(--r);
+  --content-margin-inline: 24px;
+  /* Name dimensions used by other components to calculate offsets, including status-bar and right-pane header heights. */
+  --status-bar-height: 28px;
+  /* Floating toolbar height is shared with the sticky harness offset. */
+  --fb-band-height: 44px;
+  --right-pane-header-height: 34px;
+
+  /* Eight activity-category colors. Keep hues distinct in both themes and validate adjacent palette contrast when editing. */
+  --jn-1: #2a78d6; --jn-2: #eb6834; --jn-3: #1baf7a; --jn-4: #eda100;
+  --jn-5: #e87ba4; --jn-6: #008300; --jn-7: #4a3aa7; --jn-8: #e34948;
+  --jn-other: #8a8a86;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark aliases keep the same targets; only category colors and explicitly inverted values differ here. */
+    --jn-1: #3987e5; --jn-2: #d95926; --jn-3: #199e70; --jn-4: #c98500;
+    --jn-5: #d55181; --jn-6: #008300; --jn-7: #9085e9; --jn-8: #e66767;
+    --jn-other: #8a8a86;
+
+    /* Dark selections use a brighter surface without a shadow. */
+    --left-pane-item-selected-bg: rgba(255, 255, 255, .06);
+    --left-pane-item-selected-shadow: none;
+    --active-tab-bg: rgba(255, 255, 255, .06);
+    --active-tab-shadow: none;
+    --launcher-hover-shadow: none;
+    --left-pane-item-action-bg: rgba(255, 255, 255, .18);
+    --left-pane-item-action-hover-bg: rgba(255, 255, 255, .34);
+  }
+}
+
+/* Shell regions: top tab row; launcher, tree, editor and right pane; bottom status bar. Layout follows Trilium desktop_layout.tsx. */
+.shell {
+  display: flex; flex-direction: column;
+  height: 100vh; overflow: hidden;
+  background: var(--root-bg); color: var(--main-fg);
+}
+
+.shell-main { display: flex; flex: 1; min-height: 0; }
+
+/* Launcher. Window controls live in the full-width tab row spacer. */
+.launcher-pane {
+  width: var(--launcher-width); flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--s-2); padding: 6px 0;
+  background: var(--launcher-bg); color: var(--launcher-fg);
+  -webkit-app-region: drag;          /* Blank regions can drag the native window. */
+}
+.launcher-pane > * { -webkit-app-region: no-drag; }
+
+.launcher-btn {
+  width: calc(var(--launcher-width) - 12px); height: calc(var(--launcher-width) - 12px);
+  border: none; border-radius: var(--r);
+  background: transparent; color: inherit; cursor: pointer;
+  font-size: var(--icon-xl); line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .12s, color .12s, box-shadow .12s;
+}
+/* Use the global keyboard focus ring so offsets and radii remain consistent. */
+.launcher-btn:hover {
+  background: var(--launcher-hover-bg); color: var(--launcher-hover-fg);
+  box-shadow: var(--launcher-hover-shadow);
+}
+/* Selected launcher controls must remain distinguishable from hover. */
+.launcher-btn.active { background: var(--brand-weak); color: var(--brand); box-shadow: none; }
+.launcher-spacer { flex: 1; }
+
+/* Left pane */
+.left-pane {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; min-height: 0;
+  background: var(--left-pane-bg); color: var(--left-pane-fg);
+  /* The macOS reference separates the sidebar and canvas through surface contrast without a border. */
+  border-right: 0;
+  /* Round the upper corners; the lower edge meets the status bar. */
+  border-start-start-radius: var(--center-pane-border-radius);
+  border-start-end-radius: var(--center-pane-border-radius);
+}
+/* Align search fields and tree rows to the same sidebar inset, following 0.5.10. */
+.left-pane-search { padding: var(--s-6) var(--s-6) 0; flex-shrink: 0; }
+/* Give the tree its own scroll container so long libraries remain reachable. */
+.left-pane-body { flex: 1; min-height: 0; overflow-y: auto; padding: var(--s-7) var(--s-6) 52px; }
+
+/* Center pane */
+.rest-pane {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  background: var(--main-bg);
+}
+/* Full-width top tabs reserve space for macOS window controls and a trailing window-drag region. */
+.tab-bar {
+  height: var(--tab-bar-height); flex-shrink: 0;
+  display: flex; align-items: center; gap: var(--s-3);
+  padding: 0 6px; background: var(--launcher-bg);
+  -webkit-app-region: drag;
+}
+.tab-bar > * { -webkit-app-region: no-drag; }
+.tab-row-left-spacer { width: 0; flex-shrink: 0; -webkit-app-region: drag; }
+.is-mac .tab-row-left-spacer { width: 72px; }
+.tab-row-filler { flex: 1; min-width: 50px; height: 100%; -webkit-app-region: drag; }
+
+.center-pane { flex: 1; min-height: 0; display: flex; }
+.note-pane {
+  /* Scale the single-line title with pane width so split views do not immediately truncate it. */
+  container-type: inline-size; container-name: notepane;
+  flex: 1; min-width: 0; min-height: 0;
+  /* Positioning context for the bottom composer. */
+  position: relative;
+  display: flex; flex-direction: column; overflow: hidden;
+  border-start-start-radius: var(--center-pane-border-radius);
+}
+/* Title row remains outside the document scroller. */
+.title-row {
+  /* Separate the title visually from the document body. */
+  flex-shrink: 0; min-height: 64px; display: flex; align-items: center;
+  padding-block: 10px 2px;
+  padding-inline: var(--content-margin-inline);
+}
+/* Large titles use the display font family. */
+.note-title {
+  flex: 1; font-family: var(--display); font-size: var(--note-title-size); font-weight: var(--w-bold); line-height: 1.2;
+  letter-spacing: var(--ls-tight);
+  /* Remove both the global input border and focus shadow from the editable title. The text caret indicates focus. */
+  border: none !important; background: transparent !important; box-shadow: none !important;
+  padding: 8px 0 !important;
+}
+.note-title:focus-visible { outline: none; }
+/* Reduce title type at narrow pane widths. */
+@container notepane (max-width: 760px) { .note-title { font-size: var(--t-page); } }
+@container notepane (max-width: 560px) { .note-title { font-size: var(--t-2xl); } }
+/* Document scroll container with shared inline margins. */
+.note-scroll {
+  flex: 1; min-height: 0; overflow-y: auto;
+  /* Keep a generous title-to-body gap. */
+  /* Put top padding on note-body, not the scroller, so the floating toolbar starts at the sticky edge before any scroll. */
+  padding: 0 var(--content-margin-inline) var(--s-8);
+}
+/* The expanded Format ribbon is a toolbar without the padding used by other ribbon panels. */
+.ribbon-body:has(.md-toolbar) { padding: 2px 12px 4px; }
+.ribbon-icon .bx { font-size: var(--icon-md); vertical-align: -2px; }
+.pane-tab .bx { font-size: var(--icon-md); }
+
+/* Right pane */
+.right-pane {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; min-height: 0;
+  background: var(--main-bg);
+  border-left: 1px solid var(--subtle-border);
+  /* The editor and right pane form the upper corners of a shared surface. */
+  border-start-end-radius: var(--center-pane-border-radius);
+}
+.right-pane-body { flex: 1; overflow-y: auto; padding: 0 10px 10px; }
+.right-pane-actions { margin-inline-start: auto; min-width: max-content; display: flex; }
+.icon-btn {
+  width: 24px; height: 24px; padding: 0; border: none; border-radius: var(--r-sm);
+  background: transparent; color: var(--muted); cursor: pointer; font-size: var(--t-base); line-height: 1;
+}
+.icon-btn:hover { background: var(--hover-item-bg); color: var(--main-fg); }
+/* Control for restoring the collapsed right pane. */
+.rest-pane { position: relative; }
+.right-pane-reopen {
+  position: absolute; top: 6px; inset-inline-end: 6px; z-index: var(--z-float);
+  width: 24px; height: 24px; padding: 0; border: none; border-radius: var(--r-sm);
+  background: transparent; color: var(--muted); cursor: pointer; opacity: .6;
+}
+.right-pane-reopen:hover { opacity: 1; background: var(--hover-item-bg); }
+
+/* Resize handle appears on hover and while dragging. */
+.gutter {
+  flex-shrink: 0; width: 5px; cursor: col-resize; background: transparent;
+  transition: background 150ms;
+}
+.gutter:hover, .gutter.dragging { background: var(--gutter-hover); }
+/* Launcher control reverses its arrow when the left pane collapses. */
+.left-pane-toggle { transition: transform 600ms; }
+.left-pane-toggle.collapsed { transform: rotate(180deg); }
+
+/* Status bar */
+.status-bar {
+  min-height: var(--status-bar-height); flex-shrink: 0;
+  display: flex; align-items: center; gap: var(--s-5); padding: 0 10px;
+  /* The status-bar surface visually extends the sidebar. */
+  background: var(--left-pane-bg); color: var(--left-pane-fg);
+  font-size: var(--t-sm);
+  border-top: 1px solid var(--subtle-border);
+}
+
+
+/* Collapsible metadata ribbon below the title. Collapsed by default to prioritize writing. */
+.ribbon { border-bottom: 1px solid var(--subtle-border); }
+.ribbon-strip { display: flex; gap: var(--s-5); padding: var(--s-2) var(--content-margin-inline) 0; flex-wrap: wrap; min-height: 36px; align-items: center; }
+.ribbon-tab {
+  font-weight: var(--w-semi);
+  display: flex; align-items: center; gap: var(--s-3);
+  /* Use an underline for the selected ribbon tab. */
+  padding: 4px 10px 6px; border: none; border-bottom: 2px solid transparent; border-radius: 0;
+  background: transparent; color: var(--muted);
+  font-size: var(--t-sm); cursor: pointer;
+  transition: color .12s, border-color .12s;
+}
+.ribbon-tab:hover { color: var(--hover-item-fg); }
+.ribbon-tab.active { color: var(--main-fg); border-bottom-color: var(--brand); }
+.ribbon-tab.active .ribbon-icon, .ribbon-tab.active .bx { color: var(--brand); }
+.ribbon-icon { font-size: var(--icon-sm); line-height: 1; }
+.ribbon-badge {
+  /* Count badges use a quiet pill so they do not compete with selection indicators. */
+  background: var(--hover); color: var(--ink-2); font-weight: var(--w-bold);
+  font-size: var(--t-2xs); padding: 0 6px; border-radius: var(--r-pill); line-height: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.ribbon-body { padding: 6px 12px 12px; max-height: 40vh; overflow-y: auto; }
+
+/* Right-pane contents */
+.right-pane-tabs {
+  display: flex; gap: var(--s-1); padding: 0 8px; align-items: center;
+  height: var(--right-pane-header-height);
+  border-bottom: 1px solid var(--subtle-border); flex-shrink: 0;
+  /* Pane tabs scroll horizontally when their labels exceed the available width. */
+  overflow-x: auto; scrollbar-width: none;
+}
+.right-pane-tabs::-webkit-scrollbar { display: none; }
+/* Prevent tab shrinking so labels stay horizontal while their container scrolls. */
+.pane-tab {
+  font-weight: var(--w-semi);
+  display: flex; align-items: center; gap: var(--s-2); flex: none; white-space: nowrap;
+  padding: 4px 9px 6px; border: none; border-bottom: 2px solid transparent; border-radius: 0;
+  background: transparent; color: var(--muted);
+  font-size: var(--t-sm); cursor: pointer;
+  transition: color .12s, border-color .12s;
+}
+.pane-tab:hover { color: var(--main-fg); }
+.pane-tab.active { color: var(--main-fg); border-bottom-color: var(--brand); }
+.pane-tab.active .bx { color: var(--brand); }
+.pane-tab-badge {
+  /* Quiet count badges, following UI_SPEC section 2.5. */
+  background: var(--hover); color: var(--ink-2); font-weight: var(--w-bold);
+  font-size: var(--t-2xs); padding: 0 6px; border-radius: var(--r-pill); line-height: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tab row sizes follow Trilium tab_row.ts; preserve a usable minimum width and a separate new-tab control. */
+/* Scroll overflowing tabs rather than shrinking them into unusable targets. */
+.tab-strip {
+  display: flex; align-items: center; gap: var(--s-3);
+  flex: 0 1 auto; min-width: 0; overflow-x: auto; scrollbar-width: none;
+  height: 100%;
+}
+.tab-strip::-webkit-scrollbar { display: none; }
+/* Tabs are rounded pills; active tabs use elevation rather than heavier text. */
+.note-tab {
+  transition: background .12s, color .12s, box-shadow .12s;
+  font-weight: var(--w-semi);
+  display: flex; align-items: center; gap: var(--s-2); flex-shrink: 0;
+  /* TabBar writes tab-w at runtime; the initial width applies before the first measurement. */
+  width: var(--tab-w, 180px); min-width: 84px;
+  height: var(--tab-height); padding: 7px 5px 7px 11px; border-radius: var(--r);
+  background: transparent; color: var(--inactive-tab-fg);
+  font-size: var(--t-sm); cursor: pointer; user-select: none;
+  /* New tabs enter from above; reduced-motion rules disable the animation. */
+  animation: note-tab-was-just-added 120ms ease-out;
+  position: relative;
+}
+/* A top accent identifies a running writing workflow even when another tab is active. */
+.note-tab.busy::after {
+  content: ''; position: absolute; top: 0; left: 10px; right: 10px; height: 3px;
+  border-radius: 0 0 3px 3px; background: var(--accent);
+  animation: note-tab-busy 1.6s ease-in-out infinite;
+}
+@keyframes note-tab-busy { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@keyframes note-tab-was-just-added { from { transform: translateY(10px); opacity: 0; } }
+.note-tab:hover { background: var(--hover-item-bg); }
+.note-tab.active {
+  background: var(--active-tab-bg); color: var(--main-fg);
+  box-shadow: var(--active-tab-shadow);
+}
+.note-tab-icon { font-size: var(--t-base); flex-shrink: 0; margin-inline-end: 4px; opacity: .85; }
+.note-tab.active .note-tab-icon { color: var(--brand); opacity: 1; }
+.tab-strip[data-size="small"] .note-tab-icon, .tab-strip[data-size="narrow"] .note-tab-icon { display: none; }
+.note-tab-title {
+  flex: 1; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.note-tab-close {
+  flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  opacity: .45; font-size: var(--t-base); line-height: 1;
+}
+.note-tab:hover .note-tab-close { opacity: .8; }
+.note-tab-close:hover {
+  background: var(--tab-close-hover-bg); color: var(--tab-close-hover-fg); opacity: 1;
+}
+/* Hide close controls on very narrow inactive tabs. Keep the active close control and middle-click behavior. */
+.note-tab { container-type: inline-size; }
+@container (max-width: 90px) { .note-tab:not(.active) .note-tab-close { display: none; } }
+
+/* Keep the new-tab button outside the scrolling strip so it is never clipped. */
+.note-new-tab {
+  flex: 0 0 36px; height: 36px; padding: 0;
+  border: none; background: transparent; color: var(--launcher-fg);
+  cursor: pointer; font-size: var(--t-base); line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.note-new-tab > span {
+  width: var(--new-tab-button-size); height: var(--new-tab-button-size); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 100ms, box-shadow 100ms;
+}
+.note-new-tab:hover > span { background: var(--launcher-hover-bg); color: var(--main-fg); box-shadow: var(--launcher-hover-shadow); }
+.note-new-tab:active > span { transform: scale(.85); }
+
+
+/* Read-only split pane to the right of the primary editor; see App.tsx split state. */
+.split-pane {
+  position: relative;   /* Positioning context for saved status. */
+  flex-shrink: 0; min-width: 0; display: flex; flex-direction: column;
+  border-inline-start: 1px solid var(--subtle-border); background: var(--main-bg);
+}
+.split-head {
+  flex-shrink: 0; height: 50px; display: flex; align-items: center; gap: var(--s-2);
+  padding-inline: 12px 6px; border-bottom: 1px solid var(--subtle-border);
+}
+.split-title { flex: 1; min-width: 0; font-weight: var(--w-semi); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.split-body { flex: 1; min-height: 0; overflow-y: auto; padding: 10px 16px 40px; }
+.split-hint { margin: 0 0 8px; font-size: var(--t-sm); }
+.split-save-status { position: absolute; right: 12px; bottom: 6px; font-size: var(--t-xs); padding: 2px 8px; border-radius: var(--r-sm); background: var(--main-bg); pointer-events: none; }
+
+
+/* Icon sizes are centralized by location. Glyphs come from the Lucide mapping. */
+.launcher-btn .bx { font-size: var(--icon-xl); }
+.launcher-logo { margin: 4px 0 6px; display: flex; justify-content: center; }
+.launcher-logo svg { border-radius: var(--r); box-shadow: var(--shadow-card); }
+.launcher-user .avatar {
+  width: 26px; height: 26px; border-radius: var(--r-circle); display: flex; align-items: center; justify-content: center;
+  /* Avatar uses the brand gradient as a small identity accent. */
+  background: var(--grad); color: #fff; font-size: var(--t-sm); font-weight: var(--w-bold);
+}
+.tree-icon .bx { font-size: var(--icon-md); }
+.tree-expander .bx { font-size: var(--icon-md); }
+.icon-btn .bx { font-size: var(--icon-md); }
+.cm-icon .bx { font-size: var(--icon-lg); vertical-align: -2px; }
+.tree-item-button .bx { font-size: var(--icon-md); }
+.note-new-tab .bx { font-size: var(--icon-md); }
+.left-pane-toggle .bx { transition: transform 600ms; }
+
+/* Quick search: a rounded field with an icon. */
+/* Search dimensions and canvas surface follow the 0.5.10 sidebar search reference. */
+.quick-search {
+  display: flex; align-items: center; gap: var(--s-5); padding: 0 var(--s-6) 0 var(--s-6);
+  height: 40px;
+  border-radius: var(--r); border: 1px solid var(--mk-line-strong); background: var(--main-bg);
+  transition: background .12s, border-color .12s, box-shadow .12s;
+}
+.quick-search:hover { border-color: var(--ink-3); }
+.quick-search:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-weak); }
+.quick-search > .bx { color: var(--ink-3); font-size: var(--icon-md); flex-shrink: 0; }
+/* The outer search field owns the focus halo; clear the input shadow to avoid painting a second halo over its border. */
+.quick-search input { flex: 1; min-width: 0; border: none !important; background: transparent !important; box-shadow: none !important; padding: 6px 4px !important; font-size: var(--t-md); }
+.quick-search input:focus-visible { outline: none; }
+
+/* Tab-strip scroll controls. */
+.tab-scroll {
+  flex-shrink: 0; width: 26px; height: 28px; padding: 0; border: none; border-radius: var(--r-sm);
+  background: transparent; color: var(--muted); display: inline-flex; align-items: center; justify-content: center;
+  -webkit-app-region: no-drag;
+}
+.tab-scroll:hover { background: var(--hover-item-bg); color: var(--main-fg); }
+.tab-scroll .bx { font-size: var(--icon-lg); }

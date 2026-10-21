@@ -1,0 +1,194 @@
+/* MEMOKET NOTE design tokens. See docs/UI_SPEC.md. Literal colors belong here; check-ui-tokens enforces this. Values follow memoket-desktop Design System v3 and the 0.5.10 desktop reference. Dark mode follows prefers-color-scheme, driven by Electron nativeTheme; do not introduce data-theme selectors. */
+
+:root {
+  /* Brand */
+  --brand:       #620FF0;
+  --brand-2:     #8B5AE8;
+  --brand-press: #4A1F9C;
+  --brand-weak:  #F1EAFE;
+  --brand-text:  #620FF0;
+  /* Keep filled controls separate from brand accents: dark-mode fills need stronger white-text contrast than icons and links. */
+  --brand-fill:  #620FF0;
+  --grad-end:    #6F5BFF;
+  /* Build gradients from the source brand tokens so palette changes stay consistent. */
+  --grad: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 55%, var(--grad-end) 100%);
+  /* Danger and recording color. Keep separate from the deletion color used in diffs. */
+  --live: #F05049;
+
+  /* Surfaces */
+  /* Window chrome is a neutral layer below the sidebar. Reserve brand tint for small accents and selected states. */
+  /* The light surfaces follow memoket-desktop 0.5.10 home-canvas and home-sidebar; dark surfaces retain their separate palette. */
+  --mk-bg:      #EBEAE8;   /* Window chrome: slightly darker than the sidebar. */
+  --mk-surface: #FFFFFF;   /* Cards, popovers and raised selections. */
+  --mk-paper:   #FDFDFD;   /* Editor paper, matching home-canvas. */
+  --mk-sidebar: #F3F2F0;   /* Note tree and panels, matching home-sidebar. */
+
+  /* Text */
+  /* Neutral text follows the 0.5.10 palette. Primary and secondary text remain readable on paper and sidebar surfaces. */
+  --ink:   #111111;
+  --ink-2: #666666;
+  /* Decorative text is darker than the reference palette to keep contrast at least 3:1. Use ink-2 for readable labels and counts. */
+  --ink-3: #8C8C8C;
+
+  /* Borders and states */
+  /* Use mk-line for control boundaries and the lighter mk-line-2 for content grouping. */
+  --mk-line:   rgba(0, 0, 0, .10);
+  --mk-line-2: rgba(0, 0, 0, .05);
+  --mk-hover:  rgba(0, 0, 0, .04);
+  /* Strong boundaries: search fields and sidebar/canvas separation, following 0.5.10 line-strong. */
+  --mk-line-strong: rgba(0, 0, 0, .16);
+  --sel:       #F1EAFE;
+
+  /* Semantic colors */
+  --success:      #0FBD58;
+  --success-weak: rgba(15, 189, 88, .10);
+  --success-text: #0E9E49;
+  --warning:      #F0A815;
+  --warning-weak: rgba(240, 168, 21, .12);
+  --live-weak:    rgba(240, 80, 73, .12);
+
+  /* Shadows */
+  --shadow-card: 0 1px 2px rgba(33, 30, 41, .05), 0 6px 18px -10px rgba(33, 30, 41, .10);
+  --shadow-pop:  0 20px 56px -16px rgba(35, 22, 70, .30), 0 2px 8px rgba(20, 16, 40, .07);
+  --shadow-float:0 14px 40px -12px rgba(40, 24, 90, .30), 0 0 0 0.5px rgba(33, 30, 41, .07);
+  /* Brand shadow for primary actions; see UI_SPEC section 2.1. */
+  /* Hover elevation for content cards, following 0.5.10 home-notescard. */
+  --shadow-card-hover: 0 14px 30px -16px rgba(40, 24, 90, .3);
+  --shadow-brand:       0 1px 2px rgba(20, 16, 40, .14), 0 5px 14px -6px rgba(74, 31, 156, .30);
+  --shadow-brand-hover: 0 2px 5px rgba(20, 16, 40, .16), 0 12px 24px -8px rgba(74, 31, 156, .45);
+
+  /* Other values */
+  --mk-backdrop:    rgba(20, 16, 40, .45);
+  --mk-thumb:       rgba(0, 0, 0, .22);
+  --mk-thumb-hover: rgba(0, 0, 0, .34);
+  /* Translucent surfaces allow backdrop blur to show underlying content; an opaque surface would hide the effect. */
+  --mk-surface-glass: rgba(255, 255, 255, .72);
+
+  /* Shape */
+  /* Centralize radii to keep controls, cards and dialogs visually consistent. */
+  --r-xs:     5px;    /* Inline markers, code fragments and color swatches. */
+  --r-sm:     9px;    /* Buttons, inputs and list rows. */
+  --r:        12px;   /* Cards, panels and popovers. */
+  --r-card:   14px;   /* Content cards and list items. */
+  --r-lg:     18px;   /* Dialogs and large cards. */
+  --r-pill:   999px;  /* Chips and count badges. */
+  --r-circle: 50%;    /* Avatars and dots. */
+
+  /* UI type scale */
+  /* UI type is denser than reading text. Keep editor body typography on its separate scale. */
+  --t-2xs:  10.5px;   /* Menu section headings. */
+  --t-xs:   11.5px;   /* Badges, shortcuts and group headings. */
+  --t-sm:   12.5px;   /* Chips and secondary descriptions. */
+  --t-md:   13.5px;   /* Buttons, list rows and menu items. */
+  --t-base: 14px;     /* Panel body. */
+  --t-lg:   15px;     /* Larger panel text. */
+  --t-xl:   20px;     /* Subheadings. */
+  --t-2xl:  24px;     /* Between section and page headings. */
+  /* Page headings need a clear size difference from section headings. */
+  --t-page: 28px;
+  --t-3xl:  40px;     /* Large note title. */
+
+  /* Reading typography is intentionally more spacious than UI text: 16px/1.8 for long documents. Heading ratios scale with the body. */
+  --t-read:  16px;
+  --lh-read: 1.8;
+  --t-read-h1: 1.6em;
+  --t-read-h2: 1.4em;
+  --t-read-h3: 1.2em;
+
+  /* Font weights */
+  /* UI labels default to semibold; use the weight tokens consistently. */
+  --w-normal: 400;
+  --w-med:    500;
+  --w-semi:   600;    /* Default UI labels, buttons and list rows. */
+  --w-bold:   700;    /* Headings and badges. */
+
+  /* The note title is the main page heading. Keep a real size token rather than an undefined custom-property fallback. */
+  --note-title-size: var(--t-3xl);
+
+  /* Icons */
+  /* Icon sizes have their own scale so text readability changes do not resize every icon. */
+  --icon-sm: 13px;    /* Small inline icons. */
+  --icon-md: 14px;    /* List rows, buttons and tabs. */
+  --icon-lg: 15px;    /* Toolbar. */
+  /* Sidebar glyph inside a larger navigation box, following 0.5.10. */
+  --icon-nav: 16px;
+  --icon-xl: 22px;    /* Launcher. */
+  --icon-2xl: 34px;   /* Large empty-state icon. */
+
+  /* Spacing */
+  /* Keep a compact spacing scale for the tree and three-pane layout. Do not inherit the looser spacing of a different information architecture. */
+  --s-1: 2px;
+  --s-2: 4px;
+  --s-3: 6px;
+  --s-4: 8px;
+  --s-5: 12px;
+  --s-6: 16px;
+  --s-7: 24px;
+  --s-8: 34px;   /* Space between major page sections. */
+
+  /* Stacking */
+  /* Use named levels for new overlays instead of arbitrary z-index values. */
+  --z-sticky:   10;   /* Sticky content toolbar. */
+  --z-float:    20;   /* In-page popovers. */
+  --z-backdrop: 100;  /* Modal backdrop. */
+  --z-menu:     200;  /* Context menus and dropdowns. */
+  --z-toast:    300;  /* Topmost notifications. */
+
+  /* Slightly tighter tracking for large headings. */
+  --ls-tight: -0.01em;
+  --ls-caps:  .08em;  /* Expanded tracking for small uppercase section labels. */
+
+  /* Fonts */
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+  /* Use SF Pro Display for large headings and SF Pro Text for smaller UI copy, following the 0.5.10 display family. */
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+  --mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand:       #9B6BFF;
+    --brand-2:     #B794FF;
+    --brand-press: #8A55F5;
+    --brand-weak:  rgba(98, 15, 240, .20);
+    --brand-text:  #C9B2FF;
+    --brand-fill:  #7C46EE;      /* White-text contrast is 5.29:1; the brighter brand accent would only provide 3.53:1. */
+    --grad-end:    #6E8BFF;
+    --brand-2:     #9E6BFF;
+    --live: #FF6A64;
+
+    --mk-bg:      #050409;   /* Window chrome is an application-specific layer. */
+    --mk-surface: #16131F;
+    --mk-paper:   #120F1A;
+    --mk-sidebar: #0E0B15;
+
+    --ink:   #F2EFF7;
+    --ink-2: #A39EB0;
+    --ink-3: #6C6678;
+
+    --mk-line:   rgba(255, 255, 255, .09);
+    --mk-line-2: rgba(255, 255, 255, .055);
+    --mk-hover:  rgba(255, 255, 255, .05);
+    --sel:       rgba(98, 15, 240, .18);
+
+    --success:      #34D17E;
+    --success-weak: rgba(52, 209, 126, .16);
+    --success-text: #4ADB8F;
+    --warning:      #F7B955;
+    --warning-weak: rgba(247, 185, 85, .16);
+
+    /* Dark-mode cards use surface contrast instead of a permanent shadow. */
+    --shadow-card: none;
+    --shadow-pop:  0 22px 60px -14px rgba(0, 0, 0, .75);
+    --shadow-float:0 16px 44px -12px rgba(0, 0, 0, .65), 0 0 0 0.5px rgba(255, 255, 255, .07);
+    --shadow-brand:       0 1px 2px rgba(0, 0, 0, .3), 0 5px 14px -6px rgba(155, 107, 255, .35);
+    --shadow-brand-hover: 0 2px 5px rgba(0, 0, 0, .35), 0 12px 24px -8px rgba(155, 107, 255, .5);
+    --live-weak:      rgba(255, 106, 100, .16);
+    --mk-backdrop:    rgba(0, 0, 0, .6);
+    --mk-thumb:       rgba(255, 255, 255, .22);
+    --mk-thumb-hover: rgba(255, 255, 255, .34);
+    --mk-surface-glass: rgba(22, 19, 31, .72);
+      /* Dark-mode line-strong from 0.5.10. */
+    --mk-line-strong: rgba(255, 255, 255, .18);
+  }
+}
