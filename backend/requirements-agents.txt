@@ -1,0 +1,2 @@
+# Optional stdio MCP server. The CLI uses the core dependencies.
+mcp==2.3.0

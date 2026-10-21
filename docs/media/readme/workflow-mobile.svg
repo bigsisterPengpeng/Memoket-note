@@ -1,46 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1850" viewBox="0 0 960 1850" role="img" aria-labelledby="title desc">
-  <title id="title">Existing notes, one-click AI, memory and an agent harness, then export</title>
-  <desc id="desc">Import existing notes. Use Polish, Rewrite, Continue or Smart Continue in the document. KITE recalls current and past notes without leaving the editor. The writing harness plans, retrieves, writes, checks and revises within task limits. Review and export the draft to supported tools. Workflow illustration with fictional Maple content.</desc>
-  <defs><marker id="arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 2L10 6L2 10" fill="none" stroke="#b78129" stroke-width="2"/></marker></defs>
-  <rect width="960" height="1850" rx="20" fill="#f4f1e9"/>
-  <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif">
-    <text x="48" y="64" font-size="34" font-weight="650" fill="#1c2025">Memoket NOTE</text>
-    <text x="48" y="150" font-size="64" font-weight="650" letter-spacing="-2" fill="#1c2025">Your notes. One click.</text>
-    <text x="48" y="218" font-size="64" font-weight="650" letter-spacing="-2" fill="#1c2025">Your next draft.</text>
-    <text x="48" y="282" font-size="27" font-weight="600" letter-spacing="1" fill="#59616c">BRING YOUR EXISTING NOTES</text>
-    <g fill="#fffdfa" stroke="#d4cfc4"><rect x="48" y="306" width="272" height="65" rx="10"/><rect x="344" y="306" width="272" height="65" rx="10"/><rect x="640" y="306" width="272" height="65" rx="10"/><rect x="48" y="389" width="272" height="65" rx="10"/><rect x="344" y="389" width="272" height="65" rx="10"/><rect x="640" y="389" width="272" height="65" rx="10"/></g>
-    <g font-size="33" fill="#1c2025" text-anchor="middle"><text x="184" y="350">Markdown</text><text x="480" y="350">Obsidian</text><text x="776" y="350">Notion</text><text x="184" y="434">Apple Notes</text><text x="480" y="434">Evernote</text><text x="776" y="434">Feishu</text></g>
-    <path d="M480 470V532" fill="none" stroke="#b78129" stroke-width="3" marker-end="url(#arrow)"/>
-    <text x="506" y="511" font-size="27" fill="#59616c">Import</text>
-    <rect x="48" y="545" width="864" height="829" rx="20" fill="#141922"/>
-    <text x="84" y="603" font-size="40" font-weight="650" fill="#f5f2e9">One writing workspace</text>
-    <text x="84" y="650" font-size="28" fill="#afb7c3">Choose an action. Context comes with it.</text>
-    <g fill="#ffb545"><rect x="84" y="677" width="380" height="62" rx="10"/><rect x="494" y="677" width="382" height="62" rx="10"/><rect x="84" y="757" width="380" height="62" rx="10"/><rect x="494" y="757" width="382" height="62" rx="10"/></g>
-    <g font-size="33" font-weight="650" fill="#181d23" text-anchor="middle"><text x="274" y="719">Polish</text><text x="685" y="719">Rewrite</text><text x="274" y="799">Continue</text><text x="685" y="799">Smart Continue</text></g>
-    <rect x="84" y="852" width="300" height="241" rx="14" fill="#fff0cc"/>
-    <text x="106" y="890" font-size="27" font-weight="650" fill="#796029">KITE MEMORY</text>
-    <text x="106" y="938" font-size="32" font-weight="600" fill="#1c2025">Current +</text><text x="106" y="978" font-size="32" font-weight="600" fill="#1c2025">past notes</text>
-    <text x="106" y="1028" font-size="26" fill="#59616c">Dated facts.</text><text x="106" y="1064" font-size="26" fill="#59616c">Original evidence.</text>
-    <path d="M391 986H441" fill="none" stroke="#b78129" stroke-width="3" marker-end="url(#arrow)"/>
-    <text x="417" y="955" text-anchor="middle" font-size="21" fill="#e7d1a4">Recall</text>
-    <rect x="452" y="852" width="424" height="241" rx="14" fill="#fffdfa"/>
-    <text x="475" y="891" font-size="25" font-weight="600" fill="#59616c">YOUR CURRENT DOCUMENT</text>
-    <text x="475" y="939" font-size="29" font-weight="650" fill="#1c2025">Maple weekly update</text>
-    <text x="475" y="990" font-size="29" fill="#1c2025">The pilot opens Oct 29.</text>
-    <text x="475" y="1031" font-size="29" fill="#1c2025">26 / 30 completed checkout.</text>
-    <text x="475" y="1070" font-size="25" fill="#866126">Evidence stays in view.</text>
-    <path d="M234 1093V1124M666 1126V1095" fill="none" stroke="#b78129" stroke-width="2.5" marker-end="url(#arrow)"/>
-    <rect x="84" y="1130" width="792" height="204" rx="14" fill="#222a36"/>
-    <text x="112" y="1176" font-size="28" font-weight="650" fill="#ffcb78">WRITING AGENT HARNESS</text>
-    <g font-size="31" fill="#f5f2e9"><text x="113" y="1233">Plan</text><text x="280" y="1233">Retrieve</text><text x="493" y="1233">Write</text><text x="682" y="1233">Check</text></g>
-    <g fill="none" stroke="#b78129" stroke-width="2.5" marker-end="url(#arrow)"><path d="M191 1223H254"/><path d="M412 1223H468"/><path d="M590 1223H658"/><path d="M787 1222H831V1293H532V1250"/></g>
-    <rect x="610" y="1274" width="175" height="37" fill="#222a36"/>
-    <text x="700" y="1302" text-anchor="middle" font-size="25" fill="#ffcb78">Revise or stop</text>
-    <path d="M480 1388V1431" fill="none" stroke="#b78129" stroke-width="3" marker-end="url(#arrow)"/>
-    <text x="506" y="1424" font-size="27" fill="#59616c">Review and export</text>
-    <g fill="#fffdfa" stroke="#d4cfc4"><rect x="48" y="1456" width="420" height="65" rx="10"/><rect x="492" y="1456" width="420" height="65" rx="10"/><rect x="48" y="1539" width="420" height="65" rx="10"/><rect x="492" y="1539" width="420" height="65" rx="10"/></g>
-    <g font-size="33" fill="#1c2025" text-anchor="middle"><text x="258" y="1500">Markdown</text><text x="702" y="1500">Obsidian</text><text x="258" y="1584">Notion</text><text x="702" y="1584">Feishu</text></g>
-    <g font-size="30" font-weight="600" fill="#1c2025"><text x="48" y="1682">01  One action, one button.</text><text x="48" y="1730">02  Memory beside your draft.</text><text x="48" y="1778">03  An agent that plans, writes and checks.</text></g>
-    <text x="48" y="1826" font-size="21" fill="#59616c">Workflow illustration. Explicit imports and exports. Account setup may apply.</text>
-  </g>
+<?xml version="1.0" ?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1570" viewBox="0 0 960 1570" role="img" aria-labelledby="title desc">
+  <title id="title">MEMOKET NOTE — Turn scattered notes into your next draft.</title>
+  <desc id="desc">Bring existing notes in. Use inline AI, long-term memory and an agent harness. Review and export the draft.</desc>
+  <style>text{font-family:Arial,Helvetica,sans-serif;fill:#f6f3ed}.muted{fill:#b7b3aa}.gold{fill:#e2c38a}.ink{fill:#1c1c21}.violet{fill:#bdb2ff}.line{stroke:#57534d;stroke-width:2;fill:none}.card{fill:#202026;stroke:#47434a;stroke-width:2}</style>
+  <rect width="960" height="1570" rx="28" fill="#141417"/>
+  <text x="44" y="66" font-size="30" class="gold" font-weight="700">MEMOKET NOTE</text>
+  <text x="44" y="154" font-size="66" class="" font-weight="700">Turn scattered notes</text>
+  <text x="44" y="230" font-size="66" font-weight="700">into your next draft.</text>
+  <text x="44" y="284" font-size="32" class="muted" font-weight="400">An agent-native writing workspace.</text>
+  <rect x="44" y="345" width="872" height="196" rx="22" class="card"/>
+  <text x="76" y="396" font-size="30" class="gold" font-weight="700">1. BRING YOUR NOTES</text>
+  <text x="76" y="452" font-size="38" class="" font-weight="700">Markdown · Obsidian · Notion</text>
+  <text x="76" y="502" font-size="34" class="muted" font-weight="400">Apple Notes · Feishu · Memoket</text>
+  <path d="M480 560v46m-13-13 13 13 13-13" stroke="#e2c38a" stroke-width="3" fill="none"/>
+  <rect x="44" y="628" width="872" height="550" rx="22" class="card"/>
+  <text x="76" y="685" font-size="30" class="gold" font-weight="700">2. WRITE IN ONE PLACE</text>
+  <rect x="68" y="716" width="824" height="127" rx="15" fill="#302b43"/>
+  <text x="92" y="763" font-size="37" class="" font-weight="700">One-click AI, in your document</text>
+  <text x="92" y="814" font-size="33" class="muted" font-weight="400">Polish · Rewrite · Figures · Tables</text>
+  <rect x="68" y="864" width="824" height="127" rx="15" fill="#252b2c"/>
+  <text x="92" y="911" font-size="37" class="" font-weight="700">Past notes, beside your draft</text>
+  <text x="92" y="962" font-size="33" class="muted" font-weight="400">KITE recalls dates &amp; source evidence</text>
+  <rect x="68" y="1012" width="824" height="127" rx="15" fill="#322e26"/>
+  <text x="92" y="1059" font-size="37" class="" font-weight="700">Agent harness, working for you</text>
+  <text x="92" y="1110" font-size="33" class="muted" font-weight="400">Plan → Write → Check → Review</text>
+  <path d="M480 1197v46m-13-13 13 13 13-13" stroke="#e2c38a" stroke-width="3" fill="none"/>
+  <rect x="44" y="1264" width="872" height="250" rx="22" class="card"/>
+  <text x="76" y="1319" font-size="30" class="gold" font-weight="700">3. REVIEW &amp; TAKE IT BACK</text>
+  <text x="76" y="1382" font-size="36" class="" font-weight="700">Markdown · Obsidian · Notion · Feishu</text>
+  <text x="76" y="1456" font-size="40" class="muted" font-weight="400">You review. You decide.</text>
 </svg>

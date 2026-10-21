@@ -70,3 +70,11 @@ Select the provider in Settings under Voice service:
 `ASR_POLL_TIMEOUT_S` limits hosted job polling; its default is 1,800 seconds.
 The connection test contacts the selected provider without uploading audio.
 Hosted transcription sends the selected recording to that provider.
+
+## Memoket hardware companion
+
+Import selected recording briefs through the official Memoket CLI, using your
+existing login on this computer. NOTE also provides its own CLI and stdio MCP for
+external agents. See [setup, commands and validation limits](agents-and-memoket.md).
+These are explicit imports; no recording deletion, write-back or automatic sync
+is exposed.

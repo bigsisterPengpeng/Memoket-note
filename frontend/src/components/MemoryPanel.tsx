@@ -12,6 +12,7 @@ import { trayByDefault } from '../util/trayDefaults'
 import ExportBack from './ExportBack'
 import FilePicker from './FilePicker'
 import WritingFlow from './WritingFlow'
+import MemoketImport from './MemoketImport'
 import { getLang, t } from '../i18n'
 
 /** Notes produced by a finished import -> tray items (pure function): only those that became notes (`note_id` set, status done), one per note, capped at the tray limit */
@@ -77,12 +78,6 @@ function JobProgress({ j }: { j: JobOut }) {
   )
 }
 
-/**
- * Import panel: import from other apps + batch import + extraction progress. It used to be the right pane's "Knowledge base"
- * panel, also stuffed with search (now ⌘K), periodic review (now "Periodic review" in the tree), personal preferences (now Settings)
- * -- five unrelated things stacked in 300px. Now only "bring things in" remains,
- * occupying the middle pane as the special note app:import.
- */
 export default function MemoryPanel({ pendingJob, trayNoteId = '' }: { pendingJob: string; trayNoteId?: string }) {
   const [stats, setStats] = useState<{ facts: number; entities: number } | null>(null)
   const [job, setJob] = useState('')
@@ -264,7 +259,6 @@ export default function MemoryPanel({ pendingJob, trayNoteId = '' }: { pendingJo
       <p className="section-label">{t('Import from files and apps')}</p>
       <div className="stack import-connections">
         <p className="muted" style={{ fontSize: 'var(--t-sm)', marginTop: 0 }}>
-          {}
           {t('Cleaned per source on import: original dates and folder structure are kept, each app\'s private syntax is removed (')}<code>{t('[[wiki links]]')}</code>{t(', ')}<code>{t('![[attachments]]')}</code>{t(', dataview blocks, Evernote attachment placeholders). ')}<strong>{t('Re-importing is incremental')}</strong>{t(' -- content already imported is skipped, never doubled, and does not spend extraction time again.')}
         </p>
 
@@ -343,8 +337,6 @@ export default function MemoryPanel({ pendingJob, trayNoteId = '' }: { pendingJo
         <p className="muted" style={{ fontSize: 'var(--t-xs)', margin: '0 0 6px 96px' }}>
           {t('Create a custom app on the Feishu Open Platform, grant read-only docx / wiki / drive permissions, then ')}<strong>{t('add the app as a collaborator')}</strong>{t(' on the wiki or documents to import. Credentials are not stored.')}
           <br />
-          {/* Measured on a real account: for a wiki document shared with the app as a single-doc collaborator, get_node can read it,
-              but /wiki/v2/spaces lists no space at all -- readable but not listable. */}
           <strong>{t('Documents shared only as single-doc collaborator cannot be listed')}</strong>{t(' (listing requires the app to be a member of the wiki space) -- paste that document\'s link into the box above.')}
         </p>
 
@@ -361,6 +353,15 @@ export default function MemoryPanel({ pendingJob, trayNoteId = '' }: { pendingJo
         </p>
       </div>
 
+      <MemoketImport to={importTo} disabled={importing} onImported={(r) => {
+        announceEstimate(r)
+        setBatchJob(r)
+        watchJob(r.job_id, (j) => { setBatchJob(j); pollRecentFacts(j.facts) }, () => {
+          void refresh()
+          setRecentFacts([])
+          void landImportInTray(r.job_id, trayNoteId).catch((e) => toast(friendlyError(e), 'error'))
+        })
+      }} />
       <p className="section-label">{t('Batch import')}</p>
       <div className="stack">
         {interrupted.length > 0 && (

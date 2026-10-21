@@ -4097,14 +4097,14 @@ export default function App() {
               </div>
               <button className={'fb-btn primary' + (loading === 'tap' ? ' running' : '')} onClick={runMagicTap}
                       disabled={loading === 'note-harness'}
-                      title={t('Continue: search the knowledge base, then write the next passage (streaming)')}>
+                      title={t('Continue: write the next passage once, using relevant memory')}>
                 <Icon n={(loading === 'tap' ? 'bx-stop' : 'bx-edit-alt')} /><span className="fb-label">{loading === 'tap' ? t('Stop') : t('Continue')}</span>
               </button>
               <span className="fb-split">
                 <button className={'fb-btn secondary' + (loading === 'note-harness' ? ' running' : '')}
                         onClick={() => runNoteHarness('write')} disabled={loading === 'tap' || isSlides(content)}
                         title={isSlides(content) ? t('This note is a slide deck — appending prose would break the pages and citations; edit the source note and regenerate instead')
-                          : t('Smart Continue: alternates auto-revise and auto-continue until the outline is complete')}>
+                          : t('Smart Continue: work toward your goal through multiple writing and checking rounds')}>
                   <Icon n={(loading === 'note-harness' ? 'bx-stop' : 'bx-bot')} /><span className="fb-label">{loading === 'note-harness' ? t('Stop') : t('Smart Continue')}</span>
                 </button>
                 <button className="fb-btn secondary fb-caret-btn" title={t('Polish / review each round')}

@@ -16,6 +16,14 @@ def main() -> None:
     # support before importing application code to avoid recursive process starts.
     multiprocessing.freeze_support()
 
+    if "--cli" in sys.argv[1:]:
+        from app.cli import main as cli_main
+        raise SystemExit(cli_main(sys.argv[sys.argv.index("--cli") + 1:]))
+    if "--mcp" in sys.argv[1:]:
+        from app.mcp_server import create_server
+        create_server().run(transport="stdio")
+        return
+
     ap = argparse.ArgumentParser(prog="memoket-note-backend")
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--port", type=int, default=8000)

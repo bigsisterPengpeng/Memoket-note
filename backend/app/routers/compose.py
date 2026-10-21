@@ -299,6 +299,9 @@ async def rewrite(body: RewriteIn, user: str = Depends(current_user)):
     if isinstance(parsed, dict):
         new_text = str(parsed.get("text") or "").strip()
         if new_text:
+            leading = body.selection[:len(body.selection) - len(body.selection.lstrip())]
+            trailing = body.selection[len(body.selection.rstrip()):]
+            new_text = leading + new_text + trailing
             default_reason = 'Polish' if body.intent == "polish" else 'Rewrite'
             revisions.append(Revision(
                 id=uuid.uuid4().hex[:8], op="replace", anchor=body.selection,

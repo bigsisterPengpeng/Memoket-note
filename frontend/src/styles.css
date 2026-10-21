@@ -1717,3 +1717,15 @@ label.plan-check-row { cursor: pointer; }
 .writing-feedback-summary {
   border-inline-start: 3px solid var(--accent);
 }
+
+.memoket-import { margin: 20px 0; min-width: 0; }
+.memoket-import summary { cursor: pointer; overflow-wrap: anywhere; }
+.memoket-import p { overflow-wrap: anywhere; }
+.memoket-import-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.memoket-import-row input { flex: 1 1 180px; min-width: 0; }
+.memoket-import-row button { white-space: normal; }
+.memoket-results { max-height: 280px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--t-sm); }
+.memoket-matches { padding: 0; list-style: none; display: grid; gap: 6px; }
+.memoket-matches button { width: 100%; text-align: left; white-space: normal; overflow-wrap: anywhere; }
+.memoket-matches button[aria-pressed="true"] { border-color: var(--accent); }
+.memoket-matches span { display: block; font-size: var(--t-xs); }

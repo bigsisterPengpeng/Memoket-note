@@ -21,7 +21,7 @@ from .database.ingest import asr
 from .database.kite.kite_memory import UserMemory
 from .util import i18n, llm, parent_watch
 from .util.config import get_settings
-from .routers import (assets, client_log, compose, compose_block, export, harness, import_sources, ingest, journey, kb, memory, note_harness, notes, profile,
+from .routers import (assets, client_log, compose, compose_block, export, harness, import_sources, ingest, journey, kb, memory, memoket_connector, note_harness, notes, profile,
                       settings as settings_router, skills, tree, writing_plan)
 
 async def _settle_topics_once() -> None:
@@ -151,6 +151,7 @@ app.include_router(note_harness.router)
 app.include_router(skills.router)
 app.include_router(ingest.router)
 app.include_router(import_sources.router)
+app.include_router(memoket_connector.router)
 app.include_router(memory.router)
 app.include_router(kb.router)
 app.include_router(harness.router)

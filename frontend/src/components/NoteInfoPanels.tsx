@@ -15,7 +15,7 @@ import { readingMinutes, wordCount } from '../util/wordCount'
 import Icon from './Icon'
 import { t } from '../i18n'
 
-const SOURCE_LABEL: Record<string, string> = { obsidian: 'Obsidian', notion: 'Notion', apple: 'Apple Notes', evernote: 'Evernote', feishu: 'Feishu', import: 'Import' }
+const SOURCE_LABEL: Record<string, string> = { memoket: 'Memoket', obsidian: 'Obsidian', notion: 'Notion', apple: 'Apple Notes', evernote: 'Evernote', feishu: 'Feishu', import: 'Import' }
 
 export function NoteInfoPanel({ note, content, row }: { note: Note; content: string; row?: TreeRow }) {
   const words = wordCount(content)

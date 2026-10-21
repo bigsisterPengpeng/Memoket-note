@@ -25,6 +25,7 @@ PRIVATE_FILES = {
 }
 SECRET_PATTERNS = {
     "github-token": re.compile(r"\b(?:gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{60,})\b"),
+    "memoket-api-token": re.compile(r"\bmtok_live_[A-Za-z0-9_-]{16,}\b"),
     "private-key": re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----"),
     "service-token": re.compile(r"\b(?:sk_live_[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{24,}|AKIA[A-Z0-9]{16})\b"),
 }

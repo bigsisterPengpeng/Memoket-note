@@ -54,12 +54,17 @@ def mermaid_xy(title: str, labels: list[str], values: list[float],
     ys = [float(v) for v in values[:n]] or [0.0]
     kind = "line" if kind == "line" else "bar"
     names = [series] + [nm for nm, _v, _k in (extra or [])]
+    axis = f'    y-axis "{safe_label(" / ".join(names), 30)}"'
+    if kind == "bar" or any(k != "line" for _nm, _v, k in (extra or [])):
+        all_values = ys + [float(v) for _nm, vs, _k in (extra or []) for v in vs[:n]]
+        lower, upper = min(0.0, *all_values), max(0.0, *all_values)
+        axis += f" {_fmt(lower)} --> {_fmt(upper if upper > lower else lower + 1)}"
     lines = [
         "xychart-beta",
         f'    title "{safe_label(title, 40)}"',
         "    x-axis [" + ", ".join(f'"{x}"' for x in xs) + "]",
 
-        f'    y-axis "{safe_label(" / ".join(names), 30)}"',
+        axis,
         f"    {kind} [" + ", ".join(_fmt(v) for v in ys) + "]",
     ]
     for _nm, vs, k in (extra or []):

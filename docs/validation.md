@@ -2,12 +2,12 @@
 
 Validated on October 21, 2026 with Python 3.11.15, Node.js 22.22.3 and macOS arm64.
 The final checks reuse the isolated dependency installations from the earlier
-publication preparation. This update changes no dependency versions.
+publication preparation. The CLI reuses core dependencies; the optional stdio MCP server adds the pinned MCP 2.3.0 runtime. KITE and existing application dependency versions remain pinned.
 
 | Check | Result |
 |---|---|
-| Backend pytest | 415 passed |
-| Frontend Vitest | 57 files, 308 passed |
+| Backend pytest | 429 passed |
+| Frontend Vitest | 58 files, 310 passed |
 | Independent frontend/backend shared contracts | 61 passed |
 | Frontend types, lint and production build | Passed |
 | Desktop typecheck and packaging downloader test | Passed |
@@ -15,7 +15,7 @@ publication preparation. This update changes no dependency versions.
 | Publication audit | No recognizable credential, private-data-path or personal-absolute-path findings |
 | Source-language audit | Literal Han characters remain confined to optional translation dictionaries |
 
-Backend tests report six deprecation warnings in third-party dependencies. The
+Backend tests report five deprecation warnings in third-party dependencies. The
 frontend production build retains its large-chunk warning. Dependency advisory
 audits passed on October 20, 2026; those results are a dated snapshot, not a claim
 that no dependency can develop a vulnerability. KITE remains pinned to an upstream
@@ -42,6 +42,36 @@ model output, with edited timing and synthetic narration. Its captions match its
 transcript. Every chapter is visually inspected and the complete video/audio
 stream decodes without errors. Model output and extraction results can vary.
 
+## CLI, MCP and inline-action validation
+
+The NOTE stdio MCP server exposes eight tools. Both the source server and the
+packaged executable complete a real MCP handshake, list their tools, list the
+fictional Maple notes and recall three saved facts through the running backend.
+CLI creation, JSON output and Markdown export are also checked. Automated tests
+cover loopback-only client URLs, read-tool allowlisting, subprocess argument
+handling, diagnostic redaction, batch-launcher rejection, user isolation and
+incremental imports that preserve local edits.
+
+The official Memoket CLI 3.0.0 public catalog advertises seven recording read
+tools. The UI can locate that installed CLI. Real-account recording reads and
+imports have not been validated: tests use fictional tool responses, and no
+personal recordings are included in the demonstration or publication.
+
+A separate fictional rehearsal note exercises right-click Polish and the slash
+menu's Data visualization action with a real model. A broad polish invents a
+causal relationship and is reverted; a focused grammar improvement is accepted.
+The chart explanation is corrected against the source. Review controls remain
+necessary even when automated checks pass. Selection edits now preserve boundary
+whitespace. Chart generation separates tool preparation from writing and inserts
+validated chart artifacts without asking the model to recopy their syntax.
+Bar-chart axes include zero, including when values are negative.
+
+The revised video is approximately 119 seconds with 33 English caption cues.
+The README embeds a 39-second silent preview directly. These are edited captures;
+UI interactions are automated to demonstrate the workflow and review steps.
+The image-generation feature appears as a menu option; the demonstrated figure
+operation is data visualization.
+
 ## Regression fixes from the live run
 
 A non-reasoning model rejected the optional `reasoning_effort` argument. The
@@ -64,6 +94,8 @@ Layout and interaction checks cover:
 - Welcome and Export at 1280 × 720, 900 × 600, 720 × 612, 375 × 600 and 667 × 375.
 - Import at 1280 × 720, 900 × 600 and 375 × 600.
 - All nine Engineering template previews at 900 × 600, 720 × 612 and 375 × 600.
+- Memoket import at 900 × 600 and 720 × 615, including wrapped controls.
+- README at 1040 × 900 and 390 × 844: all images load, the mobile diagram is selected and the demo button scrolls to the inline animation.
 - The visible Export button, Markdown download and local vault export.
 - Clickable imported-source citations, dated original evidence and backlinks.
 
@@ -75,7 +107,7 @@ permissions remain manual validation work.
 
 ## Packaged application
 
-The macOS Apple Silicon installer is version 0.1.2. Deep signature verification,
+The macOS Apple Silicon installer is version 0.1.3. Deep signature verification,
 disk-image verification, read-only mounting and the Applications shortcut pass.
 The bundled backend starts with a disposable copy of the fictional library and
 serves the current frontend. It reads all 14 facts, indexes imported and manual

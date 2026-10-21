@@ -1,4 +1,4 @@
-/** Backend API wrapper. User identity goes in the X-User-Id header; no authentication at the prototype stage. */
+/** Local workspace API. X-User-Id selects data; it does not authenticate requests. */
 import type { DocIntent } from './util/docIntent'
 import type { SavedLayer } from './util/changeLayers'
 import type { NoteRoundsPayload } from './util/roundsRestore'
@@ -1835,3 +1835,13 @@ export const journeySetRetention = (segment_days: number, thumb_days: number) =>
  *  The switch / blacklist / retention period stay -- those are settings, not records. */
 export const journeyWipeAll = () =>
   fetch('/api/journey/all', { method: 'DELETE', headers: headers() }).then(json<JourneyRetention>)
+
+
+export const memoketStatus = () => fetch('/api/connectors/memoket/status', { headers: headers() })
+  .then(json<{ available: boolean; message: string; version?: string }>)
+export const memoketRead = (tool: string, args: Record<string, unknown>) =>
+  fetch('/api/connectors/memoket/read', { method: 'POST', headers: headers({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ tool, arguments: args }) }).then(json<Record<string, unknown>>)
+export const memoketImport = (conversationId: string, title: string, to: 'notes' | 'both' | 'kb') =>
+  fetch('/api/connectors/memoket/import', { method: 'POST', headers: headers({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ conversation_id: conversationId, title, to }) }).then(json<JobOut>)

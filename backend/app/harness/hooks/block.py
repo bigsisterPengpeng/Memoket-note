@@ -9,6 +9,7 @@ tools really emitted, best-of, stopping -- is shared machinery.
 
 from __future__ import annotations
 
+import re
 from typing import AsyncIterator
 
 from .. import agent_loop
@@ -57,8 +58,11 @@ class BlockHooks:
 
         tray = tray_mod.lines_of(st.ctx.tray)
         st.bag["tray_lines"] = tray
-        msgs = [{"role": "system", "content": self._system(st)},
-                {"role": "user", "content": self._user(st, facts="", gaps=gaps)}]
+        msgs = [{"role": "system", "content": self._system(st) + (
+                    "\nThis is the tool preparation phase, not final block generation. "
+                    "Use the available tools to inspect the source and produce validated artifacts. "
+                    "Do not write the final block or simulate a tool call in a code fence.")},
+                {"role": "user", "content": self._user(st, facts="", gaps=gaps, preparing=True)}]
         extra, trace = await agent_loop.gather_context(
             msgs, st.ctx, groups=list(st.mode.groups), max_iters=3)
 
@@ -95,15 +99,28 @@ class BlockHooks:
                          ' checks. **Copy them verbatim**; do not rewrite them or claim charts are '
                          'unavailable merely because no tool was called in this round.'
                      ))
+        artifacts = {f"{{{{NOTE_CHART_{i}}}}}": f"```mermaid\n{chart}\n```"
+                     for i, chart in enumerate(st.charts, 1)}
+        if artifacts:
+            user = _mask_charts(user, artifacts)
+            user += ("\n\n[Chart insertion] Insert the chosen {{NOTE_CHART_N}} marker on its own line. "
+                     "The workspace restores the exact validated chart. Never rewrite its Mermaid code.")
         fresh = ""
         async for piece in llm.stream(
-                [{"role": "system", "content": self._system(st)},
+                [{"role": "system", "content": self._system(st) + (
+                    "\nTool preparation has finished. No tools are available in this generation phase. "
+                    "Copy the actual Markdown/Mermaid artifacts from tool evidence unchanged. "
+                    "Never output tool invocations, render_chart fences, Chart.js configuration or raw JSON. "
+                    "If no validated chart was returned, state that limitation without inventing one.")},
                  {"role": "user", "content": user}],
                 max_tokens=st.mode.max_tokens, temperature=0.4):
             fresh += piece
-            yield piece
-        # Replace, don't append: each round rewrites the block from scratch.
-
+            if not artifacts:
+                yield piece
+        if artifacts:
+            for marker, artifact in artifacts.items():
+                fresh = fresh.replace(marker, artifact)
+            yield fresh
         st.content = fix_bold_punct(fresh.strip()) or st.content
 
     # ------------------------------------------------------------ commit --
@@ -124,7 +141,7 @@ class BlockHooks:
             st.skill_bodies)
 
 
-    def _user(self, st: State, *, facts: str, gaps: str = "") -> str:
+    def _user(self, st: State, *, facts: str, gaps: str = "", preparing: bool = False) -> str:
         """The round's user message.
 
         Only the cursor's neighbourhood goes in, never the whole note. With
@@ -163,6 +180,9 @@ class BlockHooks:
         parts.append('[Text before the cursor]\n' + (st.before[-BEFORE_CHARS:] or '(Start of note)'))
         if st.after.strip():
             parts.append('[Text after the cursor]\n' + st.after[:AFTER_CHARS])
+        if preparing:
+            parts.append('[Preparation] Call tools now. Retrieve and validate artifacts for the task; do not compose the final block yet.')
+            return "\n\n".join(parts)
         parts.append(
 
                 '[Output]\nReturn only the block to insert at the cursor. Omit greetings and '
@@ -189,3 +209,12 @@ def _produced(trace: ToolTrace, groups: tuple[str, ...]) -> bool:
     wanted = set(registry.names(list(groups)))
     return any(name in wanted and res and not is_tool_notice(res)
                for name, _args, res in trace.calls)
+
+
+def _mask_charts(text: str, artifacts: dict[str, str]) -> str:
+    from ..checks.blockcheck import mermaid_blocks
+    by_body = {mermaid_blocks(artifact)[0]: marker for marker, artifact in artifacts.items()}
+    def replace(match: re.Match) -> str:
+        body = mermaid_blocks(match.group(0))
+        return by_body.get(body[0], match.group(0)) if body else match.group(0)
+    return re.sub(r"```mermaid\n.*?```", replace, text, flags=re.S)

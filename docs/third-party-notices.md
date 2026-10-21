@@ -24,6 +24,7 @@ when preparing a distribution.
 | Layer | Packages | License |
 |---|---|---|
 | Backend | fastapi, pydantic, pydantic-settings, httpx, python-docx | MIT |
+| Agent interface | [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk), mcp-types | MIT |
 | Backend | uvicorn | BSD-3-Clause |
 | Backend | python-multipart, memoket-kite | Apache-2.0 |
 | Backend | PyMuPDF | AGPL-3.0, with separate commercial licensing offered upstream |
@@ -63,6 +64,10 @@ presentation. Its English transcript and captions are included beside the video.
 It uses synthetic narration and contains no third-party music or private note data.
 
 The README artwork in `docs/media/readme/` combines original presentation layouts
-with the application's fictional Maple screenshots. Its workflow illustration adapts the mark
-from `memoket-website.svg`; the Memoket trademark attribution above also applies.
+with the application's fictional Maple screenshots. The Memoket trademark attribution above also applies to these assets.
 The editable HTML, CSS and SVG sources are included. No font files are embedded.
+
+The optional MCP runtime is included in desktop builds. Its SDK and additional
+runtime dependency notices are retained under [licenses/agent-runtime](licenses/agent-runtime/README.md)
+and copied into the application with the other notices. The official Memoket CLI
+is installed separately by the user and is not bundled or vendored here.

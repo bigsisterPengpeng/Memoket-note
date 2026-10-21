@@ -1,70 +1,100 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.132
-A writing agent that remembers your work.
+00:00:00.000 --> 00:00:00.820
+Memoket Note.
 
-00:00:02.212 --> 00:00:06.777
-Memoket Note brings the notes you already have into an agent-native writing workspace.
+00:00:00.820 --> 00:00:02.966
+An agent-native writing workspace.
 
-00:00:07.375 --> 00:00:10.139
+00:00:02.966 --> 00:00:04.228
+Bring your notes in.
+
+00:00:04.228 --> 00:00:06.310
+Work with AI inside the document.
+
+00:00:06.310 --> 00:00:09.150
+Take a reviewed draft back to your workspace.
+
+00:00:09.750 --> 00:00:12.736
 Start with three fictional Maple project notes.
 
-00:00:10.219 --> 00:00:14.708
-Import creates local notes and uses a real model to extract fourteen facts.
+00:00:12.736 --> 00:00:16.229
+Import creates local notes and extracts fourteen facts.
 
-00:00:14.788 --> 00:00:17.789
-Notion and Apple Notes are also available connections.
+00:00:16.229 --> 00:00:20.358
+Markdown, Obsidian, Notion and Apple Notes are supported sources.
 
-00:00:18.375 --> 00:00:20.650
+00:00:20.958 --> 00:00:23.379
 The knowledge survives a backend restart.
 
-00:00:20.730 --> 00:00:26.049
-Search for shelf labels, open a remembered fact, and inspect the dated original words.
+00:00:23.379 --> 00:00:26.625
+Open a saved fact and inspect its dated original words.
 
-00:00:26.129 --> 00:00:29.493
-This memory stays in the library across notes and sessions.
+00:00:26.625 --> 00:00:30.817
+The relevant past appears beside the draft, without leaving the editor.
 
-00:00:30.083 --> 00:00:33.336
-Set a goal, audience, and completion criteria.
+00:00:31.417 --> 00:00:33.852
+Select text and click Polish or Rewrite.
 
-00:00:33.416 --> 00:00:35.988
-Related memory appears beside the new draft.
+00:00:33.852 --> 00:00:35.983
+The workspace provides the context.
 
-00:00:36.068 --> 00:00:40.150
-Add relevant facts to Materials so the agent can prioritize them.
+00:00:35.983 --> 00:00:42.253
+Review the marked changes: reject an unsupported causal claim, then keep a focused grammar improvement.
 
-00:00:40.750 --> 00:00:44.570
-Smart Continue retrieves context and writes from the saved sources.
+00:00:42.253 --> 00:00:43.775
+You stay in the document.
 
-00:00:44.650 --> 00:00:48.818
-The writing agent harness runs checks and keeps the changes available for review.
+00:00:44.375 --> 00:00:49.941
+Type slash, or right-click without a selection, to insert AI writing, figures or tables.
 
-00:00:48.898 --> 00:00:51.135
-This draft cites ten stored facts.
+00:00:49.941 --> 00:00:56.077
+Here, Data visualization reads the existing table, calls real tools and inserts a rendered chart.
 
-00:00:51.750 --> 00:00:53.056
-Review still matters.
+00:00:56.077 --> 00:00:58.733
+Review its explanation against the source.
 
-00:00:53.136 --> 00:00:58.252
-In this run, the reviewer removes a repeated title and corrects an unsupported timing claim.
+00:00:59.333 --> 00:01:02.901
+Continue writes the next passage once, using relevant memory.
 
-00:00:58.332 --> 00:01:02.042
-A source link opens the original evidence and the backlink to the draft.
+00:01:02.901 --> 00:01:07.580
+Smart Continue works toward a goal through multiple writing and checking rounds.
 
-00:01:02.625 --> 00:01:05.696
-Download the reviewed draft as Markdown without an account.
+00:01:07.580 --> 00:01:12.025
+Choose the goal, audience and done criteria, then add evidence to Materials.
 
-00:01:05.776 --> 00:01:08.021
-Or write it into a separate Obsidian vault.
+00:01:12.625 --> 00:01:17.212
+The writing agent harness retrieves context, drafts and checks the result.
 
-00:01:08.101 --> 00:01:11.888
-Both exports preserve the draft and its ten source identifiers.
+00:01:17.212 --> 00:01:20.187
+Its plan, rounds and changes remain inspectable.
 
-00:01:12.500 --> 00:01:13.421
-Bring your notes.
+00:01:20.187 --> 00:01:22.419
+This live run cites ten saved facts.
 
-00:01:13.501 --> 00:01:14.635
-Keep your workflow.
+00:01:22.419 --> 00:01:24.650
+You can pause and review each round.
 
-00:01:14.715 --> 00:01:19.432
+00:01:25.250 --> 00:01:27.249
+A check is not a guarantee of truth.
+
+00:01:27.249 --> 00:01:31.637
+The reviewer removes a repeated title and corrects an unsupported timing claim.
+
+00:01:31.637 --> 00:01:35.358
+A citation opens the source evidence and the backlink to the draft.
+
+00:01:35.958 --> 00:01:40.600
+Download Markdown without an account, or export into a separate Obsidian vault.
+
+00:01:40.600 --> 00:01:44.360
+The reviewed draft and its ten source identifiers are preserved.
+
+00:01:44.360 --> 00:01:47.650
+Configured Notion and Feishu exports are also available.
+
+00:01:48.250 --> 00:01:53.271
 Memoket Note is a personal open-source project built on the Memoket KITE memory engine.
+
+00:01:53.271 --> 00:01:58.233
+One-click AI, memory beside your draft, and an agent harness working toward your goal.

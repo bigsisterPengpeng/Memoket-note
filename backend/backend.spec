@@ -1,6 +1,10 @@
 # Bundle the backend so desktop installations do not require system Python.
 # Explicitly collect dynamic imports that PyInstaller's static analysis cannot see.
+from importlib.util import find_spec
 from PyInstaller.utils.hooks import collect_submodules, collect_data_files
+
+if find_spec("mcp") is None:
+    raise RuntimeError("Install backend/requirements-agents.txt before packaging the CLI/MCP-enabled desktop app")
 
 hidden = (
     collect_submodules("uvicorn")

@@ -7,7 +7,7 @@ SCOPES = ("all", "notes", "meetings", "imports", "screen")
 
 SCOPE_LABEL = {"all": 'All (excluding screen)', "notes": 'Notes only', "meetings": 'Meeting records only',
                "imports": 'Imports only', "screen": 'Screen activity only'}
-_IMPORT_PREFIXES = ("obsidian-", "notion-", "feishu-", "apple-", "evernote-", "md-", "import-", "file-")
+_IMPORT_PREFIXES = ("obsidian-", "notion-", "feishu-", "apple-", "evernote-", "md-", "import-", "file-", "memoket-")
 
 
 def classify(unit: str) -> str:

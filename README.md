@@ -1,16 +1,12 @@
 <p align="center">
-  <a href="docs/media/readme/workflow.svg">
-    <picture>
-      <source media="(max-width: 600px)" srcset="docs/media/readme/workflow-mobile.svg">
-      <source media="(max-width: 900px)" srcset="docs/media/readme/workflow.svg">
-      <source media="(prefers-reduced-motion: reduce)" srcset="docs/media/readme/workflow.svg">
-      <img src="docs/media/readme/workflow.gif" width="100%" alt="Import Markdown, Obsidian, Notion, Apple Notes, Evernote or Feishu. Use Polish, Rewrite and Continue in place. KITE recalls current and past notes beside the draft. A writing agent harness plans, retrieves, writes, checks and revises. Review the draft and export to supported tools.">
-    </picture>
-  </a>
+  <picture>
+    <source media="(max-width: 600px)" srcset="docs/media/readme/workflow-mobile.svg">
+    <img src="docs/media/readme/workflow.svg" width="100%" alt="Turn scattered notes into your next draft. Bring Markdown, Obsidian, Notion, Apple Notes, Feishu and Memoket sources in. Use one-click inline AI, KITE memory beside your draft, and an agent harness that plans, writes and checks. Review and export to your workspace.">
+  </picture>
 </p>
 
 <p align="center">
-  <a href="docs/media/agent-native-writing-workspace.mp4"><img src="docs/media/readme/button-watch.svg" height="36" alt="Watch the demo · 80 seconds"></a>
+  <a href="#see-the-workflow"><img src="docs/media/readme/button-watch.svg" height="36" alt="See the inline workflow demo"></a>
 &nbsp;
   <a href="#development-setup"><img src="docs/media/readme/button-start.svg" height="36" alt="Run locally"></a>
 &nbsp;
@@ -19,7 +15,7 @@
 
 <p align="center">
   <strong>One-click AI actions. Memory beside your draft. An agent that plans, writes and checks.</strong><br>
-A personal open-source project built on <a href="https://github.com/memoket/memoket-kite">Memoket KITE</a>.
+An agent-native writing workspace. A personal open-source project built on <a href="https://github.com/memoket/memoket-kite">Memoket KITE</a>.
 </p>
 
 <p align="center">
@@ -44,22 +40,26 @@ NOTE is designed around three goals:
 
 That is what *agent-native* means here: the document carries the work; the agent has tools to act on it. Read the [design principles](docs/why-agent-native.md).
 
-## See the whole workflow in 80 seconds
+## See the workflow
 
-[![Play the real workflow: three notes, fourteen saved facts, one reviewed draft](docs/media/readme/demo.svg)](docs/media/agent-native-writing-workspace.mp4)
+![Real application workflow: import, saved memory, inline AI actions, agent writing, review and export](docs/media/writing-workflow.gif)
 
-The [fictional Maple pilot](examples/maple-pilot.md) goes from **three imported notes** to **14 facts that survive a backend restart**, then a live GPT-4.1 draft citing **10 saved facts**. A reviewer corrects the draft before exporting it to Markdown and a separate Obsidian vault.
+**Bring it in → recall what matters → act inside the document → review → take it back.** The demo uses fictional Maple project notes, real application interactions and live model output. It shows memory surviving a restart, right-click Polish, inline chart creation, a checked writing run and export.
 
-[Play video](docs/media/agent-native-writing-workspace.mp4) · [English captions](docs/media/agent-native-writing-workspace.en.vtt) · [Transcript](docs/media/agent-native-writing-workspace.md) · [Repeat the example](docs/workspace-tour.md)
+[Download the narrated MP4](docs/media/agent-native-writing-workspace.mp4?raw=1) · [English captions](docs/media/agent-native-writing-workspace.en.vtt) · [Transcript and recording notes](docs/media/agent-native-writing-workspace.md) · [Repeat the example](docs/workspace-tour.md)
 
-<details>
-<summary><strong>Animated preview and recording notes</strong></summary>
+The animation plays directly in this README. The MP4 link downloads the video for a local player; GitHub's repository file viewer may not play it. Model waits are shortened and frames are sampled. All materials are fictional. English narration is synthetic. Human review is part of the workflow.
 
-[![Actual import, memory, writing and export interactions](docs/media/writing-workflow.gif)](docs/media/agent-native-writing-workspace.mp4)
+### Small edit or complete writing task?
 
-The video uses actual application interactions and live model output, with sampled frames, shortened waits and synthetic English narration. All source material is fictional. The reviewer removes a repeated title and corrects an unsupported timing claim. Notion and Apple Notes appear as connection options; the recording does not access personal accounts. Model output still needs review.
+| What you want | Where to act | What happens |
+|---|---|---|
+| Improve a passage | Select text → right-click **Polish** or **Rewrite** | Edit in context; accept or revert the marked changes |
+| Add a figure, table or chart | Type **/** at a line start, or right-click without a selection | **Smart figure**, **Smart table**, **Data visualization** and other inline actions work inside the note |
+| Write the next passage | **Continue** | One retrieval-and-writing action at the cursor |
+| Work toward a writing goal | **Smart Continue** | Multiple writing/checking rounds, with an outline, stopping limits and optional review after each round |
 
-</details>
+Smart figure chooses a data chart or generated illustration from context; image generation needs a configured image provider. Continue is for the next passage. Smart Continue is for a bounded writing task. Both keep you in the document.
 
 ## Memory without the detour
 
@@ -117,6 +117,7 @@ Templates across 12 categories define sourcing, writing, checking and finish rul
 | Evernote | Import exported `.enex` notebooks | Export the resulting notes as Markdown |
 | Apple Notes on macOS | Import through the local Notes app | Export Markdown for further use |
 | PDF, DOCX and plain text | Batch import source documents into the knowledge base | Use the recalled evidence in your drafts |
+| Memoket hardware companion | Search recordings through the official CLI; import selected brief snapshots into notes and optional KITE extraction | Export the resulting draft through NOTE; no write-back to the companion |
 | Recordings | Transcribe with a configured local or hosted service, then import | Work from the transcript and extracted knowledge |
 | A web page | Clip its text into the current note's Materials | Use the selected material during writing |
 
@@ -125,6 +126,18 @@ Templates across 12 categories define sourcing, writing, checking and finish rul
 </details>
 
 Notion and Feishu adapters need real-account end-to-end validation. Apple Notes import uses the local macOS Notes app. Connections are explicit imports and exports; universal live synchronization and editor extensions are not included. [Connection setup and limits](docs/connections.md).
+
+## Open to your agents. Connected to Memoket.
+
+**Your recorder can supply the source. Your agent can work in the workspace.** Import selected recording briefs from the Memoket hardware companion through its official CLI. NOTE's own CLI and stdio MCP let external agents read notes, recall KITE memory, create drafts and propose revisions.
+
+```sh
+# With the local backend running, from backend/
+.venv/bin/python -m app.cli recall "Maple shelf labels"
+.venv/bin/python -m app.cli memoket-read search_recordings --json '{"query":"Maple"}'
+```
+
+[Set up NOTE CLI/MCP and the Memoket connection](docs/agents-and-memoket.md). Companion access uses your existing official CLI login. Real-account import still needs validation; the demo uses fictional notes rather than private recordings.
 
 ## Development setup
 
@@ -219,7 +232,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for change conventions and [SECURITY.md](
 
 [Memoket KITE](https://github.com/memoket/memoket-kite) is the separate open-source memory engine. It stores structured facts with source evidence and supports inspectable retrieval without an embedding or vector-database stack. NOTE adds the editor, task Materials, writing harness and change-review interface around it.
 
-This is a personal project based on KITE, not a promise of commercial product support. The Memoket name and artwork acknowledge its origins at [memoket.ai](https://memoket.ai). The local integration needs no wearable or Memoket subscription; production synchronization with Gem or the Memoket App is not included. KITE is independently licensed under Apache-2.0.
+This is a personal project based on KITE, not a promise of commercial product support. The Memoket name and artwork acknowledge its origins at [memoket.ai](https://memoket.ai). Local KITE memory needs no wearable or Memoket subscription. The optional companion import uses your Memoket account; automatic synchronization with the companion is not included. KITE is independently licensed under Apache-2.0.
 
 ### Data and current scope
 

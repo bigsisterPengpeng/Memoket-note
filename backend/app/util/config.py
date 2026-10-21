@@ -64,6 +64,8 @@ class Settings(BaseSettings):
         return (Path(__file__).resolve().parents[2] / p).resolve()
     kite_extract_model: str = ""
 
+    memoket_cli: str = "memoket"
+
     host: str = "0.0.0.0"
     port: int = 8000
     cors_origins: str = "http://localhost:5173"

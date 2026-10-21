@@ -21,6 +21,8 @@ density unless context clearly calls for expansion or compression. Match its lan
 POLISH_SYSTEM = """Polish the selected passage: improve expression and remove ambiguity
 or verbosity without changing meaning or adding information. Polishing expresses the
 same meaning better; it does not rewrite the passage to change its role in context.
+Keep numbers, dates, attribution and uncertainty intact. Do not turn correlation
+into causation or infer why an event happened from nearby sentences.
 Return only JSON: {"text":"polished passage","reason":"what changed and why"}.
 Include only the selected passage and match its language.
 """
