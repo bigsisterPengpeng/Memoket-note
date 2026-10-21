@@ -68,3 +68,34 @@ presentation passed package, layout and import validation. The publication
 audit reported no findings, and literal Han characters remain confined to
 optional translation dictionaries. Backend behavior was not changed or
 retested for this terminology update; its earlier results are recorded above.
+
+## Layout, source citations and showcase update — October 21, 2026
+
+The writing-mode picker now renders in a document-level portal. Fixed viewport
+placement prevents the editor scroller and stacking contexts from clipping its
+header or controls. Card tracks and text have explicit intrinsic-size bounds;
+the custom form and details adapt to narrow widths. All 104 cards across all 12
+categories were checked at 900 × 600, 720 × 612 and 375 × 600. No card or panel
+had horizontal overflow, and the header passed hit-testing at every size.
+The sticky writing controls also reserve space above the first document line.
+
+The real UI walkthrough exposed a citation-format gap for manually entered KITE
+facts. Their identifiers now participate in source highlighting, citation checks,
+backlinks, export stripping and completion checks alongside extracted facts.
+Regression tests cover deduplication, user-scoped backlinks and rebuilding the
+index for existing notes. A source quotation and its persisted backlink were
+verified in the actual interface. English sentence endings and long English
+paragraph restatement checks were also corrected during fixture replacement.
+
+The showcase contains only invented Harbor notes and manually entered facts.
+Its 25-second silent UI tour is an edited sequence of actual screenshots, with
+an animated preview and English captions. It does not show a live model run.
+The separate narrated concept introduction remains available. Notion and Feishu
+real-account validation remains outside this local verification.
+
+After the final fixes, backend validation passed 402 tests (six third-party
+deprecation warnings). Frontend validation passed 305 tests across 56 files,
+all 61 shared contracts, typechecking and lint. The production build passed
+with the existing large-chunk warning. Python static analysis and the
+publication audit reported no findings. Literal Han remains confined to optional
+translation dictionaries. No automatic CI or live model calls were used.

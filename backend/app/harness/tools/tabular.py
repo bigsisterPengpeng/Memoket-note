@@ -246,7 +246,7 @@ _SENT_END = re.compile(r"[。！？；!?;]+|\n+")
 
 
 _NOT_A_QUANTITY = (
-    re.compile(r"\[[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+\]"),
+    re.compile(r"\[(?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*)\]"),
     re.compile(r"https?://\S+"),
     re.compile('\\d{4}\\s*[-/\u5e74.]\\s*\\d{1,2}(?:\\s*[-/\u6708.]\\s*\\d{1,2}\\s*\u65e5?)?'),
     re.compile('\\d{1,2}\\s*\u6708\\s*\\d{1,2}\\s*[\u65e5\u53f7]?'),

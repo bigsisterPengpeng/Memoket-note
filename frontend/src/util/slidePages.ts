@@ -6,7 +6,7 @@
  *  is not a page. */
 export type Page = { title: string; body: string; at: number; cited: boolean }
 
-const CITE = /\[[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+\]/
+const CITE = /\[(?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*)\]/
 
 export function isSlides(md: string): boolean {
   return /^---\s*\n([\s\S]*?)\n---\s*(\n|$)/.test(md || '') && /\bslides:\s*true\b/.test(md || '')

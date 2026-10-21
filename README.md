@@ -1,60 +1,146 @@
 <p align="center">
-  <a href="https://memoket.ai"><img src="docs/media/memoket-brand.png" width="680" alt="Memoket"></a>
+  <a href="https://memoket.ai"><img src="docs/media/memoket-brand.png" width="420" alt="Memoket"></a>
 </p>
 
 # MEMOKET NOTE
 
-**An agent-native writing workspace with long-term memory and reviewable edits.**
+**Turn weeks of notes into a draft you can trace back to its sources.**
 
-MEMOKET NOTE is my personal open-source project, built on
-[memoket-kite](https://github.com/memoket/memoket-kite). It combines a local note
-editor with AI writing actions, source-backed retrieval and a writing loop that
-can prepare material, draft, check and revise. You set the goal and decide which
-changes to keep.
+An **agent-native writing workspace** with long-term memory and reviewable edits.
+A personal open-source project built on the
+[Memoket KITE memory engine](https://github.com/memoket/memoket-kite).
 
-The workspace includes a **writing agent harness** that coordinates tools,
-iterative drafting, quality checks and recovery. KITE supplies long-term memory;
-the harness manages the writing task; the workspace brings them into the editor.
+Meeting notes, research and project decisions accumulate across documents.
+Your next report should be able to use that material without making you paste
+all the background into another chat. MEMOKET NOTE keeps the draft, its task,
+source material and writing agent in one workspace.
 
-[Introduction video](docs/media/agent-native-writing-workspace.mp4) ·
-[The writing agent harness](#the-writing-agent-harness) ·
-[Development setup](#development-setup) · [Contributing](CONTRIBUTING.md)
+![A weekly draft beside persistent source materials and related memory](docs/media/screenshots/writing-with-memory.png)
 
-## Watch the introduction
+[Actual UI tour](docs/media/workspace-ui-tour.mp4) ·
+[Try it locally](#development-setup) ·
+[Connect your existing tools](#connect-your-existing-writing-tools) ·
+[How the agent works](#why-agent-native) ·
+[Architecture](docs/architecture.md)
 
-[![Watch the agent-native writing workspace introduction](docs/media/agent-native-writing-workspace-poster.png)](docs/media/agent-native-writing-workspace.mp4)
+## A report that remembers the work behind it
 
-**[Watch or download the English introduction](docs/media/agent-native-writing-workspace.mp4)**
-([transcript](docs/media/agent-native-writing-workspace.md),
-[English captions](docs/media/agent-native-writing-workspace.en.vtt)). The video
-explains the architecture and a weekly-report workflow. It uses narrated concept
-scenes rather than a live application recording.
+Imagine a pilot described in three notes written weeks apart: the original goal,
+a later decision and the latest field observations. You need a weekly update,
+with the current plan, a blocker and what happens next.
 
-## The writing agent harness
+1. **Bring in the material.** Import notes, documents or recordings, or add facts
+   manually. Keep source evidence attached to what you remember.
+2. **Set the writing task.** Choose a template or define the goal, audience and
+   completion criteria. The task stays with the note.
+3. **Use earlier knowledge.** Retrieve related facts as you write, inspect their
+   original words and collect the evidence in the Materials tray.
+4. **Write and review.** Continue a passage or start a multi-round workflow.
+   Review the changes and their sources before keeping or exporting the draft.
 
-The writing agent harness is the runtime around the model: it carries task state,
-controls tools, checks output and decides what happens next. Here, the note is the
-shared work in progress throughout that loop.
+The example below shows **actual application screens**, using invented Harbor
+notes and manually entered facts. The tour is an edited sequence of actual screenshots showing navigation, a
+source quotation and writing templates. It does not show a live model run.
 
-1. **Define the task.** Set the goal, audience, structure and completion criteria.
-   Use a direct action for a selection, cursor position or block, or start a
-   workflow for a longer document.
-2. **Prepare evidence.** Retrieve task-specific facts from KITE and include
-   material selected in the note's tray. Keep identifiers and source links
-   attached to the evidence.
-3. **Draft and check.** Generate or revise the text. Run deterministic checks for
-   citations, structure, repetition and block shape, then use the configured
-   judge for writing-quality dimensions.
-4. **Choose the next step.** Feed failures into another round, repair a draft,
-   pause or stop within configured limits. Preserve an earlier best round when
-   later output regresses.
-5. **Review the changes.** Inspect edits by layer or hunk, keep or revert changes,
-   and recover earlier text through snapshots and history.
+[![Actual UI walkthrough: draft, quotation, evidence, templates and export](docs/media/workspace-ui-tour.gif)](docs/media/workspace-ui-tour.mp4)
 
-The harness supports note and section writing alongside block tasks such as
-charts, tables and analysis. The core loop shares state and checks across task
-modes. Automated evaluations support review; they do not prove factual accuracy
-or make a draft ready to publish without human judgment.
+[Watch the UI tour](docs/media/workspace-ui-tour.mp4) ·
+[English captions](docs/media/workspace-ui-tour.en.vtt) ·
+[Follow the walkthrough](docs/workspace-tour.md) ·
+[Read the narrated architecture introduction](docs/media/agent-native-writing-workspace.md)
+
+## Where long-term memory appears
+
+Memory persists in the local KITE library across notes and application sessions.
+It is available outside the current document or a single model conversation.
+
+- **Related memory beside the draft:** retrieval follows the paragraph at the
+  cursor, with a selectable source scope.
+- **A fact with evidence:** open the fact to inspect its date and original words.
+  Quote it into the note with a source identifier you can follow.
+- **Materials for this task:** collect selected facts, notes and web clips so the
+  writing agent can prioritize them instead of relying on whatever happens to
+  be visible in a chat window.
+- **A browsable knowledge base:** revisit facts, entities, source records and the
+  timeline when you need to understand or correct what has been stored.
+
+![A saved fact showing its date, original words and related evidence](docs/media/screenshots/source-evidence.png)
+
+Remembering a fact does not make it current or correct. Source dates and original
+words remain visible so you can review them; generated claims still need judgment.
+
+## Why agent-native?
+
+The note carries the task and the work in progress. The agent operates through
+writing tools and a **writing agent harness**, rather than returning one isolated
+chat response that you must manually move into a document.
+
+| What the agent needs | What the workspace provides |
+|---|---|
+| A bounded task | The selected passage, cursor, block, note or multi-note plan; a goal, audience and done criteria |
+| Relevant context | KITE retrieval, source links and explicitly selected Materials |
+| A way to act | Tools for retrieval, writing, revision and supported generated blocks |
+| Feedback | Code checks for constraints plus configured model judging of writing dimensions |
+| A next step | Policy to revise, continue, pause or stop within limits |
+| Human control | Visible run progress, edit review, snapshots and history |
+
+A direct Continue action handles a small passage. Smart Continue runs an
+iterative writing workflow. You can choose a mode that pauses after each round
+so you can accept or revert changes before continuing.
+
+### The writing agent harness
+
+The harness manages task state, tools, writing rounds, checks, stopping conditions
+and recovery. The workspace is the complete writing application; KITE is its
+memory engine; the harness coordinates the agent's work.
+
+**Prepare evidence → draft or revise → check → decide → review.**
+
+The shared loop supports note and section writing as well as supported chart,
+table and analysis blocks. It can keep an earlier best round when a later round
+regresses. Automated checks support review; they do not prove factual accuracy.
+See the [implementation architecture](docs/architecture.md).
+
+## A template defines more than an outline
+
+The 104 templates across 12 categories set sourcing, writing, checking and finish
+rules. A weekly report and a technical design document need different evidence
+and different completion criteria. You can also define a custom task for one note.
+
+![Writing templates with explicit sourcing, writing, checks and finish rules](docs/media/screenshots/templates-900x600.png)
+
+## Connect your existing writing tools
+
+Start with the notes you already have and export a reviewed draft back into your
+workflow. Connections use files and supported account integrations; the options
+below describe implemented adapters, not a claim of live shared editing.
+
+| Your existing tool or material | Bring it into NOTE | Take work out of NOTE |
+|---|---|---|
+| Markdown / Obsidian | Import Markdown files or a vault; retain the folder structure and clean app-specific syntax | Export Markdown or write into a local vault |
+| Notion | Import pages accessible to your integration | Write notes as child pages under a selected parent |
+| Feishu | Import supported documents, Drive or Wiki content available to your app | Write documents into a selected folder |
+| Evernote | Import exported `.enex` notebooks | Export the resulting notes as Markdown |
+| Apple Notes on macOS | Import through the local Notes app | Export Markdown for further use |
+| PDF, DOCX and plain text | Batch import source documents into the knowledge base | Use the recalled evidence in your drafts |
+| Recordings | Transcribe with a configured local or hosted service, then import | Work from the transcript and extracted knowledge |
+| A web page | Clip its text into the current note's Materials | Use the selected material during writing |
+
+Notion and Feishu adapters still need real-account end-to-end validation. Hosted
+services use your own credentials. The code does not provide an MCP connector,
+an editor extension or automatic live synchronization with every writing tool.
+See [connection setup and limits](docs/connections.md).
+
+![Export controls for Obsidian, Notion and Feishu](docs/media/screenshots/import-connections.png)
+
+## Watch the architecture introduction
+
+[![English narrated introduction](docs/media/agent-native-writing-workspace-poster.png)](docs/media/agent-native-writing-workspace.mp4)
+
+[Watch or download](docs/media/agent-native-writing-workspace.mp4) ·
+[Transcript](docs/media/agent-native-writing-workspace.md) ·
+[English captions](docs/media/agent-native-writing-workspace.en.vtt).
+This separate video uses narrated concept scenes to explain the architecture.
 
 ## Relationship to memoket-kite and Memoket
 

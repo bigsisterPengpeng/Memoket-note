@@ -1805,7 +1805,7 @@ def child_notes(user_id: str, parent_id: str, exclude_id: str = "",
 import re as _re
 
 
-_CITE = _re.compile(r"\[([A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+)\]")
+_CITE = _re.compile(r"\[((?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*))\]")
 
 
 def cited_fact_ids(content: str) -> list[str]:
@@ -2057,7 +2057,7 @@ MAX_SECTIONS_PER_ADD = 20
 SECTION_TITLE_MAX = 80
 
 
-_TITLE_CITE = re.compile(r"\s*\[[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+\]")
+_TITLE_CITE = re.compile(r"\s*\[(?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*)\]")
 
 
 def _clean_section_title(t: str) -> str:

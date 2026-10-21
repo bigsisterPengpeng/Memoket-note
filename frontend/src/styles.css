@@ -889,13 +889,12 @@ h2:first-child { margin-top: 0; }
 
 
 /* Floating controls at the document's upper right. */
-/* A zero-height wrapper keeps controls out of document flow. Only the opaque button pills block content and pointer events. */
-/* Measure actual fb-btn bounds when checking overlap. The zero-height wrapper's bottom does not represent the buttons' bottom. */
+/* Reserve the controls' actual height so the first document line remains readable. */
 .floating-buttons {
   /* Keep floating controls against the ribbon's lower edge, accounting for scroller padding. */
-  position: sticky; top: 0; height: 0; overflow: visible; z-index: var(--z-sticky);
-  display: flex; justify-content: flex-end; align-items: flex-start; gap: var(--s-2);
-  margin: 0; padding: 0;
+  position: sticky; top: 0; min-height: 28px; overflow: visible; z-index: var(--z-sticky);
+  display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: var(--s-2);
+  margin: 0; padding: 0 0 var(--s-3); background: var(--mk-surface);
   pointer-events: none;
 }
 .floating-buttons > * { pointer-events: auto; }

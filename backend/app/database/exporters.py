@@ -353,7 +353,7 @@ class Run:
     link: str = ""
 
 
-_CITE = re.compile(r" ?\[[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+\]")
+_CITE = re.compile(r" ?\[(?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*)\]")
 _INLINE = re.compile(
     r"(?P<fence>`+)(?P<code>.+?)(?P=fence)"
     r"|!\[(?P<imgalt>[^\]]*)\]\((?P<imgsrc>[^)\s]+)(?:\s+\"[^\"]*\")?\)"

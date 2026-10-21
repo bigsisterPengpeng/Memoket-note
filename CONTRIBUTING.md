@@ -57,3 +57,15 @@ cp docs/ci-workflow.yml.example .github/workflows/ci.yml
 ```
 
 The template runs publication/language audits, Python static checks, backend tests, frontend tests and desktop checks. Local validation remains available through the commands above.
+
+## Test and demonstration data
+
+Use independently authored synthetic notes, facts and model responses. Production
+recordings, meeting transcripts, customer data, private model captures and real
+user identifiers do not belong in tests, comments, documentation or media.
+Unicode escaping, translation and abbreviation do not anonymize source material.
+Review decoded string literals as well as visible source text before publishing.
+
+Screenshots must use a disposable library with invented content. Label staged
+examples and distinguish UI navigation from an actual model-driven run. Keep
+private audit inputs and findings outside the source distribution.

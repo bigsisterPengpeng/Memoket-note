@@ -2,7 +2,7 @@
 
 /** The single source of the citation id regex (with a capture group). Synced with backend store._CITE / checks/citations / prompts/fragments;
  *  the frontend factCite.ts highlights and App's "which facts are cited" all take it from here instead of each copying one. */
-export const CITE_RE_SOURCE = String.raw`\[([A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+)\]`
+export const CITE_RE_SOURCE = String.raw`\[((?:[A-Za-z][A-Za-z0-9_-]*-(?:\d+|[0-9a-f]{12})-[0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9_-]*-manualF[1-9]\d*))\]`
 export const CITATION_RE = new RegExp(CITE_RE_SOURCE, 'g')
 /** Which fact ids the body cites (deduplicated, in order of first appearance). The same regex as backend `store.cited_fact_ids` --
  *  if the two recognized different sets, the ribbon badge and the ◆ in the tree would disagree. */

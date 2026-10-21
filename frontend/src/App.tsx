@@ -97,6 +97,7 @@ import Ribbon, { type RibbonTab } from './components/Ribbon'
 import RightPane, { type PaneTab } from './components/RightPane'
 import SkeletonPanel from './components/SkeletonPanel'
 import WritingWorkflowPicker from './components/WritingWorkflowPicker'
+import FilePicker from './components/FilePicker'
 import PlanChecks from './components/PlanChecks'
 import MarginCard from './components/MarginCard'
 import TraceCard, { type TraceCardState } from './components/TraceCard'
@@ -4059,7 +4060,8 @@ export default function App() {
                   <input type="checkbox" checked={mdToKb} onChange={(e) => setMdToKb(e.target.checked)} />
                   <span>{t('Also save to knowledge base (extracts facts per note using the model; unchecked only creates notes — you can “Save to knowledge base” per note later)')}</span>
                 </label>
-                <input aria-label={t('Choose Markdown files')} type="file" accept=".md,.markdown,.txt" multiple onChange={(e) => { void importMarkdown(e.target.files, api.ROOT_ID, mdToKb); e.target.value = '' }} />
+                <FilePicker label={t('Choose Markdown files')} accept=".md,.markdown,.txt" multiple disabledReason=""
+                  onPick={(files) => { void importMarkdown(files, api.ROOT_ID, mdToKb) }} />
               </div>
               <MemoryPanel pendingJob={job} trayNoteId={trayTarget} />
             </div>
