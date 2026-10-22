@@ -1,0 +1,33 @@
+name: memoket-note
+
+services:
+  note:
+    build: .
+    image: memoket-note:local
+    init: true
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${MEMOKET_NOTE_PORT:-8000}:8000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      KITE_DATA_DIR: /data
+      MEMOKET_NOTE_WEB_DIR: /app/web
+      LLM_BASE_URL: ${LLM_BASE_URL:-http://host.docker.internal:11434/v1}
+      WHISPER_BASE_URL: ${WHISPER_BASE_URL:-http://host.docker.internal:8081}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - note-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=256m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 30s
+
+volumes:
+  note-data:

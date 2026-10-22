@@ -14,6 +14,7 @@ dist/
 .env.*
 !.env.example
 data/
+backups/
 *.sqlite3
 
 # Generated knowledge artifacts may contain user content

@@ -1,5 +1,35 @@
 # Validation notes
 
+## Container deployment update: October 22, 2026
+
+The Compose image was built and exercised as Linux arm64 on a macOS Apple
+Silicon Docker host. Backend pytest passed all 430 cases, including a regression
+test proving readiness does not probe model providers. Python static checks,
+publication and English-source audits, Compose validation and Dockerfile build
+checks passed. The actual image build compiled the frontend production bundle.
+The build retains the existing frontend large-chunk warning.
+
+The disposable container smoke test passed all seven groups: non-root/read-only
+runtime and loopback networking; readiness and built web assets with unavailable
+providers; same-origin note creation and cross-site rejection; built-in skills
+and empty KITE initialization; Markdown export, NOTE CLI and MCP handshake/tool calls; consistent
+stopped-library backup; and notes plus manually seeded KITE facts and original
+evidence surviving container replacement. Its temporary project and volume were
+removed. The real Docker build context was exported separately and inspected:
+577 input files, with no local records, environment files, libraries or databases.
+
+A browser check of the running container confirmed editor loading, typing,
+autosave and reopening a saved fictional Maple note after reload. An external
+MCP client also connected through `docker exec -i`, discovered eight tools and
+read that fictional note through the container's stdio server. No real model,
+account connector, Apple Notes automation or screen capture was exercised for
+this update. This does not establish live extraction quality, Linux x86-64 or
+Windows host compatibility. The macOS installer below was not rebuilt because
+this update adds container deployment and a readiness route without changing
+desktop behavior.
+
+## Previous application validation: October 21, 2026
+
 Validated on October 21, 2026 with Python 3.11.15, Node.js 22.22.3 and macOS arm64.
 The final checks reuse the isolated dependency installations from the earlier
 publication preparation. The CLI reuses core dependencies; the optional stdio MCP server adds the pinned MCP 2.3.0 runtime. KITE and existing application dependency versions remain pinned.

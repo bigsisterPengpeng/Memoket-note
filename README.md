@@ -8,7 +8,7 @@
 <p align="center">
   <a href="#see-the-workflow"><img src="docs/media/readme/button-watch.svg" height="36" alt="Watch the workflow video"></a>
 &nbsp;
-  <a href="#development-setup"><img src="docs/media/readme/button-start.svg" height="36" alt="Run locally"></a>
+  <a href="#run-with-docker"><img src="docs/media/readme/button-start.svg" height="36" alt="Run locally"></a>
 &nbsp;
   <a href="https://github.com/memoket/memoket-kite"><img src="docs/media/readme/button-kite.svg" height="36" alt="Explore KITE"></a>
 </p>
@@ -145,6 +145,19 @@ Notion and Feishu adapters need real-account end-to-end validation. Apple Notes 
 
 [Set up NOTE CLI/MCP and the Memoket connection](docs/agents-and-memoket.md). Companion access uses your existing official CLI login. Real-account import still needs validation; the demo uses fictional notes rather than private recordings.
 
+## Run with Docker
+
+Start the complete browser workspace with one command, without installing Python
+or Node.js on your host:
+
+```sh
+docker compose up --build -d --wait
+```
+
+Open **http://localhost:8000**, then choose your model in Settings. The local-only
+port and persistent library volume are configured for you. Requires Docker with
+Compose 2.24 or later. [Model setup, backups, updates and platform limits](docs/docker.md).
+
 ## Development setup
 
 Use Python 3.11 and Node.js 22.12 or later. The browser edition needs a current browser, including Safari 17.4 or later. From the repository root:
@@ -189,7 +202,7 @@ npm run dev
 To package, install PyInstaller in the backend virtual environment, then build:
 
 ```sh
-backend/.venv/bin/python -m pip install pyinstaller -c backend/constraints.txt
+backend/.venv/bin/python -m pip install pyinstaller -r backend/requirements-agents.txt -c backend/constraints.txt
 cd desktop
 npm run dist
 ```

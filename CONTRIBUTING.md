@@ -24,6 +24,16 @@ python3 scripts/audit_publication.py
 python3 scripts/audit_source_language.py --english-source
 ```
 
+For container changes, build and exercise the real image with a disposable library:
+
+```sh
+docker compose build
+python3 scripts/smoke_container.py
+```
+
+The smoke test uses its own Compose project, random port and temporary volume.
+It does not read the project's `.env` or mount a native desktop library.
+
 The tests use synthetic inputs and stubs rather than live model calls. Backend fixtures isolate SQLite databases and KITE codebooks. Frontend subprocesses receive disposable data directories. Historical research logs, private corpora and screenshot-driving scripts are excluded from this source distribution. Passing tests does not establish a live-model quality benchmark or certify every visual state.
 
 Shared contracts in `shared/` execute independently on both sides. Add both a failing case and a valid counterexample when fixing text transforms, completion criteria or action guards. Do not derive expected results from the implementation under test.

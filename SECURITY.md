@@ -7,6 +7,13 @@ The X-User-Id header selects a library; it is not an authentication mechanism.
 Do not expose the backend directly to an untrusted network. Shared deployments
 need authentication, authorization, transport security and access controls.
 
+The optional [Compose deployment](docs/docker.md) publishes only on host loopback
+and runs as a non-root user with a read-only image and a separate data volume.
+This does not add application authentication. Keep the Docker build context
+allowlist in `.dockerignore`: credentials, libraries and local work must never
+enter image layers or be uploaded to a builder. Container backups also include
+saved provider credentials and must be kept private.
+
 ## Data and credentials
 
 Notes, imported material, model settings and service credentials are stored on

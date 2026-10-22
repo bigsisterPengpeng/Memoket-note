@@ -15,6 +15,21 @@ from app.database import store  # noqa: E402
 from app.database.ingest import asr  # noqa: E402
 
 
+def test_readiness_does_not_probe_external_services(monkeypatch):
+    import app.main as main
+
+    def unexpected(*args, **kwargs):
+        raise AssertionError("Readiness must not contact a provider or inspect its credentials")
+
+    monkeypatch.setattr(asr, "healthy", unexpected)
+    monkeypatch.setattr(store, "get_active_llm_config", unexpected)
+    monkeypatch.setattr(main.httpx, "AsyncClient", unexpected)
+    with TestClient(main.app) as client:
+        response = client.get("/api/ready")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
+
 def test_health_probes_run_concurrently(tmp_path, monkeypatch):
     monkeypatch.setattr(store, "_db_path", lambda: tmp_path / "notes.sqlite3")
 

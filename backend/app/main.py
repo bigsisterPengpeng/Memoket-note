@@ -162,6 +162,12 @@ app.include_router(settings_router.router)
 app.include_router(export.router)
 
 
+@app.get("/api/ready")
+async def ready():
+    """Report local readiness without probing or depending on model providers."""
+    return {"status": "ok"}
+
+
 @app.get("/api/health")
 async def health():
     active = store.get_active_llm_config()
