@@ -1721,6 +1721,12 @@ label.plan-check-row { cursor: pointer; }
 .memoket-import { margin: 20px 0; min-width: 0; }
 .memoket-import summary { cursor: pointer; overflow-wrap: anywhere; }
 .memoket-import p { overflow-wrap: anywhere; }
+.connector-check { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; margin-block: 8px; }
+.connector-check p { flex: 1 1 220px; min-width: 0; margin: 0; color: var(--ink-2); overflow-wrap: anywhere; }
+.connector-check button { flex: 0 0 auto; }
+.apple-import .connector-check, .apple-import > p { margin-inline-start: 96px; font-size: var(--t-xs); }
+.memoket-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+.memoket-fields:disabled input { color: var(--ink-3); background: var(--bg); cursor: not-allowed; }
 .memoket-import-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .memoket-import-row input { flex: 1 1 180px; min-width: 0; }
 .memoket-import-row button { white-space: normal; }

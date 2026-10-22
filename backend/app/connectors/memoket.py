@@ -50,6 +50,15 @@ def status() -> dict:
         return {"available": False, "message": str(exc), "tools": sorted(READ_TOOLS)}
 
 
+def availability() -> dict:
+    """Check installation without starting the CLI or reading an account."""
+    try:
+        executable()
+        return {"available": True, "reason": ""}
+    except ConnectorError as exc:
+        return {"available": False, "reason": str(exc)}
+
+
 def read(tool: str, arguments: dict) -> dict:
     if tool not in READ_TOOLS:
         raise ConnectorError("Only advertised Memoket recording read tools are allowed")

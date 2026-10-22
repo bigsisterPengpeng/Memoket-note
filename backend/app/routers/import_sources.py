@@ -442,9 +442,9 @@ return out as string
 
 def _apple_available() -> tuple[bool, str]:
     if sys.platform != "darwin":
-        return False, 'The backend must run on macOS to export Apple Notes locally.'
+        return False, 'Apple Notes import requires the app backend on macOS. Use file import in a Docker workspace.'
     if not shutil.which("osascript"):
-        return False, 'osascript is unavailable'
+        return False, 'Apple Notes automation is unavailable. Check that osascript is on the app backend PATH.'
     return True, ""
 
 

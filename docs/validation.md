@@ -1,5 +1,35 @@
 # Validation notes
 
+## Connector availability update: October 22, 2026 / 0.1.4
+
+Apple Notes import now distinguishes unavailable, checking and failed checks,
+with an eight-second timeout and retry without reloading. Memoket uses a separate
+installation probe that does not start its CLI or read an account. Search and
+import remain disabled until that probe succeeds; searching again clears the
+previous recording selection. Installation does not establish login validity.
+
+Backend pytest passed 436 tests; frontend Vitest passed 322 tests in 61 files;
+all 61 shared contracts passed. Types, lint, Python static checks, desktop tests,
+production builds, publication and English-source audits passed. Tests cover
+backend platform/tool differences, missing and unsupported CLI launchers, failed
+and timed-out checks, retry, late responses, unmount cancellation, disabled
+actions, old recording selections and translated error messages. The Linux arm64
+container passed all seven deployment smoke groups using the versioned image.
+
+Browser checks confirmed unavailable Apple Notes and Memoket states in Docker,
+and retry controls, wrapping and disabled inputs at 1280 × 720, 900 × 600 and
+375 × 600. The compact check used the real application in a fixed-size iframe;
+dark appearance was checked separately. No new animation was introduced.
+
+The macOS arm64 0.1.4 installer passed deep signature verification, disk-image
+verification, read-only mounting and the Applications shortcut check. The bundled
+backend served the current frontend/CSS, checked AppleScript availability without
+starting Notes, reported a deliberately missing CLI, and created/read a fictional
+note through the bundled CLI with disposable data. It is locally ad-hoc signed
+and not notarized. Native screen-reader behavior, real Apple Notes import
+permissions and real Memoket login/recording reads were not validated. The
+installed application profile was not used.
+
 ## Container deployment update: October 22, 2026
 
 The Compose image was built and exercised as Linux arm64 on a macOS Apple

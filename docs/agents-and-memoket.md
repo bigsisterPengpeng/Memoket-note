@@ -16,7 +16,13 @@ memoket tools
 memoket doctor
 ```
 
-In NOTE, open **Import → Memoket recordings**. Check the connection, search for a project, select a recording and import its brief. The **Import to** choice determines whether to create notes, extract knowledge, or both. Extraction uses your configured model and may send the selected content to that provider. A notes-only import does not extract memory.
+In NOTE, open **Import → Memoket recordings**. The panel checks whether the CLI is installed before enabling search and import. This check does not start the CLI or verify your account. Search for a project to check the saved login, select a recording and import its brief. Use **Check again** after installing the CLI or recovering a failed check; the page does not need a reload. The **Import to** choice determines whether to create notes, extract knowledge, or both. Extraction uses your configured model and may send the selected content to that provider. A notes-only import does not extract memory.
+
+Install and sign in on the machine running the app backend. A Docker workspace
+does not use the host's CLI installation or login; use the native app for this
+connection. An availability check that cannot finish within eight seconds shows
+an error with a retry action. The separate `/api/connectors/memoket/status`
+diagnostic still starts the CLI to report its version.
 
 The companion bridge is validated on macOS. Windows `.cmd`/`.bat` launchers are rejected to keep tool arguments out of a command shell; an external agent can use the official remote MCP directly.
 

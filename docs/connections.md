@@ -34,7 +34,11 @@ can affect results. Never commit credentials to the repository.
 ## Evernote and Apple Notes
 
 Export an Evernote notebook as `.enex`, then choose it in Import. Apple Notes
-import is a desktop macOS operation and may request permission to control Notes.
+import requires the app backend to run on macOS with AppleScript available and
+may request permission to control Notes. Import checks this before enabling the
+action. Docker workspaces can use file import instead. A failed or timed-out
+availability check shows an explicit message and **Check again**, rather than
+remaining on a loading state.
 Both produce local notes that can subsequently be exported as Markdown.
 
 ## Documents, audio and web pages
@@ -52,9 +56,10 @@ Memory is stored locally even when model inference uses a hosted service.
 
 ## Integration boundary
 
-The repository has local HTTP APIs for application operations. It does not ship
-an MCP server, an Obsidian plugin, a Notion browser extension, a Word add-in or a
-Google Docs integration. Import/export support should not be read as those claims.
+The repository has local HTTP APIs, a CLI and a stdio MCP server for workspace
+operations. It does not ship an Obsidian plugin, a Notion browser extension, a
+Word add-in or a Google Docs integration. Import/export support should not be
+read as those claims.
 The API assumes a trusted local environment; see [SECURITY.md](../SECURITY.md).
 
 ## Voice services
@@ -74,7 +79,9 @@ Hosted transcription sends the selected recording to that provider.
 ## Memoket hardware companion
 
 Import selected recording briefs through the official Memoket CLI, using your
-existing login on this computer. NOTE also provides its own CLI and stdio MCP for
+existing login where the app backend runs. The Import panel checks CLI
+installation without starting it or reading account content; search checks the
+saved login. A Docker workspace does not inherit a host login. NOTE also provides its own CLI and stdio MCP for
 external agents. See [setup, commands and validation limits](agents-and-memoket.md).
 These are explicit imports; no recording deletion, write-back or automatic sync
 is exposed.

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import {
   cancelJob, ingestBatch, jobStatus, listJobs, memoryFacts, memoryStats, resumeImportJob, watchJob,
-  appleAvailable, importApple, importFeishu, importFiles, importNotion,
+  importApple, importFeishu, importFiles, importNotion,
 } from '../api'
 import type { FactDetail, JobOut } from '../api'
 import { getNote } from '../api'
@@ -13,6 +13,7 @@ import ExportBack from './ExportBack'
 import FilePicker from './FilePicker'
 import WritingFlow from './WritingFlow'
 import MemoketImport from './MemoketImport'
+import AppleNotesImport from './AppleNotesImport'
 import { getLang, t } from '../i18n'
 
 /** Notes produced by a finished import -> tray items (pure function): only those that became notes (`note_id` set, status done), one per note, capped at the tray limit */
@@ -93,7 +94,6 @@ export default function MemoryPanel({ pendingJob, trayNoteId = '' }: { pendingJo
   const [importing, setImporting] = useState(false)
   // Where to import: extracting a vault of hundreds of notes into the knowledge base takes a long time, so let people choose
   const [importTo, setImportTo] = useState<'both' | 'kb' | 'notes'>('both')
-  const [apple, setApple] = useState<{ available: boolean; reason: string } | null>(null)
   const [recentFacts, setRecentFacts] = useState<FactDetail[]>([])
   const lastSeenFactCount = useRef(-1)
 
@@ -160,8 +160,6 @@ export default function MemoryPanel({ pendingJob, trayNoteId = '' }: { pendingJo
     watchJob(r.job_id, (j) => { setBatchJob(j); pollRecentFacts(j.facts) },
       () => { void refresh(); setRecentFacts([]) }, controller.signal)
   }
-
-  useEffect(() => { appleAvailable().then(setApple).catch(() => setApple(null)) }, [])
 
   async function doImport(files: File[], source: 'obsidian' | 'evernote') {
     if (!files.length) return
@@ -340,17 +338,7 @@ export default function MemoryPanel({ pendingJob, trayNoteId = '' }: { pendingJo
           <strong>{t('Documents shared only as single-doc collaborator cannot be listed')}</strong>{t(' (listing requires the app to be a member of the wiki space) -- paste that document\'s link into the box above.')}
         </p>
 
-        <div className="row" style={{ gap: 8, alignItems: 'center' }}>
-          <span style={{ width: 88 }}>Apple Notes</span>
-          <button onClick={doImportApple} disabled={!apple?.available || importing} title={!apple?.available ? t('Not available on this machine: {reason}', { reason: apple?.reason || t('Checking…') }) : undefined}>
-            {importing ? <span className="spinner" /> : t('Import all notes')}
-          </button>
-        </div>
-        <p className="muted" style={{ fontSize: 'var(--t-xs)', margin: '0 0 6px 96px' }}>
-          {apple?.available
-            ? t('On the first import macOS shows an "allow to control Notes" permission prompt; just click Allow.')
-            : t('Not available on this machine: {reason}', { reason: apple?.reason || t('Checking…') })}
-        </p>
+        <AppleNotesImport disabled={importing} onImport={() => void doImportApple()} />
       </div>
 
       <MemoketImport to={importTo} disabled={importing} onImported={(r) => {

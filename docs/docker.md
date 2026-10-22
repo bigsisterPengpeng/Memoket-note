@@ -107,8 +107,9 @@ See [agent setup](agents-and-memoket.md) for the available tools and user select
 - Apple Notes automation, native screen capture and desktop global shortcuts
   require the native macOS application. They are unavailable in the Linux image.
 - The official Memoket companion CLI and its host login are not bundled or mounted.
-  Use the native setup for companion imports. NOTE's own CLI/MCP is separate from
-  that companion connection.
+  Import checks availability and disables unsupported Apple Notes and Memoket
+  actions with a reason and **Check again**. Use the native setup for companion
+  imports. NOTE's own CLI/MCP is separate from that companion connection.
 - Audio transcription, image generation and account connectors still require
   their configured services. A Docker health check does not validate them.
 - The image is built for the Docker host's architecture. Cross-architecture and

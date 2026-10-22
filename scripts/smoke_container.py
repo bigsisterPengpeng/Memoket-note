@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import argparse
 import json
 import os
 from pathlib import Path
@@ -20,6 +21,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--image", default="memoket-note:local", help="Locally built image to exercise")
+    args = parser.parse_args()
     project = "memoket-smoke-" + uuid.uuid4().hex[:12]
     env = os.environ.copy()
     env.update(MEMOKET_NOTE_PORT="0", LLM_BASE_URL="http://127.0.0.1:9/v1",
@@ -29,10 +33,12 @@ def main() -> None:
         # Resolve the optional .env beside this copy, away from real credentials.
         compose_file = Path(directory) / "compose.yaml"
         shutil.copyfile(ROOT / "compose.yaml", compose_file)
+        override = Path(directory) / "image.json"
+        override.write_text(json.dumps({"services": {"note": {"image": args.image}}}))
         empty_env = Path(directory) / "smoke.env"
         empty_env.touch()
         command = ["docker", "compose", "--env-file", str(empty_env),
-                   "--project-name", project, "-f", str(compose_file)]
+                   "--project-name", project, "-f", str(compose_file), "-f", str(override)]
 
         def compose(*args: str) -> str:
             return subprocess.check_output(command + list(args), env=env, cwd=directory,

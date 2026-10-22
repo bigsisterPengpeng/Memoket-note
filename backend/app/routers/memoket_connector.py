@@ -30,6 +30,11 @@ def status(user: str = Depends(current_user)):
     return memoket.status()
 
 
+@router.get("/available")
+def available(user: str = Depends(current_user)):
+    return memoket.availability()
+
+
 @router.post("/read")
 def read(body: ReadIn, user: str = Depends(current_user)):
     try:

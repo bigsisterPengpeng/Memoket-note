@@ -1563,12 +1563,10 @@ export const exportFeishu = (appId: string, appSecret: string, folderToken: stri
 export const noteRemotes = (noteId: string) =>
   fetch(`/api/export/remotes/${noteId}`, { headers: headers() }).then(json<NoteRemote[]>)
 
-/** Apple Notes has no public API; export only works via AppleScript on the local machine -- and this backend runs
- * on the user's own Mac, so the server can call osascript directly. Unavailable when deployed remotely; ask
- * available first before offering the button, so users do not click something bound to fail. */
-export const appleAvailable = () =>
-  fetch('/api/import/apple/available', { headers: headers() })
-    .then(json<{ available: boolean; reason: string }>)
+export type ConnectionAvailability = { available: boolean; reason: string }
+export const appleAvailable = (signal?: AbortSignal) =>
+  fetch('/api/import/apple/available', { headers: headers(), signal })
+    .then(json<ConnectionAvailability>)
 
 export const importApple = (to: 'both' | 'kb' | 'notes' = 'both') => {
   const fd = new FormData()
@@ -1839,6 +1837,8 @@ export const journeyWipeAll = () =>
 
 export const memoketStatus = () => fetch('/api/connectors/memoket/status', { headers: headers() })
   .then(json<{ available: boolean; message: string; version?: string }>)
+export const memoketAvailable = (signal?: AbortSignal) =>
+  fetch('/api/connectors/memoket/available', { headers: headers(), signal }).then(json<ConnectionAvailability>)
 export const memoketRead = (tool: string, args: Record<string, unknown>) =>
   fetch('/api/connectors/memoket/read', { method: 'POST', headers: headers({ 'Content-Type': 'application/json' }),
     body: JSON.stringify({ tool, arguments: args }) }).then(json<Record<string, unknown>>)

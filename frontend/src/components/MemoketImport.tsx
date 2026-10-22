@@ -1,9 +1,10 @@
-import { useState } from 'react'
-import { memoketImport, memoketRead, memoketStatus } from '../api'
+import { useId, useState } from 'react'
+import { memoketAvailable, memoketImport, memoketRead } from '../api'
 import type { JobOut } from '../api'
 import { friendlyError } from '../util/friendlyError'
 import { t } from '../i18n'
 import { memoketMatches, type RecordingMatch } from '../util/memoketResults'
+import { ConnectionStatus, useConnectionAvailability } from './ConnectionAvailability'
 
 export default function MemoketImport({ to, disabled, onImported }: {
   to: 'notes' | 'both' | 'kb'; disabled: boolean; onImported: (job: JobOut) => void
@@ -15,6 +16,8 @@ export default function MemoketImport({ to, disabled, onImported }: {
   const [matches, setMatches] = useState<RecordingMatch[]>([])
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
+  const { state, retry } = useConnectionAvailability(memoketAvailable)
+  const statusId = useId()
 
   async function run(action: () => Promise<void>) {
     setBusy(true)
@@ -25,18 +28,21 @@ export default function MemoketImport({ to, disabled, onImported }: {
 
   return <details className="memoket-import card">
     <summary><strong>{t('Memoket recordings')}</strong> — {t('Bring a conversation into your next draft')}</summary>
-    <p className="muted">{t('Use the official Memoket CLI login on this computer. Search your recordings, then import a selected brief as a local source. Nothing is written back to Memoket.')}</p>
+    <p className="muted">{t('Use the official Memoket CLI login on the machine running this workspace. Search your recordings, then import a selected brief as a local source. Nothing is written back to Memoket.')}</p>
     <p><code>npm install -g @memoket-ai/cli</code><br /><code>memoket login</code></p>
-    <button disabled={busy} onClick={() => void run(async () => {
-      const status = await memoketStatus()
-      setMessage(status.message)
-    })}>{t('Check connection')}</button>
+    <ConnectionStatus id={statusId} name="Memoket CLI" state={state} onRetry={retry} disabled={busy} />
+    {state.status === 'ready' && <p className="muted">{t('CLI found. Search to check your existing Memoket login.')}</p>}
+    {state.status === 'unavailable' && <p className="muted">{t('A Docker workspace cannot use your host Memoket login. Use the native app for this connection.')}</p>}
+    <fieldset className="memoket-fields" disabled={busy || state.status !== 'ready'}
+      aria-label={t('Search and import Memoket recordings')} aria-describedby={statusId}>
     <div className="memoket-import-row">
       <input aria-label={t('Search Memoket recordings')} placeholder={t('Search a project, decision or conversation')}
         value={query} onChange={(e) => setQuery(e.target.value)} />
       <button disabled={busy || !query.trim()} onClick={() => void run(async () => {
         setResult('')
         setMatches([])
+        setRecordingId('')
+        setTitle('')
         const data = await memoketRead('search_recordings', { query: query.trim() })
         setResult(JSON.stringify(data, null, 2))
         setMatches(memoketMatches(data))
@@ -65,6 +71,7 @@ export default function MemoketImport({ to, disabled, onImported }: {
       })}>{t('Import selected brief')}</button>
     </div>
     <p className="muted">{t('Uses the Import to choice above. Knowledge extraction sends the selected report to your configured model; notes-only import skips extraction. The source recording date is not inferred.')}</p>
+    </fieldset>
     {message && <p role="status">{message}</p>}
   </details>
 }
