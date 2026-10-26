@@ -1,9 +1,8 @@
-import { useState } from 'react'
 import * as api from '../api'
 import type { AsrProvider, ProviderConfig } from '../api'
 import { t } from '../i18n'
-import { friendlyError } from '../util/friendlyError'
 import Icon from './Icon'
+import ProviderTestButton from './ProviderTestButton'
 
 
 
@@ -98,9 +97,9 @@ export default function VoiceSettings({ cfg, value, onChange }: {
           onChange={(e) => set(id === 'assemblyai' ? { assemblyai_region: e.target.value } : { speechmatics_region: e.target.value })}>
           {REGIONS[id].map((r) => <option key={r} value={r}>{regionLabel(r)}</option>)}
         </select>
-        <VoiceTestButton disabled={!(key.trim() || keySet)}
-          disabledReason={t('Paste an API key first')}
-          run={() => api.testProvider({ kind: 'asr', base_url: '', asr_provider: id, region, api_key: key.trim() || undefined, saved_key_of: id })} />
+        <ProviderTestButton disabled={!(key.trim() || keySet)}
+          disabledReason={t('Paste an API key first')} credentialRevision={`${keySet}:${preview}`}
+          request={{ kind: 'asr', base_url: '', asr_provider: id, region, api_key: key.trim() || undefined, saved_key_of: id }} />
       </div>
     )
   }
@@ -128,45 +127,13 @@ export default function VoiceSettings({ cfg, value, onChange }: {
                 value={value.asr_base_url}
                 onChange={(e) => set({ asr_base_url: e.target.value })}
               />
-              <VoiceTestButton disabled={!whisperUrlNow} disabledReason={t('Fill in the address first')}
-                run={() => api.testProvider({ kind: 'asr', base_url: whisperUrlNow, asr_provider: 'whisper' })} />
+              <ProviderTestButton disabled={!whisperUrlNow} disabledReason={t('Fill in the address first')}
+                request={{ kind: 'asr', base_url: whisperUrlNow, asr_provider: 'whisper' }} />
             </div>
           )}
           {p === o.id && o.id !== 'whisper' && hostedFields(o.id)}
         </div>
       ))}
-    </>
-  )
-}
-
-/** "Test" button for the voice section: one real request, result shown underneath. */
-function VoiceTestButton({ disabled, disabledReason, run }: {
-  disabled?: boolean
-  disabledReason: string
-  run: () => Promise<api.ProviderTest>
-}) {
-  const [busy, setBusy] = useState(false)
-  const [res, setRes] = useState<api.ProviderTest | null>(null)
-  return (
-    <>
-      <div className="row" style={{ gap: 8, marginTop: 6 }}>
-        <button className="chip chip-action" disabled={busy || disabled}
-                title={disabled ? disabledReason : t('Make one real request with these values; the result shows below')}
-                onClick={async () => {
-                  setBusy(true); setRes(null)
-                  try { setRes(await run()) } catch (e) {
-                    setRes({ ok: false, message: t('Could not test: {error}', { error: friendlyError(e) }), models: [], model_found: null, elapsed_ms: 0 })
-                  } finally { setBusy(false) }
-                }}>
-          {busy ? <span className="spinner" /> : <Icon n="bx-link" />} {t('Test')}
-        </button>
-        {busy && <span className="muted" style={{ fontSize: 'var(--t-sm)' }}>{t('Connecting...')}</span>}
-      </div>
-      {res && (
-        <p className={'probe-result' + (res.ok ? ' ok' : ' bad')}>
-          <Icon n={res.ok ? 'bx-check-circle' : 'bx-error'} /> {res.message}
-        </p>
-      )}
     </>
   )
 }

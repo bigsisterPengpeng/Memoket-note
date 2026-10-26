@@ -1635,6 +1635,10 @@ label.plan-check-row { cursor: pointer; }
 .probe-result .bx { flex: none; margin-top: 2px; }
 .probe-result.ok { color: var(--ins); border-color: var(--ins); background: var(--ins-bg); }
 .probe-result.bad { color: var(--del); border-color: var(--del); background: var(--del-bg); }
+.provider-models { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; }
+.provider-models li { min-width: 0; max-width: 100%; }
+.provider-models button { max-width: 100%; min-height: 28px; height: auto; white-space: normal; overflow-wrap: anywhere; }
+#provider-select { min-width: 0; max-width: 100%; }
 
 /* Read-only endpoints and model names use selectable monospace text. */
 .mono-line { margin: 2px 0 0; font-size: var(--t-sm); font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

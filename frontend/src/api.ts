@@ -1475,7 +1475,7 @@ export type ProviderTest = {
   elapsed_ms: number
 }
 
-export const testProvider = (body: {
+export type ProviderTestRequest = {
   kind: 'llm' | 'vision' | 'asr'
   base_url: string
   model?: string
@@ -1487,11 +1487,13 @@ export const testProvider = (body: {
   /** kind 'asr' only: which speech provider to test (default whisper) and its region. */
   asr_provider?: AsrProvider
   region?: string
-}) =>
+}
+export const testProvider = (body: ProviderTestRequest, signal?: AbortSignal) =>
   fetch('/api/settings/provider/test', {
     method: 'POST',
     headers: headers({ 'Content-Type': 'application/json' }),
     body: JSON.stringify(body),
+    signal,
   }).then(json<ProviderTest>)
 
 

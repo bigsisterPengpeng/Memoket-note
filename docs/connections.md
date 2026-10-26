@@ -54,6 +54,18 @@ Choose a model in Settings. Local OpenAI-compatible services and hosted provider
 presets are supported; the relevant content goes to the endpoint you configure.
 Memory is stored locally even when model inference uses a hosted service.
 
+**Test** checks the values currently entered; it does not save them. Changing the
+provider, address, model, key or voice region invalidates the previous result
+and model suggestions. Test again before relying on the new configuration, then
+save it. The visual test follows the current writing key when **Use the writing
+model above** is selected; an independent vision setup uses its own key.
+
+Connection tests stop waiting after 45 seconds and can be retried. Editing the
+tested configuration or closing Settings aborts the browser request and ignores
+late responses. A provider request already sent by the backend may still finish;
+cancelling the browser request does not undo it. Connection checks are not a
+general writing-quality benchmark.
+
 ## Integration boundary
 
 The repository has local HTTP APIs, a CLI and a stdio MCP server for workspace

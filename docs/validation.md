@@ -1,34 +1,39 @@
 # Validation notes
 
-## Connector availability update: October 22, 2026 / 0.1.4
+## Current release: October 26, 2026 / 0.1.5
 
-Apple Notes import now distinguishes unavailable, checking and failed checks,
-with an eight-second timeout and retry without reloading. Memoket uses a separate
-installation probe that does not start its CLI or read an account. Search and
-import remain disabled until that probe succeeds; searching again clears the
-previous recording selection. Installation does not establish login validity.
+| Check | Result |
+|---|---|
+| Backend pytest | 436 passed |
+| Frontend Vitest | 62 files, 336 passed |
+| Shared frontend/backend contracts | 61 passed |
+| Types, lint, Python static checks and desktop test | Passed |
+| Publication and English-source audits | Passed |
+| Linux arm64 container smoke test | Seven groups passed |
+| macOS arm64 installer | Signature, disk image, isolated backend/CLI and bundled web checks passed |
 
-Backend pytest passed 436 tests; frontend Vitest passed 322 tests in 61 files;
-all 61 shared contracts passed. Types, lint, Python static checks, desktop tests,
-production builds, publication and English-source audits passed. Tests cover
-backend platform/tool differences, missing and unsupported CLI launchers, failed
-and timed-out checks, retry, late responses, unmount cancellation, disabled
-actions, old recording selections and translated error messages. The Linux arm64
-container passed all seven deployment smoke groups using the versioned image.
+Provider test results and model suggestions now belong to the exact tested
+configuration. Regression tests reproduce the old stale-success bug and cover
+changed endpoints, models, draft keys, saved credential slots, voice regions and
+saved-key state; unrelated rerenders retain valid results. They also cover
+out-of-order responses, the 45-second client timeout, retry, unmount cancellation,
+key omission from rendered probe markup, translations and following the current
+writing key/address in vision tests. Existing connector availability checks
+remain covered, including their separate eight-second timeout.
 
-Browser checks confirmed unavailable Apple Notes and Memoket states in Docker,
-and retry controls, wrapping and disabled inputs at 1280 × 720, 900 × 600 and
-375 × 600. The compact check used the real application in a fixed-size iframe;
-dark appearance was checked separately. No new animation was introduced.
+The actual UI was exercised against a local fictional service with two model
+lists and a delayed response. Editing an endpoint removed the previous success
+and suggestions; an old delayed reply did not overwrite the current result.
+Long model names and the provider selector were checked at 1280 × 720,
+900 × 600 and 375 × 600, including dark appearance. Compact checks use the real
+app in fixed-size iframes. No real account or model credentials were used.
 
-The macOS arm64 0.1.4 installer passed deep signature verification, disk-image
-verification, read-only mounting and the Applications shortcut check. The bundled
-backend served the current frontend/CSS, checked AppleScript availability without
-starting Notes, reported a deliberately missing CLI, and created/read a fictional
-note through the bundled CLI with disposable data. It is locally ad-hoc signed
-and not notarized. Native screen-reader behavior, real Apple Notes import
-permissions and real Memoket login/recording reads were not validated. The
-installed application profile was not used.
+The 0.1.5 installer was checked with disposable storage. It is locally ad-hoc
+signed and not notarized. Native screen-reader behavior, real hosted provider
+connections and writing quality were not validated for this UI change. The real
+installed application profile was not used. Backend tests retain five
+third-party deprecation warnings, and the frontend retains its large-chunk build
+warning. No CI configuration was added.
 
 ## Container deployment update: October 22, 2026
 

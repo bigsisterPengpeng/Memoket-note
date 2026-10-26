@@ -2,6 +2,11 @@
  *  `{name}` placeholders must match. Phrases shared across files (Save / Settings / Loading… / Interface language)
  *  live in `common.ts` and are not repeated here. */
 export const SETTINGS: Record<string, string> = {
+  'Test writing model': '测试写作模型',
+  'Test vision model': '测试视觉模型',
+  'Test voice service': '测试语音服务',
+  'Settings changed. Test again to check the current values.': '设置已更改。请重新测试当前配置。',
+  'Connection test timed out. Check the endpoint and try again.': '连接测试超时。请检查服务地址后重试。',
   // ---- feature labels in the usage block
 
 

@@ -6,6 +6,7 @@ import { toast } from '../toast'
 import { applyTheme, canSwitchTheme, getTheme, type Theme } from '../theme'
 import { t } from '../i18n'
 import Icon from './Icon'
+import ProviderTestButton from './ProviderTestButton'
 import VoiceSettings, { EMPTY_VOICE_DRAFT, voiceBody, voiceDraftFrom, type VoiceDraft } from './VoiceSettings'
 
 /** Feature name -> human label. **A function, not a constant**: `t()` is looked up at render time so a
@@ -89,54 +90,6 @@ function AppearanceSection() {
 
 
 
-
-function TestButton({ label, disabled, run, onPick, current }: {
-  label?: string
-  disabled?: boolean
-  run: () => Promise<api.ProviderTest>
-  onPick?: (model: string) => void
-  current?: string
-}) {
-  const [busy, setBusy] = useState(false)
-  const [res, setRes] = useState<api.ProviderTest | null>(null)
-  return (
-    <>
-      <div className="row" style={{ gap: 8, marginTop: 6 }}>
-        <button className="chip chip-action" disabled={busy || disabled}
-                title={disabled ? t('Fill in the address first') : t('Really connect to this address once; the result shows below')}
-                onClick={async () => {
-                  setBusy(true); setRes(null)
-                  try { setRes(await run()) } catch (e) { setRes({ ok: false, message: t('Could not test: {why}', { why: friendlyError(e) }), models: [], model_found: null, elapsed_ms: 0 }) } finally { setBusy(false) }
-                }}>
-          {busy ? <span className="spinner" /> : <Icon n="bx-link" />} {label ?? t('Test')}
-        </button>
-        {busy && <span className="muted" style={{ fontSize: 'var(--t-sm)' }}>{t('Connecting…')}</span>}
-      </div>
-      {res && (
-        <p className={'probe-result' + (res.ok ? ' ok' : ' bad')}>
-          <Icon n={res.ok ? 'bx-check-circle' : 'bx-error'} /> {res.message}
-        </p>
-      )}
-      {res && onPick && res.models.length > 0 && (
-        <div className="stack" style={{ gap: 4, marginTop: 4 }}>
-          <p className="muted" style={{ fontSize: 'var(--t-xs)', margin: 0 }}>
-            {t('Models available on this server — click one to fill in "Model":')}
-          </p>
-          <div className="row" style={{ gap: 6, flexWrap: 'wrap' }} role="list" aria-label={t('Available models')}>
-            {res.models.map((m) => (
-              <button key={m} role="listitem" className={'chip' + (m === current ? ' active' : '')}
-                      title={m === current ? t('This is the one currently entered') : t('Use as model: {m}', { m })}
-                      aria-pressed={m === current}
-                      onClick={() => onPick(m)}>
-                {m === current && <Icon n="bx-check" />} {m}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-    </>
-  )
-}
 
 /** Provenance line at the bottom of the settings page: AGPL §13 requires offering the source to users. */
 export function AboutLine() {
@@ -369,8 +322,9 @@ export default function SettingsPanel({ onClose, embedded = false }: { onClose?:
                     <button className="chip" title={t('Delete the key saved for this provider')} onClick={clearKey}>{t('Clear saved key')}</button>
                   )}
                 </div>
-                <TestButton disabled={!urlNow} onPick={(m) => setDraft({ model: m })} current={modelNow}
-                  run={() => api.testProvider({ kind: 'llm', provider, base_url: urlNow, model: modelNow, api_key: draft.api_key.trim() || undefined, saved_key_of: provider })} />
+                <ProviderTestButton disabled={!urlNow} onPick={(m) => setDraft({ model: m })}
+                  credentialRevision={`${cur.key_set}:${cur.key_preview}`}
+                  request={{ kind: 'llm', provider, base_url: urlNow, model: modelNow, api_key: draft.api_key.trim() || undefined, saved_key_of: provider }} />
                 {keyRequired && !cur.key_set && !draft.api_key.trim() && (
                   <p className="muted" style={{ fontSize: 'var(--t-sm)', color: 'var(--del)' }}>
                     {t('No API key set — even if saved, this provider will not be used and the app falls back to the local model.')}
@@ -393,7 +347,7 @@ export default function SettingsPanel({ onClose, embedded = false }: { onClose?:
                 <p className="muted" style={{ fontSize: 'var(--t-sm)', marginTop: 0 }}>
                   {t('Screenshots and images are sent to ')}<b>{t('the writing model\'s server')}</b>{t('. To keep screenshots on this machine / your LAN, untick this and set a local vision model separately.')}
                 </p>
-                <p className="mono-line">{cfg?.vision_active_model || t('(model not set)')} @ {cfg?.vision_active_url || t('(not configured)')}</p>
+                <p className="mono-line">{visionModelNow || t('(model not set)')} @ {visionUrlNow || t('(not configured)')}</p>
               </>
             ) : (
               <div className="stack" style={{ marginTop: 4 }}>
@@ -422,9 +376,12 @@ export default function SettingsPanel({ onClose, embedded = false }: { onClose?:
               </div>
             )}
             {}
-            <TestButton disabled={!visionUrlNow} label={t('Test (sends an image)')}
-              onPick={visionOwn ? setVisionModel : undefined} current={visionModelNow}
-              run={() => api.testProvider({ kind: 'vision', base_url: visionUrlNow, model: visionModelNow, api_key: visionApiKey.trim() || undefined, saved_key_of: visionOwn ? 'vision' : provider, provider: visionOwn ? undefined : provider })} />
+            <ProviderTestButton disabled={!visionUrlNow} label={t('Test (sends an image)')}
+              onPick={visionOwn ? setVisionModel : undefined}
+              credentialRevision={visionOwn ? String(cfg?.vision_api_key_set) : `${cur?.key_set}:${cur?.key_preview}`}
+              request={{ kind: 'vision', base_url: visionUrlNow, model: visionModelNow,
+                api_key: (visionOwn ? visionApiKey : draft.api_key).trim() || undefined,
+                saved_key_of: visionOwn ? 'vision' : provider, provider: visionOwn ? undefined : provider }} />
 
             <p className="kb-section-title" style={{ marginTop: 18 }}>{t('Notes ↔ knowledge base')}</p>
             <label className="row" style={{ gap: 8, fontSize: 'var(--t-md)', alignItems: 'center' }}>

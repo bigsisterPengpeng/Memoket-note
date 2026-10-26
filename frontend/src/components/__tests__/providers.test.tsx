@@ -54,11 +54,12 @@ vi.mock('../../api', async () => {
       posted.push(body)
       return Promise.resolve({ ...CFG, provider: body.provider as string, active_provider: body.provider as string, configured: true })
     },
-    testProvider: () => Promise.resolve({ ok: true, message: 'ok', models: [], model_found: null, elapsed_ms: 1 }),
+    testProvider: vi.fn(() => Promise.resolve({ ok: true, message: 'ok', models: [], model_found: null, elapsed_ms: 1 })),
   }
 })
 
 const { default: SettingsPanel } = await import('../SettingsPanel')
+const { testProvider } = await import('../../api')
 
 async function mount() {
   const el = document.createElement('div')
@@ -165,4 +166,32 @@ describe('provider dropdown', () => {
     expect(posted[0]).toMatchObject({ provider: 'openai', model: 'gpt-6-luna' })
     expect(posted[0]).not.toHaveProperty('asr_base_url')      // other providers store the three fields only; voice / vision ride with the last call
   })
+})
+
+
+it('invalidates a successful model test and its suggestions when the endpoint changes', async () => {
+  vi.mocked(testProvider).mockResolvedValueOnce({ ok: true, message: 'Fictional endpoint A connected', models: ['maple-writer'], model_found: true, elapsed_ms: 1 })
+  const el = await mount()
+  const test = [...el.querySelectorAll('button')].find((b) => b.textContent?.trim() === 'Test')!
+  await act(async () => { test.click() })
+  expect(el.textContent).toContain('Fictional endpoint A connected')
+  expect(el.querySelector('[aria-label="Available models"]')).not.toBeNull()
+  await act(async () => { type(q(el, '#provider-base-url'), 'http://127.0.0.1:9999/v1') })
+  expect(el.textContent).not.toContain('Fictional endpoint A connected')
+  expect(el.querySelector('[aria-label="Available models"]')).toBeNull()
+})
+
+
+it('vision follows the current writing key rather than a hidden independent vision key', async () => {
+  const el = await mount()
+  await act(async () => { type(q(el, '#provider-base-url'), 'http://127.0.0.1:18005/v1') })
+  await act(async () => { type(q(el, '#provider-api-key'), 'fictional-writing-key') })
+  const follow = [...el.querySelectorAll('label')].find((label) => label.textContent?.includes('Use the writing model above'))!.querySelector<HTMLInputElement>('input')!
+  await act(async () => { follow.click() })
+  await act(async () => { type(q(el, 'input[aria-label="Vision API key"]'), 'fictional-independent-key') })
+  await act(async () => { follow.click() })
+  const test = [...el.querySelectorAll('button')].find((b) => b.textContent?.includes('Test (sends an image)'))!
+  await act(async () => { test.click() })
+  expect(el.querySelector('.mono-line')?.textContent).toContain('http://127.0.0.1:18005/v1')
+  expect(vi.mocked(testProvider).mock.lastCall?.[0]).toMatchObject({kind: 'vision', api_key: 'fictional-writing-key', saved_key_of: 'ollama', provider: 'ollama', base_url: 'http://127.0.0.1:18005/v1'})
 })
