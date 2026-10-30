@@ -105,7 +105,7 @@ def test_current_memory_tool_output_populates_ledger_dates_totals_and_topics(mon
     assert led["axes"]["topic:aurora"] == {"total": 1200, "taken": 1}
     assert relevance.sampled_ids([("filter_facts", {}, result)]) == {"fixture-1-A"}
     monkeypatch.setattr(memory_tools, "UserMemory", lambda _: type("Memory", (), {
-        "topics": lambda self: [{"code": "aurora", "fact_count": 1200, "aliases": []}]
+        "topics": lambda self, *, scope=None: [{"code": "aurora", "fact_count": 1200, "aliases": []}]
     })())
     topics = memory_tools.list_topics(tools.ToolContext(user="synthetic"))
     assert ledger.note_topics(led, topics) == 1

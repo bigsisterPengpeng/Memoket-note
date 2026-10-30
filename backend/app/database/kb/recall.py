@@ -1,24 +1,9 @@
-"""Retrieval at cluster grain, for writing.
-
-Question-answering wants the narrowest topic that answers the question.
-Writing wants everything about a subject at once: a section built from six
-facts scattered over six sibling topics has nothing to say the second time
-it is asked to write about that subject, so it says the first thing again in
-different words -- which is what ``non_repetition`` has been measuring all
-along.
-
-So the same codebook is read two ways. ``kite_memory.recall`` stays exactly
-as it is and keeps answering questions; this walks out from its hits into
-the surrounding cluster and brings back the rest of the subject.
-
-**Seeding still goes through the ordinary recall.** The clusters decide how
-far to walk, never where to start -- a wrong cluster would otherwise be able
-to replace the query's own answer instead of merely extending it.
-"""
+"""Expand direct recall into related topics within the selected source scope."""
 
 from __future__ import annotations
 
 from . import clusters as _clusters
+from .scope import normalize
 
 # How many facts the seeding recall asks for. Small: these only have to
 # identify which subjects the query is about.
@@ -40,8 +25,8 @@ def recall_clustered(memory, query: str, *, limit: int = 12,
     """
     seeds, terms, took = memory.recall(
         query, limit=seed_limit, scope=scope, evidence=evidence)
-    store, _vocab = memory._index()
-    groups = cached(memory)
+    store, _vocab = memory._index(scope)
+    groups = cached(memory, scope=scope)
 
     # A topic cluster is deliberately broad and can contain facts about
     # unrelated people or organisations. Expansion must preserve the subject
@@ -76,19 +61,19 @@ def recall_clustered(memory, query: str, *, limit: int = 12,
     return out[:limit], terms, took
 
 
-def cached(memory) -> list[_clusters.Cluster]:
+def cached(memory, *, scope: str | None = None) -> list[_clusters.Cluster]:
     """Clusters for this codebook, rebuilt when the file changes.
 
     Keyed on mtime, the same way ``UserMemory._index`` caches the parsed
     codebook: clustering is deterministic, so a stale result is only ever
     wrong when the data underneath it moved.
     """
-    path = str(memory.path)
+    path = str(memory.path) + (f"#scope:{normalize(scope)}" if scope is not None else "")
     mtime = memory.path.stat().st_mtime if memory.path.exists() else 0.0
     hit = _CACHE.get(path)
     if hit and hit[0] == mtime:
         return hit[1]
-    store, _vocab = memory._index()
+    store, _vocab = memory._index(scope)
     built = _clusters.build(store)
     _CACHE[path] = (mtime, built)
     return built

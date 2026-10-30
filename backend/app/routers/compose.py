@@ -254,11 +254,7 @@ async def digest(body: DigestIn, user: str = Depends(current_user)):
     date_to = body.date_to or _date.today().isoformat()
     date_from = body.date_from or (_date.today() - timedelta(days=body.days)).isoformat()
 
-    rows = UserMemory(user).facts_between(date_from, date_to)
-
-
-    from ..database.kb.scope import filter_rows
-    rows = filter_rows(rows, body.scope)
+    rows = UserMemory(user).facts_between(date_from, date_to, scope=body.scope)
     if not rows:
         from ..database.kb.scope import SCOPE_LABEL
         empty = ('No records in this period.' if body.scope in ("", "all")

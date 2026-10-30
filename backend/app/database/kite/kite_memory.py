@@ -27,6 +27,7 @@ from memoket_kite.storage import _verify_loadable
 from .. import store
 from . import kite_entity_candidates, kite_extract_profile, kite_tokens, kite_topic_promotion
 from ..kb import search
+from ..kb import scope as memory_scope
 from ..kb.who import is_speaker_tag
 from ...util.config import get_settings
 from .kite_writer import write_lock
@@ -380,7 +381,7 @@ class UserMemory:
             mtime = self.path.stat().st_mtime
         except OSError:
             return None
-        key = f"{self.path}#grepidx"
+        key = f"{self.path}#grepidx:{getattr(store, '_memoket_scope', 'full')}"
         hit = self._cache.get(key)
         if hit and hit[0] == mtime and hit[2] is store:
             return hit[1]
@@ -429,7 +430,7 @@ class UserMemory:
         self._cache[key] = (mtime, face, store)
         return face
 
-    def common_term(self):
+    def common_term(self, *, preserve_vocab: bool = False):
         from ..kb import relations as R
         from ..kb import topic_face as TF
 
@@ -438,11 +439,16 @@ class UserMemory:
         if idx is None or not idx.unit_count:
             return None
         total = idx.unit_count
+        attested = self.vocab_term() if preserve_vocab else None
 
 
         ask_face = total * R.COMMON_DF_RATIO < R.COMMON_DF_MIN
 
         def is_common(term: str) -> bool:
+            # Repetition in other sources must not erase an explicit topic or
+            # entity name. Keep global statistics for generic prose terms.
+            if attested is not None and attested(term):
+                return False
             n = idx.unit_df(term, floor=R.COMMON_DF_MIN)
             if not (n is not None and n >= R.COMMON_DF_MIN
                     and n / total >= R.COMMON_DF_RATIO):
@@ -559,7 +565,9 @@ class UserMemory:
             out.append(_narrow_grep_query(q, idx.units_for(str(term))))
         return out
 
-    def _index(self):
+    def _index(self, scope: str | None = None):
+        if scope is not None:
+            return self._scoped_index(memory_scope.normalize(scope))
         self.ensure()
         mtime = self.path.stat().st_mtime
         key = str(self.path)
@@ -577,6 +585,35 @@ class UserMemory:
         self._cache[key] = (mtime, store, vocab)
         return store, vocab
 
+    def _scoped_index(self, scope: str):
+        full, vocab = self._index()
+        mtime = self.path.stat().st_mtime
+        key = f"{self.path}#scope:{scope}"
+        hit = self._cache.get(key)
+        if hit and hit[0] == mtime:
+            return hit[1], hit[2]
+        allowed = {uid for uid in full.units if memory_scope.allows(uid, scope)}
+        if len(allowed) == len(full.units):
+            return full, vocab
+
+        # Rebuild through KITE's loader so all postings, token statistics and
+        # stage bindings refer only to allowed units before any result cap.
+        scoped = Store()
+        root = ET.parse(self.path).getroot()
+        for session in root.find("timeline").iter():
+            if session.tag in ("conv", "session") and session.get("id") in allowed:
+                scoped.add_session_xml(session)
+        scoped.speakers = set(full.speakers)
+        scoped.instances = {
+            key: {**instance, "mentions": mentions}
+            for key, instance in full.instances.items()
+            if (mentions := [fid for fid in instance["mentions"] if fid in scoped.facts])
+        }
+        scoped._memoket_user = self.user_id
+        scoped._memoket_scope = scope
+        self._cache[key] = (mtime, scoped, vocab)
+        return scoped, vocab
+
     def is_empty(self) -> bool:
         try:
             store, _vocab = self._index()
@@ -585,7 +622,10 @@ class UserMemory:
             return False
 
     def invalidate(self) -> None:
-        self._cache.pop(str(self.path), None)
+        base = str(self.path)
+        for key in list(self._cache):
+            if key == base or key.startswith(base + "#"):
+                self._cache.pop(key, None)
 
     @classmethod
     def evict_idle(cls, ttl_s: float | None = None, now: float | None = None) -> int:
@@ -713,14 +753,14 @@ class UserMemory:
 
 
         query = search.clean_query(query)
-        store, vocab = self._index()
+        store, vocab = self._index(scope)
         _topics, _entities, surfaces = self._match_vocab(query, vocab)
 
 
         surfaces = [x for x in surfaces if not is_speaker_tag(x)]
 
 
-        common, attested = ((self.common_term(), self.vocab_term()) if evidence
+        common, attested = ((self.common_term(preserve_vocab=True), self.vocab_term()) if evidence
                             else (None, None))
 
 
@@ -760,10 +800,11 @@ class UserMemory:
         facts = filter_rows(facts, scope)
         return facts[:limit], surfaces, (time.perf_counter() - t0) * 1000
 
-    def recall_evidence(self, query: str, rows: list[dict]) -> list[dict]:
-        store, _vocab = self._index()
+    def recall_evidence(self, query: str, rows: list[dict], *,
+                        scope: str | None = None) -> list[dict]:
+        store, _vocab = self._index(scope)
         q = search.clean_query(query)
-        common, attested, segment = self.common_term(), self.vocab_term(), self.segment()
+        common, attested, segment = self.common_term(preserve_vocab=True), self.vocab_term(), self.segment()
 
 
         terms = search._terms(self, q, search._weigher(q, segment, common))
@@ -791,7 +832,7 @@ class UserMemory:
                             "units": (idx.unit_df(term) if idx else None) or 0})
         return out[:6]
 
-    def recall_multihop(self, question: str, limit: int = 8) -> tuple[list[dict], bool, float]:
+    def recall_multihop(self, question: str, limit: int = 8, scope: str = "all") -> tuple[list[dict], bool, float]:
         from memoket_kite.core.algebra import execute_plan
         from memoket_kite.pipeline.compile_plan import compile_plan
 
@@ -799,7 +840,7 @@ class UserMemory:
 
         t0 = time.perf_counter()
         _export_provider_env()
-        kb, vocab = self._index()
+        kb, vocab = self._index(scope)
         profile = WritingProfile(
             Memory.load([str(self.path)])._reasoner()._profile, kb, vocab)
 
@@ -865,8 +906,8 @@ class UserMemory:
         return [t for t in out if t]
 
 
-    def topics(self) -> list[dict]:
-        store, vocab = self._index()
+    def topics(self, *, scope: str | None = None) -> list[dict]:
+        store, vocab = self._index(scope)
         counts: dict[str, int] = {}
         for f in store.facts.values():
             for code in f.topics:
@@ -877,8 +918,8 @@ class UserMemory:
             for t in sorted(vocab.topics.values(), key=lambda t: t.code)
         ]
 
-    def entities(self) -> list[dict]:
-        store, vocab = self._index()
+    def entities(self, *, scope: str | None = None) -> list[dict]:
+        store, vocab = self._index(scope)
         counts: dict[str, int] = {}
         for f in store.facts.values():
             for code in f.entities:
@@ -912,8 +953,8 @@ class UserMemory:
 
     def facts_page(self, *, kind: str = "", who: str = "", topic: str = "",
                    entity: str = "", conf_min: str = "", limit: int = 20,
-                   offset: int = 0) -> tuple[list[dict], int]:
-        store, vocab = self._index()
+                   offset: int = 0, scope: str | None = None) -> tuple[list[dict], int]:
+        store, vocab = self._index(scope)
 
         topic_closure: set[str] | None = None
         if topic:
@@ -947,21 +988,22 @@ class UserMemory:
         page = rows[offset:offset + limit]
         return [self._fact_dict(f) for f in page], total
 
-    def facts_between(self, date_from: str, date_to: str, limit: int = 400) -> list[dict]:
-        store, _vocab = self._index()
+    def facts_between(self, date_from: str, date_to: str, limit: int = 400, *,
+                      scope: str | None = None) -> list[dict]:
+        store, _vocab = self._index(scope)
         rows = sorted(
             (f for f in store.facts.values() if date_from <= f.when <= date_to),
             key=lambda f: f.when,
         )
         return [self._fact_dict(f) for f in rows[:limit]]
 
-    def fact_by_id(self, fact_id: str) -> dict | None:
-        store, _vocab = self._index()
+    def fact_by_id(self, fact_id: str, *, scope: str | None = None) -> dict | None:
+        store, _vocab = self._index(scope)
         fact = store.facts.get(fact_id)
         return self._fact_dict(fact) if fact is not None else None
 
-    def fact_sources(self, fact_id: str) -> list[dict]:
-        store, _vocab = self._index()
+    def fact_sources(self, fact_id: str, *, scope: str | None = None) -> list[dict]:
+        store, _vocab = self._index(scope)
         fact = store.facts.get(fact_id)
         if not fact:
             return []

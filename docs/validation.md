@@ -1,10 +1,10 @@
 # Validation notes
 
-## Current release: October 26, 2026 / 0.1.5
+## Current release: October 30, 2026 / 0.1.6
 
 | Check | Result |
 |---|---|
-| Backend pytest | 436 passed |
+| Backend pytest | 456 passed |
 | Frontend Vitest | 62 files, 336 passed |
 | Shared frontend/backend contracts | 61 passed |
 | Types, lint, Python static checks and desktop test | Passed |
@@ -12,28 +12,46 @@
 | Linux arm64 container smoke test | Seven groups passed |
 | macOS arm64 installer | Signature, disk image, isolated backend/CLI and bundled web checks passed |
 
-Provider test results and model suggestions now belong to the exact tested
-configuration. Regression tests reproduce the old stale-success bug and cover
-changed endpoints, models, draft keys, saved credential slots, voice regions and
-saved-key state; unrelated rerenders retain valid results. They also cover
-out-of-order responses, the 45-second client timeout, retry, unmount cancellation,
-key omission from rendered probe markup, translations and following the current
-writing key/address in vision tests. Existing connector availability checks
-remain covered, including their separate eight-second timeout.
+Memory source selection now applies before candidate limits, ranking, date-range
+caps, pagination and cluster expansion. The agent's lookup, topic/entity listing,
+filtering, date-range and compiled session-context tools use the selected
+scope. Library browsing and explicit fact/source-ID inspection remain available
+separately, preserving verification of citations already in a document.
 
-The actual UI was exercised against a local fictional service with two model
-lists and a delayed response. Editing an endpoint removed the previous success
-and suggestions; an old delayed reply did not overwrite the current result.
-Long model names and the provider selector were checked at 1280 × 720,
-900 × 600 and 375 × 600, including dark appearance. Compact checks use the real
-app in fixed-size iframes. No real account or model credentials were used.
+Twenty new regression cases cover five source scopes, 820 stronger excluded
+candidates in both strict and relaxed modes, useful cluster follow-up, raw-line fallback, scoped counts, empty
+scopes, source deletion, unknown-scope compatibility, user isolation and actual
+KITE stage bindings with a stubbed query compiler. A digest regression first
+fails against the previous revision because 405 excluded facts exhaust its
+400-row date-range cap; it now returns the two allowed notes. No live provider
+calls are required.
 
-The 0.1.5 installer was checked with disposable storage. It is locally ad-hoc
-signed and not notarized. Native screen-reader behavior, real hosted provider
-connections and writing quality were not validated for this UI change. The real
-installed application profile was not used. Backend tests retain five
+The [reproducible synthetic comparison](retrieval-evaluation.md) uses 144
+source-linked facts and 40 query/scope cases. Direct-recall hit rate increases
+from 20% to 100%; cluster expansion obeys the source scope in every case.
+These results target the reproduced failure rather than general semantic
+relevance or writing quality. Warm p95 times remain below 1.5 ms on the test
+host. First-query initialization is more expensive; cached source views trade
+some memory for avoiding repeated full-library scans.
+
+The actual UI was checked with a disposable fictional library. Switching between
+Notes only, Imports only and Screen activity only changed the related-memory
+cards; opening a card showed its dated original evidence and returning to the
+draft retained the selected scope. The production web bundle in the installer
+matches the current frontend build byte for byte. The bundled backend passes
+all five source filters and reads original evidence from that same fixture.
+
+The Linux arm64 image passed seven disposable smoke groups, including the real
+CLI/MCP handshake, stopped-library backup and saved KITE evidence after container
+replacement. The synthetic retrieval cases also passed inside the image with
+networking disabled. Existing containers and library volumes were preserved.
+
+The 0.1.6 macOS arm64 installer is locally ad-hoc signed and not notarized. The
+real installed application profile, notes, recordings and account connectors
+were not used. Native screen-reader behavior and real-model writing quality
+were not validated for this retrieval fix. Backend tests retain five
 third-party deprecation warnings, and the frontend retains its large-chunk build
-warning. No CI configuration was added.
+warning. No dependency or CI configuration was added.
 
 ## Container deployment update: October 22, 2026
 

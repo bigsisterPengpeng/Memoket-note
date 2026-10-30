@@ -65,7 +65,7 @@ def recall(body: RecallIn, user: str = Depends(current_user)):
 
 
     try:
-        ev: list[dict] | None = mem.recall_evidence(body.query, rows) if rows else []
+        ev: list[dict] | None = mem.recall_evidence(body.query, rows, scope=body.scope) if rows else []
     except Exception:          # noqa: BLE001
         ev = None
     return RecallOut(facts=rows_to_facts(mem, rows), took_ms=round(took, 3),

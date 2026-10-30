@@ -84,7 +84,7 @@ def search_memory(ctx: ToolContext, query: str, limit: int = 8) -> str:
     },
 )
 def list_topics(ctx: ToolContext, limit: int = 40) -> str:
-    rows = UserMemory(ctx.user).topics()
+    rows = UserMemory(ctx.user).topics(scope=ctx.scope)
     rows = [t for t in rows if t.get("fact_count")]
     rows.sort(key=lambda t: t["fact_count"], reverse=True)
     rows = rows[: max(1, min(int(limit or 40), 200))]
@@ -115,7 +115,7 @@ def list_topics(ctx: ToolContext, limit: int = 40) -> str:
     },
 )
 def list_entities(ctx: ToolContext, type: str = "", limit: int = 40) -> str:  # noqa: A002
-    rows = UserMemory(ctx.user).entities()
+    rows = UserMemory(ctx.user).entities(scope=ctx.scope)
     if type:
         rows = [e for e in rows if (e.get("type") or "").lower() == type.lower()]
     rows = [e for e in rows if e.get("fact_count")]
@@ -154,7 +154,7 @@ def filter_facts(ctx: ToolContext, topic: str = "", entity: str = "",
         return '(filter_facts requires at least one filter: topic, entity, kind or who)'
     rows, total = UserMemory(ctx.user).facts_page(
         topic=topic, entity=entity, kind=kind, who=who,
-        limit=max(1, min(int(limit or 15), 50)))
+        limit=max(1, min(int(limit or 15), 50)), scope=ctx.scope)
     head = f"{total} facts total; returning {len(rows)}:\n" if total else ""
     return head + _fmt_facts(rows, user=ctx.user)
 
@@ -176,7 +176,7 @@ def filter_facts(ctx: ToolContext, topic: str = "", entity: str = "",
 )
 def facts_in_range(ctx: ToolContext, date_from: str, date_to: str, limit: int = 30) -> str:
     rows = UserMemory(ctx.user).facts_between(date_from, date_to,
-                                              limit=max(1, min(int(limit or 30), 100)))
+                                              limit=max(1, min(int(limit or 30), 100)), scope=ctx.scope)
     return _fmt_facts(rows, user=ctx.user)
 
 
@@ -227,7 +227,7 @@ def fact_sources(ctx: ToolContext, fact_id: str) -> str:
 def search_session_context(ctx: ToolContext, question: str, limit: int = 10) -> str:
     """Compile a session-scoped query when a question requires multiple retrieval steps."""
     rows, multihop, took = UserMemory(ctx.user).recall_multihop(
-        question, limit=max(1, min(int(limit or 10), 20)))
+        question, limit=max(1, min(int(limit or 10), 20)), scope=ctx.scope)
     head = (f"({'Multi-step session retrieval' if multihop else 'The compiled plan used ordinary retrieval; no multi-step session lookup was required'}"
             f"; {took / 1000:.1f}s)\n")
     return head + _fmt_facts(rows, user=ctx.user)
@@ -250,20 +250,7 @@ def search_session_context(ctx: ToolContext, question: str, limit: int = 10) -> 
     required=["query"],
 )
 def gather_subject(ctx: ToolContext, query: str, limit: int = 14) -> str:
-    """The coarse view of the same codebook.
-
-    Why both this and ``search_memory`` exist, rather than one of them
-    winning: they are measurably better at different jobs. Asked to find one
-    fact, precise topic matching wins. Asked to write a whole section, it
-    returns six facts spread over six sibling topics and the section has
-    nothing left to say the next round -- which is what ``non_repetition``
-    has been penalising. Measured on 60 real queries, the fraction that
-    reached the wanted subject went from 57% to 88% at the cost of about one
-    extra fact returned.
-
-    Which one to use is the model's call, which is the point: it knows
-    whether it is checking a detail or writing a section, and we don't.
-    """
+    """Gather related section material while preserving the selected source scope."""
     from ...database.kb.recall import recall_clustered
 
     rows, _terms, _took = recall_clustered(

@@ -23,7 +23,14 @@ def classify(unit: str) -> str:
     return "meetings"
 
 
+def normalize(scope: str) -> str:
+    return scope if scope in SCOPES else "all"
+
+
+def allows(unit: str, scope: str) -> bool:
+    source = classify(unit)
+    return source != "screen" if normalize(scope) == "all" else source == scope
+
+
 def filter_rows(rows: list[dict], scope: str) -> list[dict]:
-    if scope not in SCOPES or scope in ("", "all"):
-        return [r for r in rows if classify(r.get("unit") or "") != "screen"]
-    return [r for r in rows if classify(r.get("unit") or "") == scope]
+    return [r for r in rows if allows(r.get("unit") or "", scope)]

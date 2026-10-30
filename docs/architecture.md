@@ -64,6 +64,12 @@ invented. The harness must preserve this distinction during evaluation and repai
 behavior. Harness memory tools expose selected operations to a run, while the UI
 lets a person inspect facts and source evidence directly.
 
+Source-scoped retrieval uses cached KITE views before ranking, candidate caps
+and cluster expansion. The writing agent's lookup, filtering, date-range and
+session-context tools inherit the selected scope. Full-library browsing remains
+available separately. See [retrieval evaluation](retrieval-evaluation.md) for
+reproducible synthetic cases and measured limits.
+
 Fact identifiers and source links connect recalled material to citations in the
 note. A retrieval result is evidence to examine. It is not an automatic assertion
 that every generated interpretation of that evidence is correct.
