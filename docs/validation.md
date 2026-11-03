@@ -1,57 +1,53 @@
 # Validation notes
 
-## Current release: October 30, 2026 / 0.1.6
+## Current release: November 3, 2026 / 0.1.7
 
 | Check | Result |
 |---|---|
-| Backend pytest | 456 passed |
-| Frontend Vitest | 62 files, 336 passed |
+| Backend pytest | 474 passed |
+| Frontend Vitest | 63 files, 342 passed |
 | Shared frontend/backend contracts | 61 passed |
 | Types, lint, Python static checks and desktop test | Passed |
 | Publication and English-source audits | Passed |
-| Linux arm64 container smoke test | Seven groups passed |
-| macOS arm64 installer | Signature, disk image, isolated backend/CLI and bundled web checks passed |
+| macOS arm64 installer | Signature, disk image, isolated backend/CLI and exact bundled-web checks passed |
+| Docker image | Build blocked by exhausted local BuildKit storage; not validated for this release |
 
-Memory source selection now applies before candidate limits, ranking, date-range
-caps, pagination and cluster expansion. The agent's lookup, topic/entity listing,
-filtering, date-range and compiled session-context tools use the selected
-scope. Library browsing and explicit fact/source-ID inspection remain available
-separately, preserving verification of citations already in a document.
+Local vault export now preserves same-name files on the first export. A changed
+file is updated automatically only when its path, recorded destination and
+content match the previous export. Older receipts without a vault need one
+confirmed changed-content update; identical files are adopted without rewriting. Explicit
+overwrite remains available for regular files. Changing the destination clears
+the single-note overwrite choice, and copy links retain the recorded vault.
 
-Twenty new regression cases cover five source scopes, 820 stronger excluded
-candidates in both strict and relaxed modes, useful cluster follow-up, raw-line fallback, scoped counts, empty
-scopes, source deletion, unknown-scope compatibility, user isolation and actual
-KITE stage bindings with a stubbed query compiler. A digest regression first
-fails against the previous revision because 405 excluded facts exhaust its
-400-row date-range cap; it now returns the two allowed notes. No live provider
-calls are required.
+Three new regression cases first failed on the previous revision; an existing
+owned-file update remained a valid counterexample. Eighteen backend cases now
+cover initial collisions, vault changes, external edits, explicit overwrite,
+legacy receipts, identical content, missing/conflicting attachments, interrupted
+writes, changes after preflight, symbolic links, occupied paths and clone markers.
+A simulated full disk preserves the original file and receipt and removes the
+temporary file. Six UI cases cover conflict wording, fresh overwrite choices,
+stale-result clearing, attachment repair, failures and recorded copy links.
 
-The [reproducible synthetic comparison](retrieval-evaluation.md) uses 144
-source-linked facts and 40 query/scope cases. Direct-recall hit rate increases
-from 20% to 100%; cluster expansion obeys the source scope in every case.
-These results target the reproduced failure rather than general semantic
-relevance or writing quality. Warm p95 times remain below 1.5 ms on the test
-host. First-query initialization is more expensive; cached source views trade
-some memory for avoiding repeated full-library scans.
+The actual built UI was exercised with fictional notes and disposable vaults.
+The initial export left an unrelated file byte-for-byte unchanged. Selecting
+overwrite wrote the chosen draft and its attachment; a repeat export restored a
+deliberately removed attachment. Changing the path cleared overwrite. The export
+dialog had no horizontal overflow at 900 × 600 and 375 × 600. The packaged backend
+separately passed first-collision, overwrite, unchanged retry, attachment repair,
+vault-bound receipts, external-edit and bundled-CLI checks. Its web files match
+the current production build byte for byte.
 
-The actual UI was checked with a disposable fictional library. Switching between
-Notes only, Imports only and Screen activity only changed the related-memory
-cards; opening a card showed its dated original evidence and returning to the
-draft retained the selected scope. The production web bundle in the installer
-matches the current frontend build byte for byte. The bundled backend passes
-all five source filters and reads original evidence from that same fixture.
+The 0.1.7 macOS arm64 installer is locally ad-hoc signed and not notarized. No real
+vault, installed profile, provider account or native Obsidian app was used. Local
+APFS export was validated; filesystems without hard links or atomic replacement
+report an export failure. Other editors are not transactionally locked, and an
+export batch is not an all-or-nothing operation. See [connection behavior and
+limits](connections.md). Windows/Linux desktop installers and this release's
+Docker image were not verified. Existing containers and volumes were preserved.
 
-The Linux arm64 image passed seven disposable smoke groups, including the real
-CLI/MCP handshake, stopped-library backup and saved KITE evidence after container
-replacement. The synthetic retrieval cases also passed inside the image with
-networking disabled. Existing containers and library volumes were preserved.
-
-The 0.1.6 macOS arm64 installer is locally ad-hoc signed and not notarized. The
-real installed application profile, notes, recordings and account connectors
-were not used. Native screen-reader behavior and real-model writing quality
-were not validated for this retrieval fix. Backend tests retain five
-third-party deprecation warnings, and the frontend retains its large-chunk build
-warning. No dependency or CI configuration was added.
+Backend tests retain five third-party deprecation warnings; the frontend retains
+its existing large-chunk build warning. No dependency or CI configuration was
+added.
 
 ## Container deployment update: October 22, 2026
 

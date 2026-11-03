@@ -38,20 +38,20 @@ export default function ExportNotePanel({ noteId, title, onClose, onMarkdown }:
   useEffect(() => {
     if (where || remotes === null) return
     const had = remotes[0]?.platform as ExportWhere | undefined
-    setWhere(had && WHERE_LABEL[had] ? had : (loadVault() ? 'obsidian' : 'obsidian'))
+    setWhere(had && WHERE_LABEL[had] ? had : 'obsidian')
   }, [remotes, where])
 
   async function pickVault() {
     const pick = window.memoketDesktop?.pickDirectory
     if (!pick) { toast(t('The web version cannot pick a local folder; paste the path into the box'), 'error'); return }
     const dir = await pick(t('Choose the Obsidian vault folder'))
-    if (dir) { setVault(dir); saveVault(dir) }
+    if (dir) { setVault(dir); saveVault(dir); setForce(false) }
   }
 
   const has = (w: ExportWhere) => !!remotes?.some((r) => r.platform === w)
   const remember = canRememberCreds()
   const HINT: Record<ExportWhere, string> = {
-    obsidian: t('Tree levels become folders; images and recordings are copied into _assets/.'),
+    obsidian: t('Existing and externally edited files are kept by default. Images and recordings are copied into _assets/.'),
     notion: t('Becomes a child page under the parent; connect the page to this integration first. Tables / lists / code / bold become Notion blocks; local images go through Notion file upload. {creds}', { creds: remember ? credsNote() : t('Credentials are not stored; enter them each time.') }),
     feishu: t('The app needs docx / drive write permission and must be a collaborator on the target folder. Tables / images / lists / code become Feishu blocks; mermaid diagrams are rendered to images here and sent along. {creds}', { creds: remember ? credsNote() : t('Credentials are not stored; enter them each time.') }),
   }
@@ -90,12 +90,9 @@ export default function ExportNotePanel({ noteId, title, onClose, onMarkdown }:
       </div>
       <p className="section-label">{t('Or send to a connected tool')}</p>
 
-      {/* ① State first. In a repeated action this line beats any explanation; copies link to the other side */}
       <p className="muted export-note-state">
         {remotes === null ? '…'
-          /* "Exporting again overwrites" is a muddled sentence for a note **never exported**: there's no "same place" yet.
-             Say both steps clearly: this time creates, after that it overwrites. */
-          : remotes.length === 0 ? t('This note has never been exported back — this time a new copy is created on the other side; later exports overwrite it.')
+          : remotes.length === 0 ? t('No previous export is recorded. Choose a destination below.')
             : remotes.map((r, i) => {
               const url = remoteUrl(r, vault)
               const label = t('{where} · exported {date}', { where: t(WHERE_LABEL[r.platform as ExportWhere] ?? r.platform), date: fmtDate(r.exported_at) })
@@ -108,23 +105,21 @@ export default function ExportNotePanel({ noteId, title, onClose, onMarkdown }:
             })}
       </p>
 
-      {/* ② Ask about one destination at a time */}
       <div className="seg export-note-seg">
         {(['obsidian', 'notion', 'feishu'] as ExportWhere[]).map((w) => (
           <button key={w} className={where === w ? 'on' : ''} aria-pressed={where === w}
-                  onClick={() => setWhere(w)}>
+                  onClick={() => { setWhere(w); setForce(false) }}>
             {WHERE_LABEL[w]}
             {has(w) && <Icon n="bx-check" />}
           </button>
         ))}
       </div>
 
-      {/* ③ Show only the selected one's fields */}
       <div className="export-note-fields">
         {where === 'obsidian' && (
           <div className="row" style={{ gap: 6 }}>
             <input aria-label={t('Obsidian vault folder path')} placeholder={t('vault folder path')} value={vault} style={{ flex: 1, minWidth: 0 }}
-                   onChange={(e) => { setVault(e.target.value); saveVault(e.target.value) }} />
+                   onChange={(e) => { setVault(e.target.value); saveVault(e.target.value); setForce(false) }} />
             <button className="icon-btn" aria-label={t('Choose folder')} onClick={() => void pickVault()} title={t('Choose folder')}><Icon n="bx-dots-horizontal-rounded" /></button>
           </div>
         )}
@@ -142,7 +137,7 @@ export default function ExportNotePanel({ noteId, title, onClose, onMarkdown }:
           </>
         )}
         <label className="muted" style={{ fontSize: 'var(--t-sm)' }}>
-          <input type="checkbox" checked={force} onChange={(e) => setForce(e.target.checked)} /> {t('Overwrite edits made on the other side')}
+          <input type="checkbox" checked={force} onChange={(e) => setForce(e.target.checked)} /> {where === 'obsidian' ? t('Overwrite existing or edited files in this vault') : t('Overwrite edits made on the other side')}
         </label>
       </div>
 
@@ -159,8 +154,10 @@ export default function ExportNotePanel({ noteId, title, onClose, onMarkdown }:
       </div>
 
       {ex.result && (ex.result.out.conflicts?.length ?? 0) > 0 && (
-        <p className="muted export-note-hint">
-          {t('Edited on the other side, skipped: {list}. Tick “Overwrite edits made on the other side” and write again.', { list: ex.result.out.conflicts?.join(t(', ')) ?? '' })}
+        <p className="muted export-note-hint export-conflicts" role="status">
+          {ex.result.where === 'obsidian'
+            ? t('Existing files kept: {list}. Review them before choosing overwrite.', { list: ex.result.out.conflicts?.join(t(', ')) ?? '' })
+            : t('Edited on the other side, skipped: {list}. Tick “Overwrite edits made on the other side” and write again.', { list: ex.result.out.conflicts?.join(t(', ')) ?? '' })}
         </p>
       )}
       {ex.result && (ex.result.out.failed?.length ?? 0) > 0 && (

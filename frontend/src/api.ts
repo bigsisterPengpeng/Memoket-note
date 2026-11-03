@@ -1546,7 +1546,7 @@ export const importFeishu = (appId: string, appSecret: string, scope: 'wiki' | '
 
 // ---- Export back (docs/import-sync-plan.md §2): this side is the truth; remote copies are overwritten by memoket_id ----
 
-export type ExportBackOut = { created?: number; updated?: number; written?: number; skipped?: number; conflicts?: string[]; failed?: string[]; files?: string[]; missing?: string[]; untried?: number; url?: string; urls?: { note_id: string; title: string; url: string }[] }
+export type ExportBackOut = { created?: number; updated?: number; written?: number; skipped?: number; assets_written?: number; conflicts?: string[]; failed?: string[]; files?: string[]; missing?: string[]; untried?: number; url?: string; urls?: { note_id: string; title: string; url: string }[] }
 
 export type NoteRemote = { platform: string; remote_id: string; remote_path: string; exported_at: string; remote_rev?: string }
 

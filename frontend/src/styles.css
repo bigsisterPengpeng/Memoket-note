@@ -605,6 +605,7 @@ h2:first-child { margin-top: 0; }
 .export-note-seg .bx { font-size: var(--t-md); color: var(--accent); }
 .export-note-fields { display: flex; flex-direction: column; gap: var(--s-3); }
 .export-note-fields input[type=text], .export-note-fields input:not([type]) { width: 100%; }
+.export-conflicts { min-width: 0; overflow-wrap: anywhere; }
 .export-note-hint { font-size: var(--t-xs); margin: 0; line-height: 1.6; }
 
 /* List headers show the view switch and count without competing with primary actions. */

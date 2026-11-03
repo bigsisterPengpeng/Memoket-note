@@ -10,7 +10,6 @@ import zipfile
 from datetime import datetime, timezone
 import os
 from pathlib import Path
-from urllib.parse import quote
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -18,6 +17,7 @@ from fastapi.responses import Response
 from pydantic import BaseModel
 
 from ..database import exporters, store
+from ..database.vault_export import write_vault
 from ..database import assets as _assets_store
 from .deps import current_user
 
@@ -108,9 +108,6 @@ def export_renders(body: RendersIn, user: str = Depends(current_user)) -> dict:
     return {"stored": len(stored), "rejected": rejected}
 
 
-def obsidian_url(vault: Path, rel_path: str) -> str:
-    return "obsidian://open?path=" + quote(str(vault / rel_path), safe="/")
-
 
 def _missing(user: str, note_ids: list[str], files: list[exporters.ExportFile]) -> list[str]:
     have = {f.note_id for f in files}
@@ -133,41 +130,9 @@ def export_obsidian(body: ObsidianOut, user: str = Depends(current_user)) -> dic
         raise HTTPException(400, f'The directory is not writable: {vault}')
     only = set(body.note_ids) or None
     files = exporters.render_tree(user, only)
-    written, skipped, conflicts, urls = [], [], [], []
-    assets: set[str] = set()
-    for f in files:
-        target = vault / f.path
-        if f.note_id:
-            prev = store.get_remote(user, f.note_id, "obsidian")
-            current = target.read_text(encoding="utf-8", errors="replace") if target.exists() else None
-            if current == f.content:
-                skipped.append(f.path)
-                store.record_remote(user, f.note_id, "obsidian", remote_id=store.content_sha(f.content), remote_path=f.path)
-                continue
-
-            if current is not None and prev and prev.get("remote_id") and store.content_sha(current) != prev["remote_id"] and not body.force:
-                conflicts.append(f.path)
-                continue
-        try:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(f.content, encoding="utf-8")
-        except OSError as exc:
-            raise HTTPException(400, f'Could not write {f.path}：{exc.strerror or exc}')
-        written.append(f.path)
-        assets |= f.assets
-        if f.note_id:
-            store.record_remote(user, f.note_id, "obsidian", remote_id=store.content_sha(f.content), remote_path=f.path)
-            urls.append({"note_id": f.note_id, "title": f.title, "url": obsidian_url(vault, f.path)})
-    for name in sorted(assets):
-        src = _assets_store.assets_dir() / name
-        if src.is_file():
-            dst = vault / "_assets" / name
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            if not dst.exists():
-                dst.write_bytes(src.read_bytes())
-    return {"written": len(written), "skipped": len(skipped), "conflicts": conflicts, "files": written[:50],
-            "missing": _missing(user, body.note_ids, [f for f in files if f.note_id]),
-            "urls": urls[:50], "url": urls[0]["url"] if len(urls) == 1 else ""}
+    result = write_vault(user, vault, files, force=body.force)
+    result["missing"] = _missing(user, body.note_ids, [f for f in files if f.note_id])
+    return result
 
 
 def _pick(user: str, note_ids: list[str]) -> list[exporters.ExportFile]:

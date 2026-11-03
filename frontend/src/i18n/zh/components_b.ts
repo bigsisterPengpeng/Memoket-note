@@ -1,5 +1,25 @@
 /** Chinese dictionary shard: components_b (components M-Z). key = English source text, value = Chinese. */
 export const COMPONENTS_B: Record<string, string> = {
+  "Kept the existing file. Review it before choosing overwrite.": "已保留已有文件，请先检查，再选择是否覆盖。",
+  "Exported 1 file to the vault": "已向仓库导出 1 个文件",
+  ", 1 existing file kept": "，保留了 1 个已有文件",
+  "Could not export this item. See the details below.": "此项未能导出，请查看下方详情。",
+  "Restored 1 attachment; note text is unchanged.": "已恢复 1 个附件，笔记正文未变。",
+  "Copied 1 attachment.": "已复制 1 个附件。",
+
+  "Existing and externally edited files are kept by default. Images and recordings are copied into _assets/.": "默认保留已有文件及外部修改。图片和录音会复制到 _assets/。",
+  "No previous export is recorded. Choose a destination below.": "尚无导出记录，请在下方选择目标。",
+  "Overwrite existing or edited files in this vault": "覆盖此仓库中已有或已修改的文件",
+  "Existing files kept: {list}. Review them before choosing overwrite.": "已保留已有文件：{list}。请先检查，再选择是否覆盖。",
+  "Existing files kept. Review the list before choosing overwrite:": "已保留已有文件，请先检查列表，再选择是否覆盖：",
+  "Export creates a copy in the destination. Repeat exports update that copy; existing or externally edited files are listed for review. This does not import changes back.": "导出会在目标位置创建副本，重复导出会更新该副本。已有文件或外部修改会列出供检查，不会自动导回。",
+  "Exported {n} files to the vault": "已向仓库导出 {n} 个文件",
+  ", {n} existing files kept": "，保留了 {n} 个已有文件",
+  "Kept {n} existing files. Review the conflict list before choosing overwrite.": "已保留 {n} 个已有文件，请检查冲突列表后再选择是否覆盖。",
+  "Could not export {n} items. See the details below.": "有 {n} 项未能导出，请查看下方详情。",
+  "Restored {n} attachments; note text is unchanged.": "已恢复 {n} 个附件，笔记正文未变。",
+  "Copied {n} attachments.": "已复制 {n} 个附件。",
+
   'Checking {name} availability…': '正在检查 {name} 是否可用…',
   'Could not check {name}. Check the app connection and try again.': '无法检查 {name}。请确认应用连接正常后重试。',
   '{name} is available in this workspace.': '此工作区可以使用 {name}。',

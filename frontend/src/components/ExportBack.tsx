@@ -29,11 +29,9 @@ export default function ExportBack() {
     const pick = window.memoketDesktop?.pickDirectory
     if (!pick) { toast(t('The web version cannot pick a local folder; paste the path into the box'), 'error'); return }
     const dir = await pick(t('Choose the Obsidian vault folder'))
-    if (dir) { setVaultDir(dir); try { localStorage.setItem('memoket-note:vault-dir', dir) } catch { /* doesn't matter */ } }
+    if (dir) { setVaultDir(dir); setForce(false); try { localStorage.setItem('memoket-note:vault-dir', dir) } catch { /* doesn't matter */ } }
   }
 
-  // Shared logic (util/useExportBack): what drifts is "how to call, how memoket_id overwrites,
-  // how conflicts are reported", not the layout. Whole-library export = no noteIds passed.
   const { busy, result, toObsidian, toNotion, toFeishu } = useExportBack()
 
   const spin = (w: string, label: string) => busy === w ? <span className="spinner" /> : label
@@ -43,15 +41,14 @@ export default function ExportBack() {
       <h2>{t('Export back')}</h2>
       <div className="stack export-back">
         <p className="muted" style={{ fontSize: 'var(--t-sm)', margin: 0 }}>
-          {t('Write notes from here back to other places. This is the source of truth: every note carries a ')}<code>memoket_id</code>{t('; exporting again ')}<strong>{t('overwrites')}</strong>{t(' rather than creating anew. Notes edited on the other side are skipped and listed; they are never pulled back automatically.')}
+          {t('Export creates a copy in the destination. Repeat exports update that copy; existing or externally edited files are listed for review. This does not import changes back.')}
           <br />
-          {}
           {remember ? t('Notion / Feishu: {note}', { note: credsNote() }) : t('Notion / Feishu credentials are not stored and must be re-entered each time; the Obsidian path is just a local path and is remembered.')}
         </p>
 
         <div className="row" style={{ gap: 8, alignItems: 'center' }}>
           <span style={{ width: 88 }}>Obsidian</span>
-          <input aria-label={t('Obsidian vault folder path')} placeholder={t('vault folder path')} value={vaultDir} onChange={(e) => setVaultDir(e.target.value)} style={{ flex: 1, minWidth: 0 }} />
+          <input aria-label={t('Obsidian vault folder path')} placeholder={t('vault folder path')} value={vaultDir} onChange={(e) => { setVaultDir(e.target.value); setForce(false) }} style={{ flex: 1, minWidth: 0 }} />
           <button className="icon-btn" aria-label={t('Choose folder')} onClick={() => void pickVault()} title={t('Choose folder')}><Icon n="bx-dots-horizontal-rounded" /></button>
           <label className="muted" style={{ fontSize: 'var(--t-sm)', whiteSpace: 'nowrap' }}>
             <input type="checkbox" checked={force} onChange={(e) => setForce(e.target.checked)} /> {t('Overwrite edits made on the other side')}
@@ -62,7 +59,7 @@ export default function ExportBack() {
           </button>
         </div>
         <p className="muted" style={{ fontSize: 'var(--t-xs)', margin: '0 0 6px 96px' }}>
-          {t('Tree levels become folders, clones become .link.txt, images / recordings are copied into _assets/. Open the vault in Obsidian to see them.')}
+          {t('Existing and externally edited files are kept by default. Images and recordings are copied into _assets/.')}
         </p>
 
         <div className="row" style={{ gap: 8, alignItems: 'center' }}>
@@ -83,7 +80,6 @@ export default function ExportBack() {
           <span style={{ width: 88 }}>{t('Feishu')}</span>
           <input aria-label={t('Feishu App ID')} placeholder={t('App ID (cli_…)')} value={feishuAppId} onChange={(e) => setFeishuAppId(e.target.value)} style={{ flex: 1, minWidth: 0 }} />
           <input aria-label={t('Feishu App Secret')} type="password" placeholder="App Secret" value={feishuSecret} onChange={(e) => setFeishuSecret(e.target.value)} style={{ flex: 1, minWidth: 0 }} />
-          {}
           <input aria-label={t('Feishu folder token')} placeholder={t('Folder token (required)')} title={t('The part after /drive/folder/ in the folder link; new documents are created under it')} value={feishuFolder} onChange={(e) => setFeishuFolder(e.target.value)} style={{ flex: 1, minWidth: 0 }} />
           <button onClick={() => void toFeishu(feishuAppId, feishuSecret, feishuFolder, force).then((o) => { if (o) void saveCreds({ feishu_app_id: feishuAppId.trim(), feishu_app_secret: feishuSecret.trim(), feishu_folder: feishuFolder.trim() }) })} disabled={!feishuAppId.trim() || !feishuSecret.trim() || !feishuFolder.trim() || !!busy}
                   title={!feishuAppId.trim() ? t('Fill in the App ID first') : !feishuSecret.trim() ? t('Fill in the App Secret first') : !feishuFolder.trim() ? t('Fill in the folder token first') : busy ? t('Writing; wait for this one to finish') : undefined}>
@@ -102,10 +98,11 @@ export default function ExportBack() {
               {result.out.written != null && <> {t('Wrote {written} · unchanged {skipped}', { written: result.out.written, skipped: result.out.skipped ?? 0 })}</>}
               {result.out.created != null && <> {t('Created {created} · overwrote {updated}', { created: result.out.created, updated: result.out.updated ?? 0 })}</>}
             </strong>
+            {!!result.out.assets_written && <p className="muted">{result.out.assets_written === 1 ? t('Copied 1 attachment.') : t('Copied {n} attachments.', { n: result.out.assets_written })}</p>}
             {!!result.out.conflicts?.length && (
               <div style={{ marginTop: 6 }}>
-                <span className="muted" style={{ fontSize: 'var(--t-sm)' }}>{t('Edited on the other side, left alone this time (tick “Overwrite edits made on the other side” and write again to overwrite):')}</span>
-                <ul style={{ margin: '4px 0 0', paddingLeft: 18, fontSize: 'var(--t-sm)' }}>
+                <span className="muted" style={{ fontSize: 'var(--t-sm)' }}>{result.where === 'obsidian' ? t('Existing files kept. Review the list before choosing overwrite:') : t('Edited on the other side, left alone this time (tick “Overwrite edits made on the other side” and write again to overwrite):')}</span>
+                <ul className="export-conflicts" style={{ margin: '4px 0 0', paddingLeft: 18, fontSize: 'var(--t-sm)' }}>
                   {result.out.conflicts.slice(0, 20).map((p) => <li key={p}>{p}</li>)}
                 </ul>
               </div>
@@ -124,7 +121,7 @@ export default function ExportBack() {
             {!!result.out.failed?.length && (
               <div style={{ marginTop: 6 }}>
                 <span className="muted" style={{ fontSize: 'var(--t-sm)', color: 'var(--del)' }}>{t('Failed: ')}</span>
-                <ul style={{ margin: '4px 0 0', paddingLeft: 18, fontSize: 'var(--t-sm)' }}>
+                <ul className="export-conflicts" style={{ margin: '4px 0 0', paddingLeft: 18, fontSize: 'var(--t-sm)' }}>
                   {result.out.failed.slice(0, 20).map((p) => <li key={p}>{p}</li>)}
                 </ul>
               </div>

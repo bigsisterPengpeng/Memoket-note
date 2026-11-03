@@ -12,17 +12,19 @@ export const WHERE_LABEL: Record<ExportWhere, string> = {
   obsidian: 'Obsidian', notion: 'Notion', feishu: 'Feishu',
 }
 
-export type ExportOutcome = { kind: 'ok' | 'none' | 'missing' | 'conflict'; text: string; url?: string }
+export type ExportOutcome = { kind: 'ok' | 'none' | 'missing' | 'conflict' | 'error'; text: string; url?: string }
 
 /** Backend response -> the sentence the user sees (pure function, tested). */
-export function exportOutcome(out: ExportBackOut): ExportOutcome {
+export function exportOutcome(out: ExportBackOut, where?: ExportWhere): ExportOutcome {
   const n = (out.written ?? 0) + (out.created ?? 0) + (out.updated ?? 0)
   const failed = out.failed?.length ?? 0
   if (n) {
-    const tail = failed ? t(', {n} failed', { n: failed }) : (out.conflicts?.length ? t(', {n} skipped because they changed remotely', { n: out.conflicts.length }) : '')
-    return { kind: 'ok', text: t('Exported {n} notes back', { n }) + tail, url: out.url || undefined }
+    const tail = failed ? t(', {n} failed', { n: failed }) : (out.conflicts?.length ? (where === 'obsidian' ? (out.conflicts.length === 1 ? t(', 1 existing file kept') : t(', {n} existing files kept', { n: out.conflicts.length })) : t(', {n} skipped because they changed remotely', { n: out.conflicts.length })) : '')
+    return { kind: 'ok', text: (where === 'obsidian' ? (n === 1 ? t('Exported 1 file to the vault') : t('Exported {n} files to the vault', { n })) : t('Exported {n} notes back', { n })) + tail, url: out.url || undefined }
   }
-  if (out.conflicts?.length) return { kind: 'conflict', text: t('Skipped {n} notes changed on the other side — tick “Overwrite remote changes” and export again', { n: out.conflicts.length }) }
+  if (out.conflicts?.length) return { kind: 'conflict', text: where === 'obsidian' ? (out.conflicts.length === 1 ? t('Kept the existing file. Review it before choosing overwrite.') : t('Kept {n} existing files. Review the conflict list before choosing overwrite.', { n: out.conflicts.length })) : t('Skipped {n} notes changed on the other side — tick “Overwrite remote changes” and export again', { n: out.conflicts.length }) }
+  if (failed) return { kind: 'error', text: failed === 1 ? t('Could not export this item. See the details below.') : t('Could not export {n} items. See the details below.', { n: failed }) }
+  if (out.assets_written) return { kind: 'ok', text: out.assets_written === 1 ? t('Restored 1 attachment; note text is unchanged.') : t('Restored {n} attachments; note text is unchanged.', { n: out.assets_written }), url: out.url || undefined }
   if (!(out.skipped ?? 0) && out.missing?.length) return { kind: 'missing', text: t('No matching note — it may have been deleted; close this dialog and reopen it') }
   if (!(out.skipped ?? 0)) return { kind: 'none', text: t('No notes to export') }
   return { kind: 'none', text: t('Nothing to write: no changes since the last export') }
@@ -42,7 +44,8 @@ export function openRemote(url: string): void {
 /** Where the "Copies" row in the info panel / dialog can link to: Notion / Feishu store a URL; Obsidian needs the vault path built in. */
 export function remoteUrl(r: NoteRemote, vault = loadVault()): string {
   if (/^https?:\/\//.test(r.remote_path)) return r.remote_path
-  if (r.platform === 'obsidian' && vault && r.remote_path) return 'obsidian://open?path=' + encodeURIComponent(vault.replace(/\/+$/, '') + '/' + r.remote_path)
+  const exportedVault = r.platform === 'obsidian' ? r.remote_rev || vault : vault
+  if (r.platform === 'obsidian' && exportedVault && r.remote_path) return 'obsidian://open?path=' + encodeURIComponent(exportedVault.replace(/\/+$/, '') + '/' + r.remote_path)
   return ''
 }
 
@@ -52,10 +55,11 @@ export function useExportBack(noteIds: string[] = []) {
 
   async function run(where: ExportWhere, fn: () => Promise<ExportBackOut>): Promise<ExportBackOut | null> {
     setBusy(where)
+    setResult(null)
     try {
       const out = await fn()
       setResult({ where, out })
-      const o = exportOutcome(out)
+      const o = exportOutcome(out, where)
       if (o.url) toastAction(o.text, t('Open'), () => openRemote(o.url!), 8000)
       else toast(o.text, o.kind === 'ok' || o.kind === 'none' ? 'info' : 'error')
       // The info panel's "Copies" row refreshes along

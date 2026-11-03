@@ -11,8 +11,30 @@ then choose Markdown files or an Obsidian vault. Vault metadata and
 trash folders are skipped. The importer cleans supported wiki-link and attachment
 syntax while keeping the document hierarchy. Click Export in the editor toolbar to download Markdown without an account; the desktop app can write into a local Obsidian vault.
 
-On export, note identifiers support repeat exports. Review the overwrite option
-before replacing edits made in the destination. This is not live two-way sync.
+Local vault export keeps existing files by default, including same-name files on
+the first export. An unchanged file from a recorded export to that vault can be
+updated; externally edited or untracked files appear in the conflict list.
+Review the list before selecting **Overwrite existing or edited files in this
+vault**. Changing the destination clears that choice. Copy links use the recorded
+vault rather than a newly typed path. Legacy links use the entered path until a
+successful export records their destination. Older export records remain readable.
+An older record without a vault needs one confirmed overwrite before changed
+content can update automatically. Identical content can be safely adopted
+without overwrite.
+
+Images and recordings are copied before their note is marked exported. Repeating
+an unchanged export restores missing attachments. Conflicting attachment files
+are also preserved unless overwrite is chosen; missing source attachments and
+write failures appear in the result. Successful files can be retried without
+creating duplicate notes. This is not live two-way sync.
+
+Writes use temporary files and atomic filesystem operations, so an interrupted
+write does not truncate an existing note. Child symbolic links and occupied
+paths are rejected, including when overwrite is selected. Vault filesystems must
+support hard links and atomic replacement; unsupported operations are reported
+as failures. Concurrent exports in one backend are serialized, but other editors
+are not locked: content is compared again immediately before replacement, not
+protected by a transaction shared with Obsidian. Back up your vault as usual.
 
 ## Notion
 
