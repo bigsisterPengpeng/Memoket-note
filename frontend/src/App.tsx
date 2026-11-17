@@ -89,6 +89,7 @@ import RevisionHistoryPanel from './components/RevisionHistoryPanel'
 import QuickView from './components/QuickView'
 import WelcomePane from './components/WelcomePane'
 import { downloadMarkdown } from './util/markdownExport'
+import { useLibraryExport } from './util/useLibraryExport'
 import ShortcutsPanel from './components/ShortcutsPanel'
 import type { DropWhere } from './components/NoteTree'
 import NoteKbPanel from './components/NoteKbPanel'
@@ -911,9 +912,6 @@ export default function App() {
     const onCollapse = () => void actionsRef.current.collapseAll()
     window.addEventListener('tree-locate', onLocate)
     window.addEventListener('tree-collapse', onCollapse)
-    // Whole-library export: navigating to the endpoint URL is the download (Electron goes through the system save dialog)
-    const onExport = () => { void save(); window.location.href = `/api/export/markdown?user=${encodeURIComponent(api.getUser())}` }
-    window.addEventListener('export-all', onExport)
     // Ask before the desktop shell quits: reply flushed once saved (also on save failure, don't block quitting — the draft is already stored locally)
     // Also clean up just-created, still-empty "Untitled" notes on quit — they were cleaned on switching away but not on quit, and the demo library
 
@@ -952,7 +950,7 @@ export default function App() {
     // ⌘K "Change icon" / tree menu "Change icon…": only for the note open in the main pane; hint if no note is open
     const onIconPicker = () => { if (current) setIconPicker(true); else toast(t('Open a note first to change its icon')) }
     window.addEventListener('open-icon-picker', onIconPicker)
-    return () => { window.removeEventListener('open-icon-picker', onIconPicker); window.removeEventListener('open-today', onToday); window.removeEventListener('virtual-title', onTitle); window.removeEventListener('virtual-gone', onGone); window.removeEventListener('tab-action', onTabAction); window.removeEventListener('open-virtual', on); window.removeEventListener('new-note', onNew); window.removeEventListener('show-shortcuts', onKeys); window.removeEventListener('open-note', onOpenNote); window.removeEventListener('nav-history', onNav); window.removeEventListener('tree-locate', onLocate); window.removeEventListener('tree-collapse', onCollapse); window.removeEventListener('export-all', onExport); window.removeEventListener('flush-save', onFlush); window.removeEventListener('beforeunload', onUnload) }
+    return () => { window.removeEventListener('open-icon-picker', onIconPicker); window.removeEventListener('open-today', onToday); window.removeEventListener('virtual-title', onTitle); window.removeEventListener('virtual-gone', onGone); window.removeEventListener('tab-action', onTabAction); window.removeEventListener('open-virtual', on); window.removeEventListener('new-note', onNew); window.removeEventListener('show-shortcuts', onKeys); window.removeEventListener('open-note', onOpenNote); window.removeEventListener('nav-history', onNav); window.removeEventListener('tree-locate', onLocate); window.removeEventListener('tree-collapse', onCollapse); window.removeEventListener('flush-save', onFlush); window.removeEventListener('beforeunload', onUnload) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [current, virtualId, allRows, notes])
 
@@ -1524,47 +1522,49 @@ export default function App() {
     open(n)
   }
 
-  async function save() {
-    if (!current) return
-    if (title === current.title && content === current.content) return
+  const saveTail = useRef<Promise<void>>(Promise.resolve())
+  const savePending = useRef(0)
+  const failedSave = useRef<{ id: string; retry: () => Promise<void> } | null>(null)
+  async function save(retry = false): Promise<void> {
+    if (!current) {
+      if (savePending.current > 0) return saveTail.current
+      return failedSave.current?.retry()
+    }
+    if (!retry && title === current.title && content === current.content && savePending.current === 0) return
 
-    //
-    // The criterion is deliberately narrow; all three must hold: ① the anchor belongs to **this note**; ② since that version was delivered
-    // the editor has **reported no edits at all** (`edits === 0`); ③ what's about to be saved is **shorter than it**.
-    // The user deleting text, "Revert" on the hover toolbar, "Revert all", `/` blocks — all of these break ②,
-    // so none are blocked (gauges B1 / B2); the server delivering a shorter version itself (cleanup, dedup) swaps the anchor
-    // too, so it isn't blocked either (B6). Only one case remains: **the user didn't touch it, yet it got shorter** (B3).
-    //
-    // Blocking doesn't mean "don't save" — then even the title wouldn't save; it means **save the version the server delivered**,
-
-    const served = servedRef.current
     let body = content
-    if (isStaleShrink(served, current.id, content)) {
+    if (isStaleShrink(servedRef.current, current.id, content)) {
       void api.clientLog('warn',
-        `Blocked a regressing save: about to save ${content.length} chars, the server just delivered ${served.text.length} chars, `
-        + `and the editor has reported no edits since — saving the server's version instead`, '', 'save-guard')
-      body = served.text
-      if (content !== served.text) setContent(served.text)
+        `Blocked a regressing save: ${content.length} chars instead of ${servedRef.current.text.length} without editor changes`, '', 'save-guard')
+      body = servedRef.current.text
+      setContent(body)
     }
-    try {
-      const n = await api.saveNote(current.id, title, body)
-      setCurrent(n)
-      setSaveStatus({ at: Date.now() })
-      clearDraft(current.id)
-
-      // is too wasteful — a save changes only this note, so replace it in place with the returned one; add/delete/move paths still reload()
-      setNotes((prev) => (prev.some((x) => x.id === n.id) ? prev.map((x) => (x.id === n.id ? n : x)) : [n, ...prev]))
-      await reloadTree(false)
-    } catch (e) {
-      setSaveStatus({ at: Date.now(), error: String(e) })
-      // **Body that failed to save lands on this machine first**: in the seconds the backend has crashed / the network is down the user keeps writing,
-      // and closing the app then would lose it all. Next time this note opens, if the library version is older, put the draft back.
-      // The draft is also **the version actually to be saved** (`body`): writing `content` after the guard rewrote it
-
-      writeDraft(current.id, title, body)
-      throw e
-    }
+    // Keep an older autosave from finishing after a newer explicit save or export.
+    savePending.current++
+    const saving = saveTail.current.catch(() => {}).then(async () => {
+      try {
+        const n = await api.saveNote(current.id, title, body)
+        setCurrent((open) => open?.id === n.id ? n : open)
+        setSaveStatus({ at: Date.now() })
+        clearDraft(current.id)
+        if (failedSave.current?.id === current.id) failedSave.current = null
+        setNotes((prev) => (prev.some((x) => x.id === n.id) ? prev.map((x) => (x.id === n.id ? n : x)) : [n, ...prev]))
+        await reloadTree(false)
+      } catch (error) {
+        setSaveStatus({ at: Date.now(), error: String(error) })
+        writeDraft(current.id, title, body)
+        failedSave.current = { id: current.id, retry: () => save(true) }
+        throw error
+      }
+    }).finally(() => { savePending.current-- })
+    saveTail.current = saving
+    await saving
   }
+
+  const libraryExportBusy = useLibraryExport(async () => {
+    await save()
+    await splitFlush.current?.()
+  })
 
 
   const flushChangeLayers = useCallback(async (keepalive = false) => {
@@ -1772,7 +1772,7 @@ export default function App() {
     function onKeyDown(e: KeyboardEvent) {
       if (!(e.metaKey || e.ctrlKey)) return
       const key = e.key.toLowerCase()
-      if (key === 's') { e.preventDefault(); void save() }
+      if (key === 's') { e.preventDefault(); void save().catch(() => {}) }
       else if (key === 'd' && e.shiftKey) { e.preventDefault(); void openToday() }   // ⌘⇧D today's journal (Trilium uses this key too)
       else if (key === 'n') { e.preventDefault(); void newNote() }
       else if (key === '.') { e.preventDefault(); setFocusMode((v) => !v) }
@@ -1996,7 +1996,7 @@ export default function App() {
   useEffect(() => {
     if (!current) return
     if (title === current.title && content === current.content) return
-    const t = setTimeout(save, 1500)
+    const t = setTimeout(() => { void save().catch(() => {}) }, 1500)
     return () => clearTimeout(t)
   }, [title, content])  // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -4191,7 +4191,7 @@ export default function App() {
                     hint: t('Markdown syntax, ```mermaid diagrams, [[ to link notes, @ to cite facts'),
                     onSelect: () => setShowShortcuts(true) },
                   { label: focusMode ? t('Exit focus mode') : t('Focus mode'), icon: 'bx-fullscreen', shortcut: '⌘.', onSelect: () => setFocusMode((v) => !v) },
-                  { label: t('Save'), icon: 'bx-save', shortcut: '⌘S', onSelect: () => void save() },
+                  { label: t('Save'), icon: 'bx-save', shortcut: '⌘S', onSelect: () => { void save().catch(() => {}) } },
                 ]} />
               )}
             </div>
@@ -4486,7 +4486,7 @@ export default function App() {
         {/* Breadcrumbs: where the current note is in the tree. After cloning the same note is in several places; this is the only thing that
             says "which copy you're looking at" (Trilium StatusBar's Breadcrumb). */}
         <span className="breadcrumb status-crumbs">
-          {crumbs.length === 0
+          {libraryExportBusy ? <span role="status">{t('Saving open notes before export…')}</span> : crumbs.length === 0
             ? <span>{t('{n} notes total', { n: notes.length })}</span>
             : crumbs.map((r, i) => (
               <span key={r.id}>

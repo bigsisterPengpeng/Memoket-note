@@ -1,53 +1,49 @@
 # Validation notes
 
-## Current release: November 3, 2026 / 0.1.7
+## Current release — November 17, 2026 / 0.1.8
 
 | Check | Result |
 |---|---|
 | Backend pytest | 474 passed |
-| Frontend Vitest | 63 files, 342 passed |
+| Frontend Vitest | 64 files, 355 passed |
 | Shared frontend/backend contracts | 61 passed |
 | Types, lint, Python static checks and desktop test | Passed |
 | Publication and English-source audits | Passed |
 | macOS arm64 installer | Signature, disk image, isolated backend/CLI and exact bundled-web checks passed |
-| Docker image | Build blocked by exhausted local BuildKit storage; not validated for this release |
 
-Local vault export now preserves same-name files on the first export. A changed
-file is updated automatically only when its path, recorded destination and
-content match the previous export. Older receipts without a vault need one
-confirmed changed-content update; identical files are adopted without rewriting. Explicit
-overwrite remains available for regular files. Changing the destination clears
-the single-note overwrite choice, and copy links retain the recorded vault.
+Whole-library export now waits for the open main and split-pane drafts to save.
+The export event reads the current draft, including changes within the autosave
+window. Main-editor writes run in order so an earlier autosave cannot finish
+after a later export save. A failed save cancels the download and offers a retry
+using the current draft. Repeated requests during preparation produce one
+download. Closing the last tab still waits for its outstanding save.
 
-Three new regression cases first failed on the previous revision; an existing
-owned-file update remained a valid counterexample. Eighteen backend cases now
-cover initial collisions, vault changes, external edits, explicit overwrite,
-legacy receipts, identical content, missing/conflicting attachments, interrupted
-writes, changes after preflight, symbolic links, occupied paths and clone markers.
-A simulated full disk preserves the original file and receipt and removes the
-temporary file. Six UI cases cover conflict wording, fresh overwrite choices,
-stale-result clearing, attachment repair, failures and recorded copy links.
+An integration regression first failed on 0.1.7 because export never submitted
+the latest editor body. Thirteen added cases cover delayed saves, failure and
+retry, duplicate requests, intentional undo during saving, newly typed titles,
+split-pane drafts, clean libraries, closing tabs and unmounting. Explicit split
+flushes propagate failures while preserving the pending content for retry.
 
-The actual built UI was exercised with fictional notes and disposable vaults.
-The initial export left an unrelated file byte-for-byte unchanged. Selecting
-overwrite wrote the chosen draft and its attachment; a repeat export restored a
-deliberately removed attachment. Changing the path cleared overwrite. The export
-dialog had no horizontal overflow at 900 × 600 and 375 × 600. The packaged backend
-separately passed first-collision, overwrite, unchanged retry, attachment repair,
-vault-bound receipts, external-edit and bundled-CLI checks. Its web files match
-the current production build byte for byte.
+Validation used independently authored fictional notes and disposable profiles
+between November 9 and 17. The real browser kept the archive request pending
+until a delayed save completed. The downloaded ZIP contained the latest draft.
+A simulated storage failure prevented another archive, and the retry produced
+the revised body. The production UI passed the 900 × 600 light-mode check with
+no horizontal page overflow. Dark-mode editing was exercised in an embedded
+workspace, but its final failure/retry check was interrupted when the browser
+became unavailable.
 
-The 0.1.7 macOS arm64 installer is locally ad-hoc signed and not notarized. No real
-vault, installed profile, provider account or native Obsidian app was used. Local
-APFS export was validated; filesystems without hard links or atomic replacement
-report an export failure. Other editors are not transactionally locked, and an
-export batch is not an all-or-nothing operation. See [connection behavior and
-limits](connections.md). Windows/Linux desktop installers and this release's
-Docker image were not verified. Existing containers and volumes were preserved.
+The installer was checked from a read-only mounted disk image. Its frozen
+backend passed saved-note ZIP export, vault collision/overwrite, attachment
+repair, destination-bound and legacy receipts, external-edit preservation and
+bundled-CLI checks. Every bundled web file matches the final production build.
+The macOS arm64 package uses local ad-hoc signing and has no notarization.
+Windows/Linux installers and a new Docker image were outside this validation.
+Exports cover saved library content. Concurrent edits from another window,
+external tool or running agent can arrive after export preparation.
 
-Backend tests retain five third-party deprecation warnings; the frontend retains
-its existing large-chunk build warning. No dependency or CI configuration was
-added.
+Backend tests retain five third-party deprecation warnings. The frontend retains
+its existing large-chunk build warning. Dependency and CI configuration are unchanged.
 
 ## Container deployment update: October 22, 2026
 

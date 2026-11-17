@@ -20,6 +20,7 @@ export function createAutosave(opts: {
   let timer: unknown = null
   let inflight: Promise<void> | null = null
   let disposed = false
+  let lastError: unknown
 
   async function run(): Promise<void> {
     if (inflight) return inflight
@@ -27,10 +28,11 @@ export function createAutosave(opts: {
       while (pending !== null && !disposed) {
         const c = pending
         pending = null
-        try { await opts.save(c) }
+        try { await opts.save(c); lastError = undefined }
         catch (e) {
           // Put the failed edit back for next time; with no newer change, do not auto-retry (avoids hammering on a bad network)
           if (pending === null) pending = c
+          lastError = e
           opts.onError?.(e)
           break
         }
@@ -50,6 +52,7 @@ export function createAutosave(opts: {
       if (timer !== null) { clearT(timer); timer = null }
       if (pending === null && !inflight) return
       await run()
+      if (!disposed && pending !== null) throw lastError ?? new Error('Changes have not been saved')
     },
     dispose() {
       disposed = true

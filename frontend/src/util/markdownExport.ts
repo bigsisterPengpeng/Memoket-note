@@ -1,3 +1,7 @@
+export function downloadLibrary(user: string) {
+  window.location.href = `/api/export/markdown?user=${encodeURIComponent(user)}`
+}
+
 export function downloadMarkdown(title: string, content: string) {
   const url = URL.createObjectURL(new Blob([content], { type: 'text/markdown;charset=utf-8' }))
   const link = document.createElement('a')

@@ -72,4 +72,29 @@ describe('createAutosave', () => {
     expect(a.dirty()).toBe(false)
     vi.useRealTimers()
   })
+
+  it('explicit flush rejects a failed save and keeps it available for retry', async () => {
+    const save = vi.fn().mockRejectedValueOnce(new Error('Fictional write failure')).mockResolvedValue(undefined)
+    const a = createAutosave({ delay: 10_000, save })
+    a.change('The Cedar draft.')
+    await expect(a.flush()).rejects.toThrow('Fictional write failure')
+    expect(a.dirty()).toBe(true)
+    await a.flush()
+    expect(save).toHaveBeenLastCalledWith('The Cedar draft.')
+    expect(a.dirty()).toBe(false)
+    a.dispose()
+  })
+
+  it('flush joins an in-flight autosave and reports its failure', async () => {
+    vi.useFakeTimers()
+    let reject!: (error: Error) => void
+    const a = createAutosave({ delay: 100, save: () => new Promise<void>((_resolve, fail) => { reject = fail }) })
+    a.change('In-flight Cedar draft.')
+    await vi.advanceTimersByTimeAsync(100)
+    const flushed = expect(a.flush()).rejects.toThrow('Fictional delayed failure')
+    reject(new Error('Fictional delayed failure'))
+    await flushed
+    expect(a.dirty()).toBe(true)
+    a.dispose(); vi.useRealTimers()
+  })
 })

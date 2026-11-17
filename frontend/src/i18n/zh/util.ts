@@ -1,5 +1,7 @@
 /** Chinese dictionary shard: util (src/util, api.ts, shortcuts.ts and other top-level src files). key = English source text, value = Chinese. */
 export const UTIL: Record<string, string> = {
+  'Export cancelled: open notes could not be saved. {err}': '导出已取消：打开的笔记未能保存。{err}',
+  'Retry export': '重试导出',
   'Contradicts': '矛盾',
   'Supports': '支持',
   'Inconclusive': '无法判断',

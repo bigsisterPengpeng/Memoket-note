@@ -49,7 +49,7 @@ export default function SplitEditor({ note, onSaved, flushRef }: {
 
   // App mounts this component with key={note.id}: a different note = remount, the body comes from useState's initial value.
   // On unmount (closing the split / switching notes) flush anything unsaved before dropping it.
-  useEffect(() => () => { void saver.flush(); saver.dispose() }, [saver])
+  useEffect(() => () => { void saver.flush().catch(() => {}); saver.dispose() }, [saver])
   useEffect(() => {
     if (!flushRef) return
     flushRef.current = () => saver.flush()

@@ -11,6 +11,13 @@ then choose Markdown files or an Obsidian vault. Vault metadata and
 trash folders are skipped. The importer cleans supported wiki-link and attachment
 syntax while keeping the document hierarchy. Click Export in the editor toolbar to download Markdown without an account; the desktop app can write into a local Obsidian vault.
 
+Export all notes (from the menu or command palette) saves the open main and
+split-pane drafts before requesting the Markdown ZIP. A failed save cancels the
+download and offers **Retry export** with the current draft. Repeated requests
+while saving produce one download. Single-note Markdown downloads still use the
+editor text directly and work without a backend. Exports are not an atomic
+snapshot of edits arriving from other windows, external tools or a running agent.
+
 Local vault export keeps existing files by default, including same-name files on
 the first export. An unchanged file from a recorded export to that vault can be
 updated; externally edited or untracked files appear in the conflict list.

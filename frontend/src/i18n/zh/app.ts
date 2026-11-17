@@ -1,5 +1,6 @@
 /** Chinese dictionary shard: app (App.tsx). key = English source text, value = Chinese; `{name}` placeholders must match. */
 export const APP: Record<string, string> = {
+  'Saving open notes before export…': '正在保存打开的笔记，随后导出…',
   'AI will draw on it when writing this note': 'AI 写这篇时优先参考',
   'MEMOKET NOTE · Sectioned writing': 'MEMOKET NOTE · 分段写作',
   'MEMOKET NOTE · Smart Continue': 'MEMOKET NOTE · 智能续写',
