@@ -85,6 +85,11 @@ The relevant paths include `frontend/src/editor/roundDiff.ts`,
 `frontend/src/components/ChangeLayersPanel.tsx`, `backend/app/harness/snapshot.py`
 and the persistence methods under `backend/app/database/`.
 
+Failed main-editor saves keep a local draft containing the title and body.
+On reopen, a newer draft restores changes to either field, including an
+intentionally empty title. Older or identical drafts yield to the saved note.
+These drafts belong to the current browser or desktop profile.
+
 ## Provider and trust boundaries
 
 Provider configuration belongs to the user. Local model endpoints can keep

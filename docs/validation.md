@@ -1,49 +1,41 @@
 # Validation notes
 
-## Current release — November 17, 2026 / 0.1.8
+## Current release — November 25, 2026 / 0.1.9
 
 | Check | Result |
 |---|---|
 | Backend pytest | 474 passed |
-| Frontend Vitest | 64 files, 355 passed |
+| Frontend Vitest | 64 files, 359 passed |
 | Shared frontend/backend contracts | 61 passed |
 | Types, lint, Python static checks and desktop test | Passed |
 | Publication and English-source audits | Passed |
 | macOS arm64 installer | Signature, disk image, isolated backend/CLI and exact bundled-web checks passed |
 
-Whole-library export now waits for the open main and split-pane drafts to save.
-The export event reads the current draft, including changes within the autosave
-window. Main-editor writes run in order so an earlier autosave cannot finish
-after a later export save. A failed save cancels the download and offers a retry
-using the current draft. Repeated requests during preparation produce one
-download. Closing the last tab still waits for its outstanding save.
+Local draft recovery now compares both title and body. A title-only edit survives
+a failed save and reopening, and a deliberately cleared title stays empty. The
+saved note takes precedence over older or identical drafts. Drafts use the
+existing local format and remain within the current browser or desktop profile.
 
-An integration regression first failed on 0.1.7 because export never submitted
-the latest editor body. Thirteen added cases cover delayed saves, failure and
-retry, duplicate requests, intentional undo during saving, newly typed titles,
-split-pane drafts, clean libraries, closing tabs and unmounting. Explicit split
-flushes propagate failures while preserving the pending content for retry.
+Two regression cases failed on 0.1.8. Seven recovery cases now cover title-only
+edits, empty titles, body edits, outdated and identical drafts, absent drafts and
+probe cleanup. The full frontend suite includes four additional recovery cases.
 
-Validation used independently authored fictional notes and disposable profiles
-between November 9 and 17. The real browser kept the archive request pending
-until a delayed save completed. The downloaded ZIP contained the latest draft.
-A simulated storage failure prevented another archive, and the retry produced
-the revised body. The production UI passed the 900 × 600 light-mode check with
-no horizontal page overflow. Dark-mode editing was exercised in an embedded
-workspace, but its final failure/retry check was interrupted when the browser
-became unavailable.
+The real production UI was exercised with one independently authored fictional
+Maple note and simulated rejected saves. A renamed title survived reopening and
+was saved after storage recovered. Clearing the title followed the same sequence.
+Backend reads confirmed the expected titles and unchanged body. The long title
+was saved through the normal editor at 900 × 600 with no horizontal page overflow.
 
-The installer was checked from a read-only mounted disk image. Its frozen
+The final installer was verified from a read-only mounted disk image. Its frozen
 backend passed saved-note ZIP export, vault collision/overwrite, attachment
 repair, destination-bound and legacy receipts, external-edit preservation and
-bundled-CLI checks. Every bundled web file matches the final production build.
-The macOS arm64 package uses local ad-hoc signing and has no notarization.
-Windows/Linux installers and a new Docker image were outside this validation.
-Exports cover saved library content. Concurrent edits from another window,
-external tool or running agent can arrive after export preparation.
+bundled-CLI checks. Every bundled web file matches the production build used for
+browser verification. The macOS arm64 package uses local ad-hoc signing and has
+no notarization. Windows/Linux installers, live providers and a new Docker image
+were outside this validation.
 
 Backend tests retain five third-party deprecation warnings. The frontend retains
-its existing large-chunk build warning. Dependency and CI configuration are unchanged.
+its existing large-chunk build warning.
 
 ## Container deployment update: October 22, 2026
 

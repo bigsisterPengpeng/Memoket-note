@@ -19,8 +19,9 @@ export function clearDraft(noteId: string) {
 
 export function resolveDraft(note: { title: string; content: string; updated_at: string }, draft: Draft | null, isProbe: boolean):
   { title: string; content: string; restored: boolean; clear: boolean } {
-  if (draft && draft.content !== note.content && draft.at > Date.parse(note.updated_at)) {
-    return { title: draft.title || note.title, content: draft.content, restored: true, clear: isProbe }
+  const title = draft?.title ?? note.title
+  if (draft && (draft.content !== note.content || title !== note.title) && draft.at > Date.parse(note.updated_at)) {
+    return { title, content: draft.content, restored: true, clear: isProbe }
   }
   return { title: note.title, content: note.content, restored: false, clear: !!draft }
 }
